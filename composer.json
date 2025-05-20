@@ -1,0 +1,11 @@
+{
+    "require-dev": {
+        "symfony/phpunit-bridge": "^7.2",
+        "symfony/maker-bundle": "^1.63",
+        "doctrine/doctrine-fixtures-bundle": "^4.1"
+    },
+    "require": {
+        "knplabs/knp-paginator-bundle": "^6.8",
+        "twig/intl-extra": "^3.21"
+    }
+}

@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+    <h1>{{ 'dashboard.title'|trans }}</h1>
+
+    {% if events is empty %}
+        <p>{{ 'dashboard.no_upcoming_events'|trans }}</p>
+    {% else %}
+        <ul>
+            {% for event in events %}
+                <li>
+                    {{ event.title }} – {{ event.start|date('Y-m-d H:i') }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

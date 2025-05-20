@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.category_view'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ 'title.category_view'|trans }}</h1>
+
+        {% if not category.name %}
+            <div class="alert alert-warning" role="alert">
+                {{ 'message.missing_data'|trans }}
+            </div>
+        {% else %}
+            <dl class="row">
+                <dt class="col-sm-2">{{ 'label.id'|trans }}</dt>
+                <dd class="col-sm-10">{{ category.id }}</dd>
+
+                <dt class="col-sm-2">{{ 'label.name'|trans }}</dt>
+                <dd class="col-sm-10">{{ category.name }}</dd>
+            </dl>
+
+            <a href="{{ path('category_edit', { id: category.id }) }}" class="btn btn-secondary">
+                {{ 'action.edit'|trans }}
+            </a>
+            <a href="{{ path('category_delete', { id: category.id }) }}" class="btn btn-danger">
+                {{ 'action.delete'|trans }}
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}
