@@ -6,6 +6,12 @@
     },
     "require": {
         "knplabs/knp-paginator-bundle": "^6.8",
-        "twig/intl-extra": "^3.21"
+        "twig/intl-extra": "^3.21",
+        "stof/doctrine-extensions-bundle": "^1.14"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": "true"
+        }
     }
 }

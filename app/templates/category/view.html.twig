@@ -6,7 +6,7 @@
     <div class="container mt-4">
         <h1>{{ 'title.category_view'|trans }}</h1>
 
-        {% if not category.name %}
+        {% if not category.title %}
             {% include 'default/_single_alert_message.html.twig' with {
                 type: 'warning',
                 message: 'message.missing_data'|trans
@@ -17,7 +17,7 @@
                 <dd class="col-sm-10">{{ category.id }}</dd>
 
                 <dt class="col-sm-2">{{ 'label.name'|trans }}</dt>
-                <dd class="col-sm-10">{{ category.name }}</dd>
+                <dd class="col-sm-10">{{ category.title }}</dd>
             </dl>
 
             <a href="{{ path('category_edit', { id: category.id }) }}" class="btn btn-secondary">

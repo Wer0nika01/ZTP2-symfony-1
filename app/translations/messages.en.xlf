@@ -114,6 +114,10 @@
         <source>title.category_delete_blocked</source>
         <target>You can not delete it. This category has task. Firstly delete the tasks from this category.</target>
       </trans-unit>
+      <trans-unit id="title.category_view">
+        <source>title.category_view</source>
+        <target>Category view</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
