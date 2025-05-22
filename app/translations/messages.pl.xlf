@@ -118,6 +118,18 @@
         <source>title.category_view</source>
         <target>Podgląd kategorii</target>
       </trans-unit>
+      <trans-unit id="message.category_contains_tasks">
+        <source>message.category_contains_tasks</source>
+        <target>Nie można jej usunąć, kategoria zawiera zadania.</target>
+      </trans-unit>
+      <trans-unit id="title.task_delete">
+        <source>title.task_delete</source>
+        <target>Usuń zadanie</target>
+      </trans-unit>
+      <trans-unit id="message.deleted_successfully">
+        <source>message.deleted_successfully</source>
+        <target>Udało się usunąć!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

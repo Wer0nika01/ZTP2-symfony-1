@@ -9,6 +9,8 @@ namespace App\Service;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Repository\TaskRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -75,13 +77,21 @@ class CategoryService implements CategoryServiceInterface
     }
 
     /**
-     * Check if can be deleted (don't have any tasks)
+     * Can Category be deleted?
      *
-     * @param Category $category
-     * @return bool
+     * @param Category $category Category entity
+     *
+     * @return bool Result
      */
     public function canBeDeleted(Category $category): bool
     {
-        return !$this->taskRepository->hasAnyForCategory($category);
+        try {
+            $result = $this->taskRepository->countByCategory($category);
+
+            return !($result > 0);
+        } catch (NoResultException|NonUniqueResultException) {
+            return false;
+        }
     }
+
 }

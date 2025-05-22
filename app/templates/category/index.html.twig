@@ -18,6 +18,11 @@
                 message: 'message.empty_list'|trans
             } %}
         {% else %}
+
+            <div class="text-center mb-3">
+                {{ knp_pagination_render(pagination) }}
+            </div>
+
             <table class="table table-striped">
                 <thead>
                 <tr>
