@@ -106,6 +106,14 @@
         <source>title.category_create</source>
         <target>Stwórz kategorię</target>
       </trans-unit>
+      <trans-unit id="message.category_has_tasks">
+        <source>message.category_has_tasks</source>
+        <target>Ta kategoria ma zadania. Nie można jej usunąć.</target>
+      </trans-unit>
+      <trans-unit id="title.category_delete_blocked">
+        <source>title.category_delete_blocked</source>
+        <target>Nie możesz usunąc tej kategorii, ponieważ ma ona przypisane do niej zadania. Najpierw musisz usunąć te zadania.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

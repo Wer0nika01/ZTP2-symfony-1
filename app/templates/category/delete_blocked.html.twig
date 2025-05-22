@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title.category_delete_blocked'|trans({'%id%': category.id|default('')}) }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.category_delete_blocked'|trans({'%id%': category.id|default('')}) }}</h1>
+
+    <a href="{{ path('category_index') }}" class="btn btn-link">
+        {{ 'action.back_to_list'|trans }}
+    </a>
+{% endblock %}

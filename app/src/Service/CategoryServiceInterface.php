@@ -36,5 +36,12 @@ interface CategoryServiceInterface
      */
     public function delete(Category $category): void;
 
+    /**
+     * Check if category can be safely deleted (no assigned tasks).
+     *
+     * @param Category $category
+     * @return bool
+     */
+    public function canBeDeleted(Category $category): bool;
 }
 

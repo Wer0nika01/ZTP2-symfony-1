@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpInconsistentReturnPointsInspection */
 
 /**
  * Category controller.
@@ -10,8 +10,10 @@ use App\Entity\Category;
 use App\Form\Type\CategoryType;
 use App\Service\CategoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,9 +28,9 @@ class CategoryController extends AbstractController
      * Constructor.
      *
      * @param CategoryServiceInterface $categoryService Category service
-     * @param TranslatorInterface      $translator      Translator
+     * @param TranslatorInterface $translator Translator
      */
-    public function __construct(private readonly CategoryServiceInterface $categoryService,  private readonly TranslatorInterface $translator)
+    public function __construct(private readonly CategoryServiceInterface $categoryService, private readonly TranslatorInterface $translator)
     {
     }
 
@@ -109,7 +111,7 @@ class CategoryController extends AbstractController
     /**
      * Edit action.
      *
-     * @param Request  $request  HTTP request
+     * @param Request $request HTTP request
      * @param Category $category Category entity
      *
      * @return Response HTTP response
@@ -155,7 +157,7 @@ class CategoryController extends AbstractController
     /**
      * Delete action.
      *
-     * @param Request  $request  HTTP request
+     * @param Request $request HTTP request
      * @param Category $category Category entity
      *
      * @return Response HTTP response
@@ -174,23 +176,15 @@ class CategoryController extends AbstractController
         ]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->categoryService->delete($category);
-
+        if (!$this->categoryService->canBeDeleted($category)) {
             $this->addFlash(
-                'success',
-                $this->translator->trans('message.deleted_successfully')
+                'warning',
+                $this->translator->trans('message.category_has_tasks')
             );
 
-            return $this->redirectToRoute('category_index');
-        }
-
-        return $this->render(
-            'category/delete.html.twig',
-            [
-                'form' => $form->createView(),
+            return $this->render('category/delete_blocked.html.twig', [
                 'category' => $category,
-            ]
-        );
+            ]);
+        }
     }
 }

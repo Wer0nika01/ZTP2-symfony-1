@@ -106,6 +106,14 @@
         <source>title.category_create</source>
         <target>Create category</target>
       </trans-unit>
+      <trans-unit id="message.category_has_tasks">
+        <source>message.category_has_tasks</source>
+        <target>This category has task. You can not delete it.</target>
+      </trans-unit>
+      <trans-unit id="title.category_delete_blocked">
+        <source>title.category_delete_blocked</source>
+        <target>You can not delete it. This category has task. Firstly delete the tasks from this category.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
