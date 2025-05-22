@@ -5,9 +5,16 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{ 'title.category_delete_blocked'|trans({'%id%': category.id|default('')}) }}</h1>
+    <div class="container mt-4">
+        <h1>{{ 'title.category_delete_blocked'|trans({'%id%': category.id|default('')}) }}</h1>
 
-    <a href="{{ path('category_index') }}" class="btn btn-link">
-        {{ 'action.back_to_list'|trans }}
-    </a>
+        {% include 'default/_single_alert_message.html.twig' with {
+            type: 'warning',
+            message: 'message.category_delete_blocked'|trans({'%id%': category.id|default('')})
+        } %}
+
+        <a href="{{ path('category_index') }}" class="btn btn-link mt-3">
+            {{ 'action.back_to_list'|trans }}
+        </a>
+    </div>
 {% endblock %}

@@ -19,8 +19,9 @@
             {{ 'action.back_to_list'|trans }}
         </a>
     {% else %}
-        <p>
-            {{ 'message.record_not_found'|trans }}
-        </p>
+        {% include 'default/_single_alert_message.html.twig' with {
+            type: 'warning',
+            message: 'message.record_not_found'|trans
+        } %}
     {% endif %}
 {% endblock %}

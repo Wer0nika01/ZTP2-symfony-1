@@ -7,9 +7,10 @@
         <h1>{{ 'title.category_view'|trans }}</h1>
 
         {% if not category.name %}
-            <div class="alert alert-warning" role="alert">
-                {{ 'message.missing_data'|trans }}
-            </div>
+            {% include 'default/_single_alert_message.html.twig' with {
+                type: 'warning',
+                message: 'message.missing_data'|trans
+            } %}
         {% else %}
             <dl class="row">
                 <dt class="col-sm-2">{{ 'label.id'|trans }}</dt>
