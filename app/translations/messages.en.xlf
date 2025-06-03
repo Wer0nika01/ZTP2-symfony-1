@@ -130,6 +130,18 @@
         <source>message.deleted_successfully</source>
         <target>Successfully deleted</target>
       </trans-unit>
+      <trans-unit id="title.tag_list">
+        <source>title.tag_list</source>
+        <target>Tags list</target>
+      </trans-unit>
+      <trans-unit id="label.slug">
+        <source>label.slug</source>
+        <target>Simplified title</target>
+      </trans-unit>
+      <trans-unit id="action.create_tag">
+        <source>action.create_tag</source>
+        <target>Create tag</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

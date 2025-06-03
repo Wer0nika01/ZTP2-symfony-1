@@ -1,33 +1,24 @@
 <?php
 
 /**
- * Task entity.
+ * Tag enitiy.
  */
-
 namespace App\Entity;
 
-use App\Repository\TaskRepository;
+use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Task.
+ * Class Tag
  */
-#[ORM\Entity(repositoryClass: TaskRepository::class)]
-#[ORM\Table(name: 'tasks')]
-class Task
+#[ORM\Entity(repositoryClass: TagRepository::class)]
+#[ORM\Table(name: 'tag')]
+class Tag
 {
     /**
-     * Category.
-     */
-    #[ORM\ManyToOne(targetEntity: Category::class, fetch: 'EXTRA_LAZY')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
-    private ?Category $category = null;
-
-    /**
-     * Primary key.
+     * Primary key
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,7 +26,7 @@ class Task
     private ?int $id = null;
 
     /**
-     * Title.
+     * Title
      */
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
@@ -45,7 +36,7 @@ class Task
     /**
      * Created at.
      *
-     * @var \DateTimeImmutable|null
+     * @var \DateTime|null
      */
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'create')]
@@ -59,6 +50,15 @@ class Task
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeImmutable $updatedAt = null;
+
+
+    /**
+     * Slug
+     *
+     * @var string|null
+     */
+    #[ORM\Column(length: 64)]
+    private ?string $slug = null;
 
     /**
      * Getter for Id.
@@ -93,63 +93,65 @@ class Task
     /**
      * Getter for created at.
      *
-     * @return \DateTimeImmutable|null Created at
+     * @return \DateTimeImmutable|null
      */
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    /**
-     * Setter for created at.
-     *
-     * @param \DateTimeImmutable|null $createdAt Created at
-     */
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+     /**
+      * Setter for created at.
+      *
+      * @param \DateTimeImmutable|null $createdAt Created at
+      */
+    public function setCreatedAt(\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
+
     }
 
-    /**
-     * Getter for updated at.
-     *
-     * @return \DateTimeImmutable|null Updated at
-     */
+     /**
+      * Getter for updated at.
+      *
+      * @return \DateTimeImmutable|null Updated at
+      */
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    /**
-     * Setter for updated at.
-     *
-     * @param \DateTimeImmutable|null $updatedAt Updated at
-     */
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+     /**
+      * Setter for updated at.
+      *
+      * @param \DateTimeImmutable|null $updatedAt Updated at
+      */
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+
     }
 
     /**
-     * Getter for Category
+     * Getter for Slug
      *
-     * @return Category|null
+     * @return string|null
      */
-    public function getCategory(): ?Category
+    public function getSlug(): ?string
     {
-        return $this->category;
+        return $this->slug;
     }
 
     /**
-     * Setter for Category.
+     * Setter for Slug
      *
-     * @param Category|null $category
+     * @param string $slug
      * @return $this
      */
-    public function setCategory(?Category $category): static
+    public function setSlug(string $slug): static
     {
-        $this->category = $category;
+        $this->slug = $slug;
 
         return $this;
     }
-}
+};
