@@ -124,9 +124,10 @@ class TaskController extends AbstractController
     )]
     public function edit(Request $request, Task $task): Response
     {
-        $form = $this->createForm(
-            TaskType::class,
-            $task);
+        $form = $this->createForm(TaskType::class, $task, [
+            'method' => 'PUT',
+            'action' => $this->generateUrl('task_edit', ['id' => $task->getId()]),
+        ]);
 
         $form->handleRequest($request);
 

@@ -7,6 +7,9 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -59,6 +62,24 @@ class Task
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * Tags.
+     *
+     * @var Collection<int, Tag>
+     */
+    #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY', orphanRemoval: true)]
+    #[ORM\JoinTable(name: 'tasks_tags')]
+    private Collection $tags;
+
+    /**
+     * Constructor
+     *
+     */
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     /**
      * Getter for Id.
@@ -139,6 +160,25 @@ class Task
     {
         return $this->category;
     }
+    /**
+     * Getter for comment.
+     *
+     * @return string|null Comment
+     */
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Setter for comment.
+     *
+     * @param string|null $comment Comment
+     */
+    public function setComment(?string $comment): void
+    {
+        $this->comment = $comment;
+    }
 
     /**
      * Setter for Category.
@@ -149,6 +189,44 @@ class Task
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Getter for tags.
+     *
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Add tag.
+     *
+     * @param Tag $tag
+     * @return $this
+     */
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove tags.
+     *
+     * @param Tag $tag
+     * @return $this
+     */
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

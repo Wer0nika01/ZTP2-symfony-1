@@ -18,6 +18,16 @@
             <dd>{{  task.title }}</dd>
             <dt>{{ 'label.category'|trans }}</dt>
             <dd>{{  task.category.title }}</dd>
+            <dt>{{ 'label.tags'|trans }}</dt>
+            <dd>
+                {% if task.tags is not empty %}
+                    {% for tag in task.tags %}
+                        <span class="badge bg-secondary">{{ tag.title }}</span>{% if not loop.last %} {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <em>{{ 'label.no_tags'|trans }}</em>
+                {% endif %}
+            </dd>
         </dl>
         <p>
             <a href="{{ url('task_index') }}" title="{{ 'action.back_to_list'|trans }}">

@@ -58,6 +58,7 @@ class Tag
      * @var string|null
      */
     #[ORM\Column(length: 64)]
+    #[Gedmo\Slug(fields: ['title'])]
     private ?string $slug = null;
 
     /**

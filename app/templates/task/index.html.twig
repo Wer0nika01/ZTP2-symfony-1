@@ -33,7 +33,9 @@
                 <th>{{ 'label.created_at'|trans }}</th>
                 <th>{{ 'label.updated_at'|trans }}</th>
                 <th>{{ 'label.category'|trans }}</th>
+                <th>{{ 'label.tags'|trans }}</th>
                 <th>{{ 'label.actions'|trans }}</th>
+
             </tr>
             </thead>
             <tbody>
@@ -48,6 +50,15 @@
                     <td>{{ task.createdAt|format_date('long') }}</td>
                     <td>{{ task.updatedAt|format_date('long') }}</td>
                     <td>{{ task.category.title }}</td>
+                    <td>
+                        {% if task.tags is not empty %}
+                            {% for tag in task.tags %}
+                                <span class="badge bg-secondary">{{ tag.title }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <em>{{ 'label.no_tags'|trans }}</em>
+                        {% endif %}
+                    </td>
                     <td>
                         <a href="{{ path('task_edit', { id: task.id }) }}" class="btn btn-sm btn-secondary">
                             {{ 'action.edit'|trans }}
