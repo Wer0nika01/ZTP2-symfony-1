@@ -7,7 +7,9 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\Type\TaskType;
+use App\Security\Voter\TaskVoter;
 use App\Service\TaskService;
 use App\Service\TaskServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -47,7 +50,11 @@ class TaskController extends AbstractController
     )]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
-        $pagination = $this->taskService->getPaginatedList($page);
+        /** @var User $author */
+        $author = $this->getUser();
+        $pagination = $this->taskService->getPaginatedList($page, $author);
+
+        dump($pagination->getItems());
 
         return $this->render('task/index.html.twig', ['pagination' => $pagination]);
     }
@@ -65,6 +72,7 @@ class TaskController extends AbstractController
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET'
     )]
+    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
     public function view(Task $task): Response
     {
         return $this->render(
@@ -74,11 +82,11 @@ class TaskController extends AbstractController
     }
 
     /**
-     *  Create action.
+     * Create action.
      *
-     * @param Request $request
+     * @param Request $request HTTP request
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route(
         '/create',
@@ -87,7 +95,11 @@ class TaskController extends AbstractController
     )]
     public function create(Request $request): Response
     {
+
+        /** @var User $user */
+        $user = $this->getUser();
         $task = new Task();
+        $task->setAuthor($this->getUser());
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
@@ -122,6 +134,7 @@ class TaskController extends AbstractController
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|PUT'
     )]
+    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
     public function edit(Request $request, Task $task): Response
     {
         $form = $this->createForm(TaskType::class, $task, [
@@ -165,6 +178,8 @@ class TaskController extends AbstractController
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|DELETE'
     )]
+
+    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
     public function delete(Request $request, Task $task): Response
     {
 

@@ -5,6 +5,12 @@
 {% endblock %}
 
 {% block body %}
+    {% set showActions = false %}
+    {% for task in pagination %}
+        {% if is_granted('TASK_VIEW', task) %}
+            {% set showActions = true %}
+        {% endif %}
+    {% endfor %}
     <div class="container mt-4">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -34,7 +40,9 @@
                 <th>{{ 'label.updated_at'|trans }}</th>
                 <th>{{ 'label.category'|trans }}</th>
                 <th>{{ 'label.tags'|trans }}</th>
-                <th>{{ 'label.actions'|trans }}</th>
+                {% if showActions %}
+                    <th>{{ 'label.actions'|trans }}</th>
+                {% endif %}
 
             </tr>
             </thead>
@@ -42,11 +50,7 @@
             {% for task in pagination.items %}
                 <tr>
                     <td>{{ task.id }}</td>
-                    <td>
-                        <a href="{{ path('task_view', { id: task.id }) }}">
-                            {{ task.title }}
-                        </a>
-                    </td>
+                    <td>{{ task.title }}</td>
                     <td>{{ task.createdAt|format_date('long') }}</td>
                     <td>{{ task.updatedAt|format_date('long') }}</td>
                     <td>{{ task.category.title }}</td>
@@ -59,14 +63,25 @@
                             <em>{{ 'label.no_tags'|trans }}</em>
                         {% endif %}
                     </td>
-                    <td>
-                        <a href="{{ path('task_edit', { id: task.id }) }}" class="btn btn-sm btn-secondary">
-                            {{ 'action.edit'|trans }}
-                        </a>
-                        <a href="{{ path('task_delete', { id: task.id }) }}" class="btn btn-sm btn-danger">
-                            {{ 'action.delete'|trans }}
-                        </a>
-                    </td>
+                    {% if showActions %}
+                        <td>
+                            {% if is_granted('TASK_VIEW', task) %}
+                                <a class="btn btn-outline-primary" href="{{ url('task_view', {id: task.id}) }}" title="{{ 'action.show'|trans }}">
+                                    {{ 'action.show'|trans }}
+                                </a>
+                            {% endif %}
+                            {% if is_granted('TASK_EDIT', task) %}
+                                <a class="btn btn-outline-success" href="{{ url('task_edit', {id: task.id}) }}" title="{{ 'action.edit'|trans }}">
+                                    {{ 'action.edit'|trans }}
+                                </a>
+                            {% endif %}
+                            {% if is_granted('TASK_DELETE', task) %}
+                                <a class="btn btn-outline-danger" href="{{ url('task_delete', {id: task.id}) }}" title="{{ 'action.delete'|trans }}">
+                                    {{ 'action.delete'|trans }}
+                                </a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

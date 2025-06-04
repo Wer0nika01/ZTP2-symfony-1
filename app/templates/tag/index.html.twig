@@ -5,12 +5,20 @@
 {% endblock %}
 
 {% block body %}
+    {% set showActions = false %}
+    {% for tag in pagination %}
+        {% if is_granted('TAG_VIEW', tag) %}
+            {% set showActions = true %}
+        {% endif %}
+    {% endfor %}
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>{{ 'title.tag_list'|trans }}</h1>
-            <a href="{{ path('tag_create') }}" class="btn btn-primary">
-                {{ 'action.create_tag'|trans }}
-            </a>
+            {% if is_granted('TAG_CREATE') %}
+                <a href="{{ path('tag_create') }}" class="btn btn-primary">
+                    {{ 'action.create'|trans }}
+                </a>
+            {% endif %}
         </div>
 
         {% if pagination.items is empty %}
@@ -27,7 +35,9 @@
                     <th>{{ 'label.slug'|trans }}</th>
                     <th>{{ 'label.created_at'|trans }}</th>
                     <th>{{ 'label.updated_at'|trans }}</th>
-                    <th>{{ 'label.actions'|trans }}</th>
+                    {% if showActions %}
+                        <th>{{ 'label.actions'|trans }}</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -38,18 +48,25 @@
                         <td>{{ tag.slug }}</td>
                         <td>{{ tag.createdAt|date('Y-m-d H:i') }}</td>
                         <td>{{ tag.updatedAt|date('Y-m-d H:i') }}</td>
-                        <td>
-                            <a href="{{ path('tag_edit', {id: tag.id}) }}" class="btn btn-sm btn-secondary">
-                                {{ 'action.edit'|trans }}
-                            </a>
-                            <form method="post" action="{{ path('tag_delete', {id: tag.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'message.confirm_delete'|trans }}');">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tag.id) }}">
-                                <button class="btn btn-sm btn-danger">
-                                    {{ 'action.delete'|trans }}
-                                </button>
-                            </form>
-                        </td>
+                        {% if showActions %}
+                            <td>
+                                {% if is_granted('TAG_VIEW', tag) %}
+                                    <a class="btn btn-outline-primary" href="{{ url('tag_view', {id: tag.id}) }}" title="{{ 'action.show'|trans }}">
+                                        {{ 'action.show'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('TAG_EDIT', tag) %}
+                                    <a class="btn btn-outline-success" href="{{ url('tag_edit', {id: tag.id}) }}" title="{{ 'action.edit'|trans }}">
+                                        {{ 'action.edit'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('TAG_DELETE', tag) %}
+                                    <a class="btn btn-outline-danger" href="{{ url('tag_delete', {id: tag.id}) }}" title="{{ 'action.delete'|trans }}">
+                                        {{ 'action.delete'|trans }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

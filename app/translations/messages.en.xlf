@@ -198,6 +198,10 @@
         <source>action.login</source>
         <target>Log in</target>
       </trans-unit>
+      <trans-unit id="action.show">
+        <source>action.show</source>
+        <target>Show</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

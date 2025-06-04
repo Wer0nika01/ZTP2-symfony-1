@@ -8,6 +8,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\Task;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -45,13 +46,22 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * Query all records.
      *
+     * @param User $author User entity
+     *
      * @return QueryBuilder Query builder
      */
-    public function queryAll(): QueryBuilder
+    public function queryAll(User $author): QueryBuilder
     {
         return $this->createQueryBuilder('task')
-            ->select('task', 'category')
-            ->join('task.category', 'category');
+            ->select(
+                'partial task.{id, createdAt, updatedAt, title}',
+                'partial category.{id, title}',
+                'partial tags.{id, title}'
+            )
+            ->join('task.category', 'category')
+            ->leftJoin('task.tags', 'tags')
+            ->andWhere('task.author = :author')
+            ->setParameter('author', $author);
     }
 
     /**
