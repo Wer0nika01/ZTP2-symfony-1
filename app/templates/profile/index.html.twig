@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.profile'|trans }}{% endblock %}
+
+{% block body %}
+<h1>{{ 'title.profile'|trans }}</h1>
+
+<ul class="list-group mb-3">
+    <li class="list-group-item"><strong>{{ 'label.first_name'|trans }}:</strong> {{ user.firstName is defined and user.firstName ? user.firstName : 'label.missing'|trans }} </li>
+    <li class="list-group-item"><strong>{{ 'label.last_name'|trans }}:</strong> {{ user.lastName is defined and user.lastName ? user.lastName : 'label.missing'|trans }} </li>
+    <li class="list-group-item"><strong>{{ 'label.email'|trans }}:</strong> {{ user.email }}</li>
+</ul>
+
+<a href="{{ path('app_change_password') }}" class="btn btn-warning">
+    {{ 'action.change_password'|trans }}
+</a>
+{% endblock %}

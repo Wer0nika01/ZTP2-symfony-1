@@ -162,6 +162,42 @@
         <source>label.no_tags</source>
         <target>No tags</target>
       </trans-unit>
+      <trans-unit id="action.logout">
+        <source>action.logout</source>
+        <target>Logout</target>
+      </trans-unit>
+      <trans-unit id="label.first_name">
+        <source>label.first_name</source>
+        <target>First name</target>
+      </trans-unit>
+      <trans-unit id="label.last_name">
+        <source>label.last_name</source>
+        <target>Last name</target>
+      </trans-unit>
+      <trans-unit id="label.email">
+        <source>label.email</source>
+        <target>E-mail</target>
+      </trans-unit>
+      <trans-unit id="label.missing">
+        <source>label.missing</source>
+        <target>Missing data</target>
+      </trans-unit>
+      <trans-unit id="action.change_password">
+        <source>action.change_password</source>
+        <target>Change password</target>
+      </trans-unit>
+      <trans-unit id="title.login">
+        <source>title.login</source>
+        <target>Log in</target>
+      </trans-unit>
+      <trans-unit id="label.password">
+        <source>label.password</source>
+        <target>Password</target>
+      </trans-unit>
+      <trans-unit id="action.login">
+        <source>action.login</source>
+        <target>Log in</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
