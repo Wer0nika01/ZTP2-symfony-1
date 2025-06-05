@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.edit_user'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ 'title.edit_user'|trans }}</h1>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-success">{{ 'action.save'|trans }}</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('admin_user_index') }}" class="btn btn-secondary mt-3">
+            {{ 'action.back_to_list'|trans }}
+        </a>
+    </div>
+{% endblock %}

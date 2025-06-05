@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.user_details'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ 'title.user_details'|trans }}</h1>
+
+        <dl class="row">
+            <dt class="col-sm-3">{{ 'label.id'|trans }}</dt>
+            <dd class="col-sm-9">{{ user.id }}</dd>
+
+            <dt class="col-sm-3">{{ 'label.email'|trans }}</dt>
+            <dd class="col-sm-9">{{ user.email }}</dd>
+
+            <dt class="col-sm-3">{{ 'label.roles'|trans }}</dt>
+            <dd class="col-sm-9">{{ user.roles|join(', ') }}</dd>
+        </dl>
+
+        <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">
+            {{ 'action.back_to_list'|trans }}
+        </a>
+        <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary">
+            {{ 'action.edit'|trans }}
+        </a>
+    </div>
+{% endblock %}
