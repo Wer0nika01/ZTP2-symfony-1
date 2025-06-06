@@ -6,16 +6,34 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+
 
 class UserService implements UserServiceInterface
 {
     private UserRepository $userRepository;
     private EntityManagerInterface $em;
+    private PaginatorInterface $paginator;
 
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em)
+
+    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, PaginatorInterface $paginator)
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
+        $this->paginator = $paginator;
+
+    }
+    public function getPaginatedList(int $page): PaginationInterface
+    {
+        $queryBuilder = $this->userRepository->createQueryBuilder('u')
+            ->orderBy('u.email', 'ASC');
+
+        return $this->paginator->paginate(
+            $queryBuilder,
+            $page,
+            UserRepository::PAGINATOR_ITEMS_PER_PAGE
+        );
     }
 
     public function getAllUsers(): array
@@ -25,12 +43,29 @@ class UserService implements UserServiceInterface
 
     public function updateUser(User $user): void
     {
-        $this->em->flush(); // Zakładamy, że $user jest już zmodyfikowany
+        $this->em->flush();
     }
 
-    public function deleteUser(User $user): void
+    public function delete(User $user): void
     {
-        $this->em->remove($user);
-        $this->em->flush();
+        $this->userRepository->delete($user);
+    }
+
+    public function save(User $user): void
+    {
+        $this->userRepository->save($user);
+    }
+
+    public function isEmailUnique(string $email, ?int $excludeUserId = null): bool
+    {
+        $qb = $this->userRepository->createQueryBuilder('u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email);
+
+        if ($excludeUserId !== null) {
+            $qb->andWhere('u.id != :id')->setParameter('id', $excludeUserId);
+        }
+
+        return count($qb->getQuery()->getResult()) === 0;
     }
 }

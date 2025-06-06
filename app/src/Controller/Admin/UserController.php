@@ -5,17 +5,19 @@ use App\Entity\User;
 use App\Form\Type\UserType;
 use App\Service\UserServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 
 #[Route('/admin/user')]
 class UserController extends AbstractController
 {
     private UserServiceInterface $userService;
-    private TranslatorInterface $translator;
 
     public function __construct(UserServiceInterface $userService, TranslatorInterface $translator)
     {
@@ -23,12 +25,14 @@ class UserController extends AbstractController
         $this->translator = $translator;
     }
 
-    #[Route('/', name: 'admin_user_index')]
+    #[Route('/', name: 'admin_user_index', methods: 'GET')]
     #[IsGranted('ROLE_ADMIN')]
-    public function index(): Response
+    public function index(#[MapQueryParameter] int $page = 1): Response
     {
+        $pagination = $this->userService->getPaginatedList($page);
+
         return $this->render('admin/user/index.html.twig', [
-            'users' => $this->userService->getAllUsers(),
+            'pagination' => $pagination,
         ]);
     }
 
@@ -41,19 +45,28 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'admin_user_edit')]
+    #[Route(
+        '/{id}/edit',
+        name: 'admin_user_edit',
+        requirements: ['id' => '[1-9]\d*'],
+        methods: ['GET', 'POST']
+    )]
+
     #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->userService->updateUser($user);
-
-            $this->addFlash('success', $this->translator->trans('flash.user_saved'));
-
-            return $this->redirectToRoute('admin_user_index');
+            $email = $form->get('email')->getData();
+            if (!$this->userService->isEmailUnique($email, $user->getId())) {
+                $form->get('email')->addError(new FormError($translator->trans('error.email_exists')));
+            } else {
+                $this->userService->updateUser($user);
+                $this->addFlash('success', $this->translator->trans('flash.user_saved'));
+                return $this->redirectToRoute('admin_user_index');
+            }
         }
 
         return $this->render('admin/user/edit.html.twig', [
@@ -62,16 +75,37 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'admin_user_delete', methods: ['POST'])]
+    #[Route(
+        '/{id}/delete',
+        name: 'admin_user_delete',
+        requirements: ['id' => '[1-9]\d*'],
+        methods: ['GET', 'DELETE']
+    )]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, User $user): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $this->userService->deleteUser($user);
+        $form = $this->createForm(FormType::class, $user, [
+            'method' => 'DELETE',
+            'action' => $this->generateUrl('admin_user_delete', ['id' => $user->getId()]),
+        ]);
 
-            $this->addFlash('success', $this->translator->trans('flash.user_deleted'));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userService->delete($user);
+
+            $this->addFlash(
+                'success',
+                $this->translator->trans('flash.user_deleted')
+            );
+
+            return $this->redirectToRoute('admin_user_index');
         }
 
-        return $this->redirectToRoute('admin_user_index');
+        return $this->render('admin/user/delete.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
     }
+
 }

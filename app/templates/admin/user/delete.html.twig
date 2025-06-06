@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.delete_user'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.delete_user'|trans }}</h1>
+
+    <ul>
+        <li><strong>ID:</strong> {{ user.id }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Role:</strong> {{ user.roles|join(', ') }}</li>
+    </ul>
+
+    {{ form_start(form) }}
+    <button class="btn btn-danger" type="submit">
+        {{ 'button.confirm_delete'|trans }}
+    </button>
+    <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">
+        {{ 'button.cancel'|trans }}
+    </a>
+    {{ form_end(form) }}
+{% endblock %}
