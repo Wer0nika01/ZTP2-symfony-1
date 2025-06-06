@@ -4,49 +4,34 @@ namespace App\Form\Type;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class RegistrationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'label.email',
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'validation.email.not_blank',
-                    ]),
-                    new Assert\Email([
-                        'message' => 'validation.email.invalid',
-                    ]),
-                ],
+                'constraints' => [new NotBlank()],
+
             ])
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options'  => ['label' => 'label.password'],
-                'second_options' => ['label' => 'label.password_repeat'],
-                'invalid_message' => 'validation.password.mismatch',
-                'mapped' => false,
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'validation.password.not_blank',
-                    ]),
-                    new Assert\Length([
-                        'min' => 6,
-                        'minMessage' => 'validation.password.min_length',
-                    ]),
-                ],
-            ])
-        ;
+                'first_options' => ['label' => 'label.password'],
+                'second_options' => ['label' => 'label.repeat_password'],
+                'invalid_message' => 'message.passwords_must_match',
+                'constraints' => [new NotBlank()],
+                'mapped' => true,
+            ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,

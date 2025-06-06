@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.register'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ 'title.register'|trans }}</h1>
+
+        {% for error in form_errors(form) %}
+            <div class="alert alert-danger" role="alert">
+                {{ error.message|trans }}
+            </div>
+        {% endfor %}
+
+        {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.password.first) }}
+        {{ form_row(form.password.second) }}
+        <button class="btn btn-primary mt-3">{{ 'action.register'|trans }}</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
