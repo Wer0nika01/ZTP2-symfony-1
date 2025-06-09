@@ -238,6 +238,22 @@
         <source>label.no_comment</source>
         <target>No comment</target>
       </trans-unit>
+      <trans-unit id="action.change_avatar">
+        <source>action.change_avatar</source>
+        <target>Edit avatar</target>
+      </trans-unit>
+      <trans-unit id="title.edit_avatar">
+        <source>title.edit_avatar</source>
+        <target>Edit avatar</target>
+      </trans-unit>
+      <trans-unit id="label.avatar">
+        <source>label.avatar</source>
+        <target>Avatar</target>
+      </trans-unit>
+      <trans-unit id="action.cancel">
+        <source>action.cancel</source>
+        <target>Cancel</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

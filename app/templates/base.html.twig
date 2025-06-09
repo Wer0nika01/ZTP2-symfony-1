@@ -37,9 +37,16 @@
         <div class="d-flex justify-content-end align-items-center mb-3">
             {% if app.request.attributes.get('_route') != 'app_login' %}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <div class="me-2">
-                        <i class="bi bi-person-circle"></i>
-                        <a href="{{ path('app_profile') }}">{{ app.user.email }}</a>
+                    <div class="me-2 d-flex align-items-center gap-2">
+                        {% if app.user.avatar is defined and app.user.avatar.filename is defined and app.user.avatar.filename|length %}
+                            <img src="{{ asset(avatars_directory ~ app.user.avatar.filename) }}"
+                                 alt="Avatar"
+                                 class="rounded-circle"
+                                 style="width: 32px; height: 32px; object-fit: cover;">
+                        {% else %}
+                            <i class="bi bi-person-circle fs-4"></i>
+                        {% endif %}
+                        <a href="{{ path('app_profile') }}" class="text-decoration-none">{{ app.user.email }}</a>
                     </div>
                     <div>
                         <a href="{{ path('app_logout') }}" class="btn btn-outline-secondary btn-sm">

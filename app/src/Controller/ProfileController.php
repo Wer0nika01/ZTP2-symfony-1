@@ -62,7 +62,7 @@ class ProfileController extends AbstractController
             $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
             $user->setPassword($hashedPassword);
 
-            $entityManager->flush(); // <-- poprawione
+            $entityManager->flush();
             $this->addFlash('success', 'message.password_changed_successfully');
 
             return $this->redirectToRoute('app_profile');

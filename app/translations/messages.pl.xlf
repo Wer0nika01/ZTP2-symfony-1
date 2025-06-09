@@ -242,6 +242,22 @@
         <source>label.no_comment</source>
         <target>Brak komentarza</target>
       </trans-unit>
+      <trans-unit id="action.change_avatar">
+        <source>action.change_avatar</source>
+        <target>Zmień avatar</target>
+      </trans-unit>
+      <trans-unit id="title.edit_avatar">
+        <source>title.edit_avatar</source>
+        <target>Edytuj avatar</target>
+      </trans-unit>
+      <trans-unit id="label.avatar">
+        <source>label.avatar</source>
+        <target>Avatar</target>
+      </trans-unit>
+      <trans-unit id="action.cancel">
+        <source>action.cancel</source>
+        <target>Anuluj</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

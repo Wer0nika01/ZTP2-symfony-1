@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.edit_avatar'|trans }}{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.edit_avatar'|trans }}</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.file) }}
+
+    <button class="btn btn-primary" type="submit">{{ 'action.save'|trans }}</button>
+    <a href="{{ path('app_profile') }}" class="btn btn-secondary">{{ 'action.cancel'|trans }}</a>
+    <button class="btn btn-danger">{{ 'action.delete'|trans }}</button>
+
+    {{ form_end(form) }}
+
+{% endblock %}
