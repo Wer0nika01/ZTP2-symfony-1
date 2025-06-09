@@ -82,6 +82,16 @@ class Task
     private ?User $author;
 
     /**
+     * Comment
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 1000,
+        maxMessage: 'task.comment.length_max'
+    )]
+    private ?string $comment = null;
+
+    /**
      * Constructor
      *
      */

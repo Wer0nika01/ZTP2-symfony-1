@@ -16,6 +16,14 @@
             <dd>{{ task.updatedAt|format_date('long') }}</dd>
             <dt>{{ 'label.title'|trans }}</dt>
             <dd>{{  task.title }}</dd>
+            <dt>{{ 'label.comment'|trans }}</dt>
+            <dd>
+                {% if task.comment is not empty %}
+                    {{ task.comment|markdown_to_html }}
+                {% else %}
+                    <em>{{ 'label.no_comment'|trans }}</em>
+                {% endif %}
+            </dd>
             <dt>{{ 'label.category'|trans }}</dt>
             <dd>{{  task.category.title }}</dd>
             <dt>{{ 'label.tags'|trans }}</dt>

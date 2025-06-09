@@ -10,6 +10,7 @@ use App\Entity\Task;
 use App\Form\DataTransformer\TagsDataTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -49,6 +50,15 @@ class TaskType extends AbstractType
                 'required' => true,
                 'attr' => ['max_length' => 255],
             ]);
+        $builder->add(
+            'comment',
+            TextareaType::class,
+            [
+                'required' => false,
+                'label' => 'label.comment',
+                'attr' => ['rows' => 5,],
+            ]);
+
         $builder->add(
             'category',
             EntityType::class,

@@ -222,6 +222,26 @@
         <source>message.email_already_used</source>
         <target>Ten e-mail jest już w bazie.</target>
       </trans-unit>
+      <trans-unit id="title.change_password">
+        <source>title.change_password</source>
+        <target>Zmień hasło</target>
+      </trans-unit>
+      <trans-unit id="label.new_password">
+        <source>label.new_password</source>
+        <target>Nowe hasło</target>
+      </trans-unit>
+      <trans-unit id="message.registration_successful">
+        <source>message.registration_successful</source>
+        <target>Rejestracja udana</target>
+      </trans-unit>
+      <trans-unit id="label.comment">
+        <source>label.comment</source>
+        <target>Komentarz</target>
+      </trans-unit>
+      <trans-unit id="label.no_comment">
+        <source>label.no_comment</source>
+        <target>Brak komentarza</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

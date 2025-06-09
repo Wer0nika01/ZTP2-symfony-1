@@ -218,6 +218,26 @@
         <source>message.email_already_used</source>
         <target>This e-mail is already in database.</target>
       </trans-unit>
+      <trans-unit id="title.change_password">
+        <source>title.change_password</source>
+        <target>Change password</target>
+      </trans-unit>
+      <trans-unit id="label.new_password">
+        <source>label.new_password</source>
+        <target>New password</target>
+      </trans-unit>
+      <trans-unit id="message.registration_successful">
+        <source>message.registration_successful</source>
+        <target>Registration successful</target>
+      </trans-unit>
+      <trans-unit id="label.comment">
+        <source>label.comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="label.no_comment">
+        <source>label.no_comment</source>
+        <target>No comment</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
