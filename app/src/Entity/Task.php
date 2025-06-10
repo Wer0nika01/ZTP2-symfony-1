@@ -6,6 +6,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Enum\TaskStatus;
 use App\Repository\TaskRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -90,6 +91,13 @@ class Task
         maxMessage: 'task.comment.length_max'
     )]
     private ?string $comment = null;
+
+    /**
+     * Status
+     */
+    #[ORM\Column(type: Types::INTEGER, enumType: TaskStatus::class)]
+    private TaskStatus $status = TaskStatus::NEW;
+
 
     /**
      * Constructor
@@ -258,6 +266,24 @@ class Task
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Getter for status.
+     */
+    public function getStatus(): TaskStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * Setter for status.
+     */
+    public function setStatus(TaskStatus $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }

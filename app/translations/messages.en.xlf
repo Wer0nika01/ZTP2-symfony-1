@@ -254,6 +254,38 @@
         <source>action.cancel</source>
         <target>Cancel</target>
       </trans-unit>
+      <trans-unit id="label.status">
+        <source>label.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="task.comment.length_max">
+        <source>task.comment.length_max</source>
+        <target>Comment is too long.</target>
+      </trans-unit>
+      <trans-unit id="label.none">
+        <source>label.none</source>
+        <target>None</target>
+      </trans-unit>
+      <trans-unit id="title.task_create">
+        <source>title.task_create</source>
+        <target>Task create</target>
+      </trans-unit>
+      <trans-unit id="label.new">
+        <source>label.new</source>
+        <target>New</target>
+      </trans-unit>
+      <trans-unit id="label.active">
+        <source>label.active</source>
+        <target>Active</target>
+      </trans-unit>
+      <trans-unit id="label.done">
+        <source>label.done</source>
+        <target>Done</target>
+      </trans-unit>
+      <trans-unit id="label.canceled">
+        <source>label.canceled</source>
+        <target>Canceled</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

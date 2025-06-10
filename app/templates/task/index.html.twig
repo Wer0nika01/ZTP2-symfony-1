@@ -15,6 +15,11 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>{{ 'title.task_list'|trans }}</h1>
+            {% if app.request.query.get('categoryId') or app.request.query.get('tagId') or app.request.query.get('statusId') %}
+                <a href="{{ path('task_index') }}" class="btn btn-warning me-2">
+                    {{ 'action.reset_filters'|trans }}
+                </a>
+            {% endif %}
             <a href="{{ path('task_create') }}" class="btn btn-primary">
                 {{ 'action.create'|trans }}
             </a>
@@ -30,62 +35,80 @@
         <div class="text-center mb-3">
             {{ knp_pagination_render(pagination) }}
         </div>
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>{{ 'label.id'|trans }}</th>
-                <th>{{ 'label.name'|trans }}</th>
-                <th>{{ 'label.created_at'|trans }}</th>
-                <th>{{ 'label.updated_at'|trans }}</th>
-                <th>{{ 'label.category'|trans }}</th>
-                <th>{{ 'label.tags'|trans }}</th>
-                {% if showActions %}
-                    <th>{{ 'label.actions'|trans }}</th>
-                {% endif %}
-
-            </tr>
-            </thead>
-            <tbody>
-            {% for task in pagination.items %}
+            <table class="table table-striped">
+                <thead>
                 <tr>
-                    <td>{{ task.id }}</td>
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.createdAt|format_date('long') }}</td>
-                    <td>{{ task.updatedAt|format_date('long') }}</td>
-                    <td>{{ task.category.title }}</td>
-                    <td>
-                        {% if task.tags is not empty %}
-                            {% for tag in task.tags %}
-                                <span class="badge bg-secondary">{{ tag.title }}</span>
-                            {% endfor %}
-                        {% else %}
-                            <em>{{ 'label.no_tags'|trans }}</em>
-                        {% endif %}
-                    </td>
+                    <th>{{ 'label.id'|trans }}</th>
+                    <th>{{ 'label.name'|trans }}</th>
+                    <th>{{ 'label.created_at'|trans }}</th>
+                    <th>{{ 'label.updated_at'|trans }}</th>
+                    <th>{{ 'label.category'|trans }}</th>
+                    <th>{{ 'label.tags'|trans }}</th>
+                    <th>{{ 'label.status'|trans }}</th>
                     {% if showActions %}
+                        <th>{{ 'label.actions'|trans }}</th>
+                    {% endif %}
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in pagination.items %}
+                    <tr>
+                        <td>{{ task.id }}</td>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.createdAt|format_date('long') }}</td>
+                        <td>{{ task.updatedAt|format_date('long') }}</td>
                         <td>
-                            {% if is_granted('TASK_VIEW', task) %}
-                                <a class="btn btn-outline-primary" href="{{ url('task_view', {id: task.id}) }}" title="{{ 'action.show'|trans }}">
-                                    {{ 'action.show'|trans }}
+                            {% if task.category is not null %}
+                                <a class="btn btn-sm btn-outline-primary"
+                                   href="{{ url('task_index', {'categoryId' : task.category.id, 'statusId' : task.status.value}) }}">
+                                    {{ task.category.title }}
                                 </a>
-                            {% endif %}
-                            {% if is_granted('TASK_EDIT', task) %}
-                                <a class="btn btn-outline-success" href="{{ url('task_edit', {id: task.id}) }}" title="{{ 'action.edit'|trans }}">
-                                    {{ 'action.edit'|trans }}
-                                </a>
-                            {% endif %}
-                            {% if is_granted('TASK_DELETE', task) %}
-                                <a class="btn btn-outline-danger" href="{{ url('task_delete', {id: task.id}) }}" title="{{ 'action.delete'|trans }}">
-                                    {{ 'action.delete'|trans }}
-                                </a>
+                            {% else %}
+                                <em>{{ 'label.no_category'|trans }}</em>
                             {% endif %}
                         </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                        <td>
+                            {% if task.tags is not empty %}
+                                {% for tag in task.tags %}
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       href="{{ url('task_index', {'tagId' : tag.id, 'statusId' : task.status.value}) }}">
+                                        {{ tag.title }}
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <em>{{ 'label.no_tags'|trans }}</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="btn btn-sm {{ task.status.getBadgeClass() }}"
+                               href="{{ url('task_index', {'statusId' : task.status.value, 'categoryId' : app.request.query.get('categoryId'), 'tagId' : app.request.query.get('tagId')}) }}">
+                                {{ task.status.getLabel()|trans }}
+                            </a>
+                        </td>
+                        {% if showActions %}
+                            <td>
+                                {% if is_granted('TASK_VIEW', task) %}
+                                    <a class="btn btn-outline-primary" href="{{ url('task_view', {id: task.id}) }}" title="{{ 'action.show'|trans }}">
+                                        {{ 'action.show'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('TASK_EDIT', task) %}
+                                    <a class="btn btn-outline-success" href="{{ url('task_edit', {id: task.id}) }}" title="{{ 'action.edit'|trans }}">
+                                        {{ 'action.edit'|trans }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('TASK_DELETE', task) %}
+                                    <a class="btn btn-outline-danger" href="{{ url('task_delete', {id: task.id}) }}" title="{{ 'action.delete'|trans }}">
+                                        {{ 'action.delete'|trans }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
     {% endif %}
     </div>
 {% endblock %}

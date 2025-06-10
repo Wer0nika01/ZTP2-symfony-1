@@ -6,9 +6,11 @@
 
 namespace App\Controller;
 
+use App\Dto\TaskListInputFiltersDto;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Form\Type\TaskType;
+use App\Resolver\TaskListInputFiltersDtoResolver;
 use App\Security\Voter\TaskVoter;
 use App\Service\TaskService;
 use App\Service\TaskServiceInterface;
@@ -18,6 +20,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -40,7 +43,8 @@ class TaskController extends AbstractController
     /**
      * Index action.
      *
-     * @param int $page Page number
+     * @param TaskListInputFiltersDto $filters Input filters
+     * @param int                     $page    Page number
      *
      * @return Response HTTP response
      */
@@ -48,13 +52,15 @@ class TaskController extends AbstractController
         name: 'task_index',
         methods: 'GET'
     )]
-    public function index(#[MapQueryParameter] int $page = 1): Response
+    public function index(#[MapQueryString(resolver: TaskListInputFiltersDtoResolver::class)] TaskListInputFiltersDto $filters, #[MapQueryParameter] int $page = 1): Response
     {
-        /** @var User $author */
-        $author = $this->getUser();
-        $pagination = $this->taskService->getPaginatedList($page, $author);
-
-        dump($pagination->getItems());
+        /** @var User $user */
+        $user = $this->getUser();
+        $pagination = $this->taskService->getPaginatedList(
+            $page,
+            $user,
+            $filters
+        );
 
         return $this->render('task/index.html.twig', ['pagination' => $pagination]);
     }

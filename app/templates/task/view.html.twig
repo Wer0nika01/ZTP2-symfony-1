@@ -36,6 +36,8 @@
                     <em>{{ 'label.no_tags'|trans }}</em>
                 {% endif %}
             </dd>
+            <dt>{{ 'label.status'|trans }}</dt>
+            <dd>{{ task.status.getLabel()|trans }}</dd>
         </dl>
         <p>
             <a href="{{ url('task_index') }}" title="{{ 'action.back_to_list'|trans }}">

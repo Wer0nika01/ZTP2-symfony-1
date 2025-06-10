@@ -7,6 +7,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Enum\TaskStatus;
 use App\Entity\Tag;
 use App\Entity\Task;
 use App\Entity\User;
@@ -64,6 +65,10 @@ class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInter
             /** @var User $author */
             $author = $this->getRandomReference('user', User::class);
             $task->setAuthor($author);
+
+            /** @var int $statusValue */
+            $statusValue = $this->faker->numberBetween(1, 4); // Assuming your enum values are 1, 2, 3, 4
+            $task->setStatus(TaskStatus::from($statusValue));
 
             return $task;
         });

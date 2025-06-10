@@ -6,10 +6,12 @@
 namespace App\Form\Type;
 
 use App\Entity\Category;
+use App\Entity\Enum\TaskStatus;
 use App\Entity\Task;
 use App\Form\DataTransformer\TagsDataTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -80,7 +82,13 @@ class TaskType extends AbstractType
                 'required' => false,
                 'attr' => ['max_length' => 128],
             ]
-        );
+        )
+            ->add('status', EnumType::class, [
+                'class' => TaskStatus::class,
+                'choice_label' => fn (TaskStatus $choice) => $choice->getLabel(),
+                'label' => 'label.status',
+                'required' => true,
+            ]);
 
         $builder->get('tags')->addModelTransformer(
             $this->tagsDataTransformer
