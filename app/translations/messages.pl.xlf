@@ -46,13 +46,13 @@
         <source>action.back_to_list</source>
         <target>Wróć do listy</target>
       </trans-unit>
-      <trans-unit id="title.task_details">
-        <source>title.task_details</source>
-        <target>Szczegóły tasku #%id%</target>
+      <trans-unit id="title.event_details">
+        <source>title.event_details</source>
+        <target>Szczegóły zdarzenia #%id%</target>
       </trans-unit>
-      <trans-unit id="title.task_list">
-        <source>title.task_list</source>
-        <target>Lista tasków</target>
+      <trans-unit id="title.event_list">
+        <source>title.event_list</source>
+        <target>Lista zdarzeń</target>
       </trans-unit>
       <trans-unit id="label.created_at">
         <source>label.created_at</source>
@@ -106,25 +106,25 @@
         <source>title.category_create</source>
         <target>Stwórz kategorię</target>
       </trans-unit>
-      <trans-unit id="message.category_has_tasks">
-        <source>message.category_has_tasks</source>
-        <target>Ta kategoria ma zadania. Nie można jej usunąć.</target>
+      <trans-unit id="message.category_has_events">
+        <source>message.category_has_events</source>
+        <target>Ta kategoria ma wydarzenia. Nie można jej usunąć.</target>
       </trans-unit>
       <trans-unit id="title.category_delete_blocked">
         <source>title.category_delete_blocked</source>
-        <target>Nie możesz usunąc tej kategorii, ponieważ ma ona przypisane do niej zadania. Najpierw musisz usunąć te zadania.</target>
+        <target>Nie możesz usunąc tej kategorii, ponieważ ma ona przypisane do niej wydarzenia. Najpierw musisz usunąć te wydarzenia.</target>
       </trans-unit>
       <trans-unit id="title.category_view">
         <source>title.category_view</source>
         <target>Podgląd kategorii</target>
       </trans-unit>
-      <trans-unit id="message.category_contains_tasks">
-        <source>message.category_contains_tasks</source>
-        <target>Nie można jej usunąć, kategoria zawiera zadania.</target>
+      <trans-unit id="message.category_contains_events">
+        <source>message.category_contains_events</source>
+        <target>Nie można jej usunąć, kategoria zawiera wydarzenia.</target>
       </trans-unit>
-      <trans-unit id="title.task_delete">
-        <source>title.task_delete</source>
-        <target>Usuń zadanie</target>
+      <trans-unit id="title.event_delete">
+        <source>title.event_delete</source>
+        <target>Usuń wydarzenie</target>
       </trans-unit>
       <trans-unit id="message.deleted_successfully">
         <source>message.deleted_successfully</source>
@@ -154,9 +154,9 @@
         <source>title.tag_delete</source>
         <target>Usuń tag</target>
       </trans-unit>
-      <trans-unit id="title.task_edit">
-        <source>title.task_edit</source>
-        <target>Edytuj zadanie</target>
+      <trans-unit id="title.event_edit">
+        <source>title.event_edit</source>
+        <target>Edytuj wydarzenie</target>
       </trans-unit>
       <trans-unit id="label.no_tags">
         <source>label.no_tags</source>
@@ -262,17 +262,17 @@
         <source>label.status</source>
         <target>Status</target>
       </trans-unit>
-      <trans-unit id="task.comment.length_max">
-        <source>task.comment.length_max</source>
+      <trans-unit id="event.comment.length_max">
+        <source>event.comment.length_max</source>
         <target>Komentarz jest za długi.</target>
       </trans-unit>
       <trans-unit id="label.none">
         <source>label.none</source>
         <target>Brak</target>
       </trans-unit>
-      <trans-unit id="title.task_create">
-        <source>title.task_create</source>
-        <target>Stwórz zadanie</target>
+      <trans-unit id="title.event_create">
+        <source>title.event_create</source>
+        <target>Stwórz wydarzenie</target>
       </trans-unit>
       <trans-unit id="label.new">
         <source>label.new</source>

@@ -46,13 +46,13 @@
         <source>action.back_to_list</source>
         <target>Back to list</target>
       </trans-unit>
-      <trans-unit id="title.task_details">
-        <source>title.task_details</source>
-        <target>Task details #%id%</target>
+      <trans-unit id="title.event_details">
+        <source>title.event_details</source>
+        <target>event details #%id%</target>
       </trans-unit>
-      <trans-unit id="title.task_list">
-        <source>title.task_list</source>
-        <target>Task list</target>
+      <trans-unit id="title.event_list">
+        <source>title.event_list</source>
+        <target>event list</target>
       </trans-unit>
       <trans-unit id="label.created_at">
         <source>label.created_at</source>
@@ -106,25 +106,25 @@
         <source>title.category_create</source>
         <target>Create category</target>
       </trans-unit>
-      <trans-unit id="message.category_has_tasks">
-        <source>message.category_has_tasks</source>
-        <target>This category has task. You can not delete it.</target>
+      <trans-unit id="message.category_has_events">
+        <source>message.category_has_events</source>
+        <target>This category has event. You can not delete it.</target>
       </trans-unit>
       <trans-unit id="title.category_delete_blocked">
         <source>title.category_delete_blocked</source>
-        <target>You can not delete it. This category has task. Firstly delete the tasks from this category.</target>
+        <target>You can not delete it. This category has event. Firstly delete the events from this category.</target>
       </trans-unit>
       <trans-unit id="title.category_view">
         <source>title.category_view</source>
         <target>Category view</target>
       </trans-unit>
-      <trans-unit id="message.category_contains_tasks">
-        <source>message.category_contains_tasks</source>
-        <target>Can not be deleted, category contains tasks.</target>
+      <trans-unit id="message.category_contains_events">
+        <source>message.category_contains_events</source>
+        <target>Can not be deleted, category contains events.</target>
       </trans-unit>
-      <trans-unit id="title.task_delete">
-        <source>title.task_delete</source>
-        <target>Delete task</target>
+      <trans-unit id="title.event_delete">
+        <source>title.event_delete</source>
+        <target>Delete event</target>
       </trans-unit>
       <trans-unit id="message.deleted_successfully">
         <source>message.deleted_successfully</source>
@@ -154,9 +154,9 @@
         <source>title.tag_delete</source>
         <target>Delete tag</target>
       </trans-unit>
-      <trans-unit id="title.task_edit">
-        <source>title.task_edit</source>
-        <target>Edit task</target>
+      <trans-unit id="title.event_edit">
+        <source>title.event_edit</source>
+        <target>Edit event</target>
       </trans-unit>
       <trans-unit id="label.no_tags">
         <source>label.no_tags</source>
@@ -258,17 +258,17 @@
         <source>label.status</source>
         <target>Status</target>
       </trans-unit>
-      <trans-unit id="task.comment.length_max">
-        <source>task.comment.length_max</source>
+      <trans-unit id="event.comment.length_max">
+        <source>event.comment.length_max</source>
         <target>Comment is too long.</target>
       </trans-unit>
       <trans-unit id="label.none">
         <source>label.none</source>
         <target>None</target>
       </trans-unit>
-      <trans-unit id="title.task_create">
-        <source>title.task_create</source>
-        <target>Task create</target>
+      <trans-unit id="title.event_create">
+        <source>title.event_create</source>
+        <target>event create</target>
       </trans-unit>
       <trans-unit id="label.new">
         <source>label.new</source>
