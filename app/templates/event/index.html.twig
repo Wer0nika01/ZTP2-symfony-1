@@ -1,26 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ 'title.task_list'|trans }}
+    {{ 'title.event_list'|trans }}
 {% endblock %}
 
 {% block body %}
     {% set showActions = false %}
-    {% for task in pagination %}
-        {% if is_granted('TASK_VIEW', task) %}
+    {% for event in pagination %}
+        {% if is_granted('event_VIEW', event) %}
             {% set showActions = true %}
         {% endif %}
     {% endfor %}
     <div class="container mt-4">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1>{{ 'title.task_list'|trans }}</h1>
+            <h1>{{ 'title.event_list'|trans }}</h1>
             {% if app.request.query.get('categoryId') or app.request.query.get('tagId') or app.request.query.get('statusId') %}
-                <a href="{{ path('task_index') }}" class="btn btn-warning me-2">
+                <a href="{{ path('event_index') }}" class="btn btn-warning me-2">
                     {{ 'action.reset_filters'|trans }}
                 </a>
             {% endif %}
-            <a href="{{ path('task_create') }}" class="btn btn-primary">
+            <a href="{{ path('event_create') }}" class="btn btn-primary">
                 {{ 'action.create'|trans }}
             </a>
         </div>
@@ -52,27 +52,27 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for task in pagination.items %}
+                {% for event in pagination.items %}
                     <tr>
-                        <td>{{ task.id }}</td>
-                        <td>{{ task.title }}</td>
-                        <td>{{ task.createdAt|format_date('long') }}</td>
-                        <td>{{ task.updatedAt|format_date('long') }}</td>
+                        <td>{{ event.id }}</td>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.createdAt|format_date('long') }}</td>
+                        <td>{{ event.updatedAt|format_date('long') }}</td>
                         <td>
-                            {% if task.category is not null %}
+                            {% if event.category is not null %}
                                 <a class="btn btn-sm btn-outline-primary"
-                                   href="{{ url('task_index', {'categoryId' : task.category.id, 'statusId' : task.status.value}) }}">
-                                    {{ task.category.title }}
+                                   href="{{ url('event_index', {'categoryId' : event.category.id, 'statusId' : event.status.value}) }}">
+                                    {{ event.category.title }}
                                 </a>
                             {% else %}
                                 <em>{{ 'label.no_category'|trans }}</em>
                             {% endif %}
                         </td>
                         <td>
-                            {% if task.tags is not empty %}
-                                {% for tag in task.tags %}
+                            {% if event.tags is not empty %}
+                                {% for tag in event.tags %}
                                     <a class="btn btn-sm btn-outline-secondary"
-                                       href="{{ url('task_index', {'tagId' : tag.id, 'statusId' : task.status.value}) }}">
+                                       href="{{ url('event_index', {'tagId' : tag.id, 'statusId' : event.status.value}) }}">
                                         {{ tag.title }}
                                     </a>
                                 {% endfor %}
@@ -81,25 +81,25 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a class="btn btn-sm {{ task.status.getBadgeClass() }}"
-                               href="{{ url('task_index', {'statusId' : task.status.value, 'categoryId' : app.request.query.get('categoryId'), 'tagId' : app.request.query.get('tagId')}) }}">
-                                {{ task.status.getLabel()|trans }}
+                            <a class="btn btn-sm {{ event.status.getBadgeClass() }}"
+                               href="{{ url('event_index', {'statusId' : event.status.value, 'categoryId' : app.request.query.get('categoryId'), 'tagId' : app.request.query.get('tagId')}) }}">
+                                {{ event.status.getLabel()|trans }}
                             </a>
                         </td>
                         {% if showActions %}
                             <td>
-                                {% if is_granted('TASK_VIEW', task) %}
-                                    <a class="btn btn-outline-primary" href="{{ url('task_view', {id: task.id}) }}" title="{{ 'action.show'|trans }}">
+                                {% if is_granted('EVENT_VIEW', event) %}
+                                    <a class="btn btn-outline-primary" href="{{ url('event_view', {id: event.id}) }}" title="{{ 'action.show'|trans }}">
                                         {{ 'action.show'|trans }}
                                     </a>
                                 {% endif %}
-                                {% if is_granted('TASK_EDIT', task) %}
-                                    <a class="btn btn-outline-success" href="{{ url('task_edit', {id: task.id}) }}" title="{{ 'action.edit'|trans }}">
+                                {% if is_granted('EVENT_EDIT', event) %}
+                                    <a class="btn btn-outline-success" href="{{ url('event_edit', {id: event.id}) }}" title="{{ 'action.edit'|trans }}">
                                         {{ 'action.edit'|trans }}
                                     </a>
                                 {% endif %}
-                                {% if is_granted('TASK_DELETE', task) %}
-                                    <a class="btn btn-outline-danger" href="{{ url('task_delete', {id: task.id}) }}" title="{{ 'action.delete'|trans }}">
+                                {% if is_granted('EVENT_DELETE', event) %}
+                                    <a class="btn btn-outline-danger" href="{{ url('event_delete', {id: event.id}) }}" title="{{ 'action.delete'|trans }}">
                                         {{ 'action.delete'|trans }}
                                     </a>
                                 {% endif %}

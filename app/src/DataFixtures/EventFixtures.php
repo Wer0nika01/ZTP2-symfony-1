@@ -1,26 +1,26 @@
 <?php
 
 /**
- * Task fixtures.
+ * Event fixtures.
  */
 
 namespace App\DataFixtures;
 
 use App\Entity\Category;
-use App\Entity\Enum\TaskStatus;
+use App\Entity\Enum\EventStatus;
 use App\Entity\Tag;
-use App\Entity\Task;
+use App\Entity\Event;
 use App\Entity\User;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 
 /**
- * Class TaskFixtures.
+ * Class EventFixtures.
  *
  * @psalm-suppress MissingConstructor
  */
-class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInterface
+class EventFixtures extends AbstractBaseFixtures implements DependentFixtureInterface
 {
     /**
      * Load data.
@@ -35,22 +35,22 @@ class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInter
             return;
         }
 
-        $this->createMany(100, 'task', function (int $i) {
-            $task = new Task();
-            $task->setTitle($this->faker->sentence);
-            $task->setCreatedAt(
+        $this->createMany(100, 'event', function (int $i) {
+            $event = new Event();
+            $event->setTitle($this->faker->sentence);
+            $event->setCreatedAt(
                 \DateTimeImmutable::createFromMutable(
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );
-            $task->setUpdatedAt(
+            $event->setUpdatedAt(
                 \DateTimeImmutable::createFromMutable(
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );
-            $task->setComment($this->faker->realText(1024));
+            $event->setComment($this->faker->realText(1024));
             $category = $this->getRandomReference('category', Category::class);
-            $task->setCategory($category);
+            $event->setCategory($category);
 
             /** @var Tag[] $tags */
             $tags = $this->getRandomReferenceList(
@@ -59,18 +59,18 @@ class TaskFixtures extends AbstractBaseFixtures implements DependentFixtureInter
                 $this->faker->numberBetween(0, 5)
             );
             foreach ($tags as $tag) {
-                $task->addTag($tag);
+                $event->addTag($tag);
             }
 
             /** @var User $author */
             $author = $this->getRandomReference('user', User::class);
-            $task->setAuthor($author);
+            $event->setAuthor($author);
 
             /** @var int $statusValue */
             $statusValue = $this->faker->numberBetween(1, 4); // Assuming your enum values are 1, 2, 3, 4
-            $task->setStatus(TaskStatus::from($statusValue));
+            $event->setStatus(EventStatus::from($statusValue));
 
-            return $task;
+            return $event;
         });
     }
 

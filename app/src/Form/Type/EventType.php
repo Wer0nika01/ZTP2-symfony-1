@@ -1,13 +1,13 @@
 <?php
 /**
- * Task type.
+ * Event type.
  */
 
 namespace App\Form\Type;
 
 use App\Entity\Category;
-use App\Entity\Enum\TaskStatus;
-use App\Entity\Task;
+use App\Entity\Enum\EventStatus;
+use App\Entity\Event;
 use App\Form\DataTransformer\TagsDataTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -18,9 +18,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TaskType.
+ * Class EventType.
  */
-class TaskType extends AbstractType
+class EventType extends AbstractType
 {
     /**
      * Constructor.
@@ -84,8 +84,8 @@ class TaskType extends AbstractType
             ]
         )
             ->add('status', EnumType::class, [
-                'class' => TaskStatus::class,
-                'choice_label' => fn (TaskStatus $choice) => $choice->getLabel(),
+                'class' => EventStatus::class,
+                'choice_label' => fn (EventStatus $choice) => $choice->getLabel(),
                 'label' => 'label.status',
                 'required' => true,
             ]);
@@ -102,7 +102,7 @@ class TaskType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Task::class]);
+        $resolver->setDefaults(['data_class' => Event::class]);
     }
 
     /**
@@ -115,6 +115,6 @@ class TaskType extends AbstractType
      */
     public function getBlockPrefix(): string
     {
-        return 'task';
+        return 'event';
     }
 }

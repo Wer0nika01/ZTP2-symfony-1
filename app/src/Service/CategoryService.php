@@ -8,7 +8,7 @@ namespace App\Service;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
-use App\Repository\TaskRepository;
+use App\Repository\EventRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -36,7 +36,7 @@ class CategoryService implements CategoryServiceInterface
      * @param CategoryRepository     $categoryRepository Category repository
      * @param PaginatorInterface $paginator      Paginator
      */
-    public function __construct(/** @noinspection PhpPropertyOnlyWrittenInspection */ private readonly CategoryRepository $categoryRepository, private readonly PaginatorInterface $paginator, private readonly TaskRepository $taskRepository)
+    public function __construct(/** @noinspection PhpPropertyOnlyWrittenInspection */ private readonly CategoryRepository $categoryRepository, private readonly PaginatorInterface $paginator, private readonly EventRepository $taskRepository)
     {
     }
 

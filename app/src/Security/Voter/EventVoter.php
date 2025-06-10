@@ -1,41 +1,41 @@
 <?php
 
 /**
- * Task voter.
+ * Event voter.
  */
 
 namespace App\Security\Voter;
 
-use App\Entity\Task;
+use App\Entity\Event;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Class TaskVoter.
+ * Class EventVoter.
  */
-final class TaskVoter extends Voter
+final class EventVoter extends Voter
 {
     /**
      * Delete permission.
      *
      * @const string
      */
-    public const DELETE = 'TASK_DELETE';
+    public const DELETE = 'EVENT_DELETE';
 
     /**
      * Edit permission.
      *
      * @const string
      */
-    public const EDIT = 'TASK_EDIT';
+    public const EDIT = 'EVENT_EDIT';
 
     /**
      * View permission.
      *
      * @const string
      */
-    public const VIEW = 'TASK_VIEW';
+    public const VIEW = 'EVENT_VIEW';
 
     /**
      * Determines if the attribute and subject are supported by this voter.
@@ -48,7 +48,7 @@ final class TaskVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [self::DELETE, self::EDIT, self::VIEW])
-            && $subject instanceof Task;
+            && $subject instanceof Event;
     }
 
     /**
@@ -67,7 +67,7 @@ final class TaskVoter extends Voter
         if (!$user instanceof UserInterface) {
             return false;
         }
-        if (!$subject instanceof Task) {
+        if (!$subject instanceof Event) {
             return false;
         }
 
@@ -80,41 +80,41 @@ final class TaskVoter extends Voter
     }
 
     /**
-     * Checks if user can delete task.
+     * Checks if user can delete event.
      *
-     * @param Task          $task Task entity
+     * @param Event          $event Event entity
      * @param UserInterface $user User
      *
      * @return bool Result
      */
-    private function canDelete(Task $task, UserInterface $user): bool
+    private function canDelete(Event $event, UserInterface $user): bool
     {
-        return $task->getAuthor()?->getId() === $user->getId();
+        return $event->getAuthor()?->getId() === $user->getId();
     }
 
     /**
-     * Checks if user can edit task.
+     * Checks if user can edit event.
      *
-     * @param Task          $task Task entity
+     * @param Event          $event Event entity
      * @param UserInterface $user User
      *
      * @return bool Result
      */
-    private function canEdit(Task $task, UserInterface $user): bool
+    private function canEdit(Event $event, UserInterface $user): bool
     {
-        return $task->getAuthor()?->getId() === $user->getId();
+        return $event->getAuthor()?->getId() === $user->getId();
     }
 
     /**
-     * Checks if user can view task.
+     * Checks if user can view event.
      *
-     * @param Task          $task Task entity
+     * @param Event          $event Event entity
      * @param UserInterface $user User
      *
      * @return bool Result
      */
-    private function canView(Task $task, UserInterface $user): bool
+    private function canView(Event $event, UserInterface $user): bool
     {
-        return $task->getAuthor()?->getId() === $user->getId();
+        return $event->getAuthor()?->getId() === $user->getId();
     }
 }

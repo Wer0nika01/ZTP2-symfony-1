@@ -1,25 +1,25 @@
 <?php
 
 /**
- * Task service.
+ * Evemt service.
  */
 
 namespace App\Service;
 
-use App\Dto\TaskListFiltersDto;
-use App\Dto\TaskListInputFiltersDto;
-use App\Entity\Enum\TaskStatus;
-use App\Entity\Task;
+use App\Dto\EventListFiltersDto;
+use App\Dto\EventListInputFiltersDto;
+use App\Entity\Enum\EventStatus;
+use App\Entity\Event;
 use App\Entity\User;
-use App\Repository\TaskRepository;
+use App\Repository\EventRepository;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Class TaskService.
+ * Class EventService.
  */
-class TaskService implements TaskServiceInterface
+class EventService implements EventServiceInterface
 {
     /**
      * Items per page.
@@ -38,9 +38,9 @@ class TaskService implements TaskServiceInterface
      * @param CategoryServiceInterface $categoryService Category service
      * @param PaginatorInterface       $paginator       Paginator
      * @param TagServiceInterface      $tagService      Tag service
-     * @param TaskRepository           $taskRepository  Task repository
+     * @param EventRepository          $eventRepository  Event repository
      */
-    public function __construct(private readonly CategoryServiceInterface $categoryService, private readonly PaginatorInterface $paginator, private readonly TagServiceInterface $tagService, private readonly TaskRepository $taskRepository)
+    public function __construct(private readonly CategoryServiceInterface $categoryService, private readonly PaginatorInterface $paginator, private readonly TagServiceInterface $tagService, private readonly EventRepository $eventRepository)
     {
     }
 
@@ -48,22 +48,22 @@ class TaskService implements TaskServiceInterface
      * Get paginated list.
      *
      * @param int                     $page    Page number
-     * @param User                    $author  Tasks author
-     * @param TaskListInputFiltersDto $filters Filters
+     * @param User                    $author  Events author
+     * @param EventListInputFiltersDto $filters Filters
      *
      * @return PaginationInterface<SlidingPagination> Paginated list
      */
-    public function getPaginatedList(int $page, User $author, TaskListInputFiltersDto $filters): PaginationInterface
+    public function getPaginatedList(int $page, User $author, EventListInputFiltersDto $filters): PaginationInterface
     {
         $filters = $this->prepareFilters($filters);
 
         return $this->paginator->paginate(
-            $this->taskRepository->queryAll($author, $filters),
+            $this->eventRepository->queryAll($author, $filters),
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => ['task.id', 'task.createdAt', 'task.updatedAt', 'task.title', 'category.title', 'task.status'],
-                'defaultSortFieldName' => 'task.updatedAt',
+                'sortFieldAllowList' => ['event.id', 'event.createdAt', 'event.updatedAt', 'event.title', 'category.title', 'event.status'],
+                'defaultSortFieldName' => 'event.updatedAt',
                 'defaultSortDirection' => 'desc',
             ]
         );
@@ -72,40 +72,40 @@ class TaskService implements TaskServiceInterface
     /**
      * Save entity.
      *
-     * @param Task $task
+     * @param Event $event
      *
      * @return void
      */
-    public function save(Task $task): void
+    public function save(Event $event): void
     {
-        $this->taskRepository->save($task);
+        $this->eventRepository->save($event);
     }
 
     /**
      * Delete entity.
      *
-     * @param Task $task
+     * @param Event $event
      *
      * @return void
      */
-    public function delete(Task $task): void
+    public function delete(Event $event): void
     {
-        $this->taskRepository->delete($task);
+        $this->eventRepository->delete($event);
     }
 
     /**
-     * Prepare filters for the tasks list.
+     * Prepare filters for the events list.
      *
-     * @param TaskListInputFiltersDto $filters Raw filters from request
+     * @param EventListInputFiltersDto $filters Raw filters from request
      *
-     * @return TaskListFiltersDto Result filters
+     * @return EventListFiltersDto Result filters
      */
-    private function prepareFilters(TaskListInputFiltersDto $filters): TaskListFiltersDto
+    private function prepareFilters(EventListInputFiltersDto $filters): EventListFiltersDto
     {
-        return new TaskListFiltersDto(
+        return new EventListFiltersDto(
             null !== $filters->categoryId ? $this->categoryService->findOneById($filters->categoryId) : null,
             null !== $filters->tagId ? $this->tagService->findOneById($filters->tagId) : null,
-            TaskStatus::tryFrom($filters->statusId)
+            EventStatus::tryFrom($filters->statusId)
         );
     }
 }

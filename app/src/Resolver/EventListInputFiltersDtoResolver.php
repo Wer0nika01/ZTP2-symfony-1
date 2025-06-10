@@ -1,20 +1,20 @@
 <?php
 /**
- * TaskListInputFiltersDto resolver.
+ * EventListInputFiltersDto resolver.
  */
 
 namespace App\Resolver;
 
-use App\Dto\TaskListInputFiltersDto;
-use App\Entity\Enum\TaskStatus;
+use App\Dto\EventListInputFiltersDto;
+use App\Entity\Enum\EventStatus;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 /**
- * TaskListInputFiltersDtoResolver class.
+ * EventListInputFiltersDtoResolver class.
  */
-class TaskListInputFiltersDtoResolver implements ValueResolverInterface
+class EventListInputFiltersDtoResolver implements ValueResolverInterface
 {
     /**
      * Returns the possible value(s).
@@ -28,7 +28,7 @@ class TaskListInputFiltersDtoResolver implements ValueResolverInterface
     {
         $argumentType = $argument->getType();
 
-        if (!$argumentType || !is_a($argumentType, TaskListInputFiltersDto::class, true)) {
+        if (!$argumentType || !is_a($argumentType, EventListInputFiltersDto::class, true)) {
             return [];
         }
 
@@ -36,6 +36,6 @@ class TaskListInputFiltersDtoResolver implements ValueResolverInterface
         $tagId = $request->query->get('tagId');
         $statusId = $request->query->get('statusId');
 
-        return [new TaskListInputFiltersDto($categoryId, $tagId, $statusId)];
+        return [new EventListInputFiltersDto($categoryId, $tagId, $statusId)];
     }
 }

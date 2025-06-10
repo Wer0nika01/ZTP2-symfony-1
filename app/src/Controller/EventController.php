@@ -6,14 +6,14 @@
 
 namespace App\Controller;
 
-use App\Dto\TaskListInputFiltersDto;
-use App\Entity\Task;
+use App\Dto\EventListInputFiltersDto;
+use App\Entity\Event;
 use App\Entity\User;
-use App\Form\Type\TaskType;
-use App\Resolver\TaskListInputFiltersDtoResolver;
-use App\Security\Voter\TaskVoter;
-use App\Service\TaskService;
-use App\Service\TaskServiceInterface;
+use App\Form\Type\EventType;
+use App\Resolver\EventListInputFiltersDtoResolver;
+use App\Security\Voter\EventVoter;
+use App\Service\EventService;
+use App\Service\EventServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,64 +26,64 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class TaskController.
+ * Class EventController.
  */
-#[Route('/task')]
-class TaskController extends AbstractController
+#[Route('/event')]
+class EventController extends AbstractController
 {
     /**
      * Constructor.
      *
-     * @param TaskService $taskService Task service
+     * @param EventService $eventService Event service
      */
-    public function __construct(private readonly TaskServiceInterface $taskService, private readonly TranslatorInterface $translator)
+    public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
     }
 
     /**
      * Index action.
      *
-     * @param TaskListInputFiltersDto $filters Input filters
+     * @param EventListInputFiltersDto $filters Input filters
      * @param int                     $page    Page number
      *
      * @return Response HTTP response
      */
     #[Route(
-        name: 'task_index',
+        name: 'event_index',
         methods: 'GET'
     )]
-    public function index(#[MapQueryString(resolver: TaskListInputFiltersDtoResolver::class)] TaskListInputFiltersDto $filters, #[MapQueryParameter] int $page = 1): Response
+    public function index(#[MapQueryString(resolver: EventListInputFiltersDtoResolver::class)] EventListInputFiltersDto $filters, #[MapQueryParameter] int $page = 1): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $pagination = $this->taskService->getPaginatedList(
+        $pagination = $this->eventService->getPaginatedList(
             $page,
             $user,
             $filters
         );
 
-        return $this->render('task/index.html.twig', ['pagination' => $pagination]);
+        return $this->render('event/index.html.twig', ['pagination' => $pagination]);
     }
 
     /**
      * View action.
      *
-     * @param Task $task Task entity
+     * @param Event $event Event entity
      *
      * @return Response HTTP response
      */
     #[Route(
         '/{id}',
-        name: 'task_view',
+        name: 'event_view',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET'
     )]
-    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
-    public function view(Task $task): Response
+    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    public function view(Event $event): Response
     {
         return $this->render(
-            'task/view.html.twig',
-            ['task' => $task]
+            'event/view.html.twig',
+            ['event' => $event]
         );
     }
 
@@ -96,7 +96,7 @@ class TaskController extends AbstractController
      */
     #[Route(
         '/create',
-        name: 'task_create',
+        name: 'event_create',
         methods: 'GET|POST'
     )]
     public function create(Request $request): Response
@@ -104,24 +104,24 @@ class TaskController extends AbstractController
 
         /** @var User $user */
         $user = $this->getUser();
-        $task = new Task();
-        $task->setAuthor($this->getUser());
-        $form = $this->createForm(TaskType::class, $task);
+        $event = new Event();
+        $event->setAuthor($this->getUser());
+        $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->save($task);
+            $this->eventService->save($event);
 
             $this->addFlash(
                 'success',
                 $this->translator->trans('message.created_successfully')
             );
 
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('event_index');
         }
 
         return $this->render(
-            'task/create.html.twig',
+            'event/create.html.twig',
             ['form' => $form->createView()]
         );
     }
@@ -130,42 +130,42 @@ class TaskController extends AbstractController
      * Edit action.
      *
      * @param Request $request HTTP request
-     * @param Task $task Category entity
+     * @param Event $event Category entity
      *
      * @return Response HTTP response
      */
     #[Route(
         '/{id}/edit',
-        name: 'task_edit',
+        name: 'event_edit',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|PUT'
     )]
-    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
-    public function edit(Request $request, Task $task): Response
+    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    public function edit(Request $request, Event $event): Response
     {
-        $form = $this->createForm(TaskType::class, $task, [
+        $form = $this->createForm(EventType::class, $event, [
             'method' => 'PUT',
-            'action' => $this->generateUrl('task_edit', ['id' => $task->getId()]),
+            'action' => $this->generateUrl('task_edit', ['id' => $event->getId()]),
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->save($task);
+            $this->eventService->save($event);
 
             $this->addFlash(
                 'success',
                 $this->translator->trans('message.edited_successfully')
             );
 
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('event_index');
         }
 
         return $this->render(
-            'task/edit.html.twig',
+            'event/edit.html.twig',
             [
             'form' => $form->createView(),
-            'task' => $task,
+            'event' => $event,
             ]
         );
     }
@@ -174,43 +174,43 @@ class TaskController extends AbstractController
      * Delete action.
      *
      * @param Request $request
-     * @param Task $task
+     * @param Event $event
      *
      * @return Response
      */
     #[Route(
         '/{id}/delete',
-        name: 'task_delete',
+        name: 'event_delete',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|DELETE'
     )]
 
-    #[IsGranted(TaskVoter::VIEW, subject: 'task')]
-    public function delete(Request $request, Task $task): Response
+    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    public function delete(Request $request, Event $event): Response
     {
 
-        $form = $this->createForm(FormType::class, $task, [
+        $form = $this->createForm(FormType::class, $event, [
             'method' => 'DELETE',
-            'action' => $this->generateUrl('task_delete', ['id' => $task->getId()]),
+            'action' => $this->generateUrl('event_delete', ['id' => $event->getId()]),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->taskService->delete($task);
+            $this->eventService->delete($event);
 
             $this->addFlash(
                 'success',
                 $this->translator->trans('message.deleted_successfully')
             );
 
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('event_index');
         }
 
         return $this->render(
-            'task/delete.html.twig',
+            'event/delete.html.twig',
             [
                 'form' => $form->createView(),
-                'category' => $task,
+                'category' => $event,
             ]
         );
     }

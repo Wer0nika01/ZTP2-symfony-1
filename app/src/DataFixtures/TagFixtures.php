@@ -12,7 +12,7 @@ use Faker\Generator;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
- * Class TaskFixtures.
+ * Class EventFixtures.
  *
  * @psalm-suppress MissingConstructor
  */

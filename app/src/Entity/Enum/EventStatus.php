@@ -6,12 +6,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Enum TaskStatus.
+ * Enum EventStatus.
  *
- * Represents the possible statuses for a task.
+ * Represents the possible statuses for a event.
  * This is a Backed Enum with integer values.
  */
-enum TaskStatus: int
+enum EventStatus: int
 {
     case NEW = 1;
     case ACTIVE = 2;

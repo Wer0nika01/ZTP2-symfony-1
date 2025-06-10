@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Task entity.
+ * Event entity.
  */
 
 namespace App\Entity;
 
-use App\Entity\Enum\TaskStatus;
-use App\Repository\TaskRepository;
+use App\Entity\Enum\EventStatus;
+use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -16,11 +16,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Task.
+ * Class Event.
  */
-#[ORM\Entity(repositoryClass: TaskRepository::class)]
-#[ORM\Table(name: 'tasks')]
-class Task
+#[ORM\Entity(repositoryClass: EventRepository::class)]
+#[ORM\Table(name: 'events')]
+class Event
 {
     /**
      * Category.
@@ -70,7 +70,7 @@ class Task
      * @var Collection<int, Tag>
      */
     #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY', orphanRemoval: true)]
-    #[ORM\JoinTable(name: 'tasks_tags')]
+    #[ORM\JoinTable(name: 'events_tags')]
     private Collection $tags;
 
     /**
@@ -88,15 +88,15 @@ class Task
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(
         max: 1000,
-        maxMessage: 'task.comment.length_max'
+        maxMessage: 'event.comment.length_max'
     )]
     private ?string $comment = null;
 
     /**
      * Status
      */
-    #[ORM\Column(type: Types::INTEGER, enumType: TaskStatus::class)]
-    private TaskStatus $status = TaskStatus::NEW;
+    #[ORM\Column(type: Types::INTEGER, enumType: EventStatus::class)]
+    private EventStatus $status = EventStatus::NEW;
 
 
     /**
@@ -273,7 +273,7 @@ class Task
     /**
      * Getter for status.
      */
-    public function getStatus(): TaskStatus
+    public function getStatus(): EventStatus
     {
         return $this->status;
     }
@@ -281,7 +281,7 @@ class Task
     /**
      * Setter for status.
      */
-    public function setStatus(TaskStatus $status): static
+    public function setStatus(EventStatus $status): static
     {
         $this->status = $status;
 
