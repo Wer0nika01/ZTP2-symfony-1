@@ -11,6 +11,8 @@ use App\Entity\Event;
 use App\Form\DataTransformer\TagsDataTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType; // Dodano dla isAllDay
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType; // Dodano dla startTime/endTime
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -51,15 +53,60 @@ class EventType extends AbstractType
                 'label' => 'label.title',
                 'required' => true,
                 'attr' => ['max_length' => 255],
-            ]);
+            ]
+        );
+
         $builder->add(
-            'comment',
+            'description',
             TextareaType::class,
             [
                 'required' => false,
-                'label' => 'label.comment',
-                'attr' => ['rows' => 5,],
-            ]);
+                'label' => 'label.description',
+                'attr' => ['rows' => 7],
+            ]
+        );
+
+        $builder->add(
+            'startTime',
+            DateTimeType::class,
+            [
+                'label' => 'label.startTime',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'required' => true,
+            ]
+        );
+
+        $builder->add(
+            'endTime',
+            DateTimeType::class,
+            [
+                'label' => 'label.endTime',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
+            'location',
+            TextType::class,
+            [
+                'label' => 'label.location',
+                'required' => false,
+                'attr' => ['max_length' => 255],
+            ]
+        );
+
+        $builder->add(
+            'isAllDay',
+            CheckboxType::class,
+            [
+                'label' => 'label.isAllDay',
+                'required' => false,
+            ]
+        );
+
 
         $builder->add(
             'category',

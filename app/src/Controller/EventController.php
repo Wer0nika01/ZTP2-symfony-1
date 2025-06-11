@@ -145,7 +145,7 @@ class EventController extends AbstractController
     {
         $form = $this->createForm(EventType::class, $event, [
             'method' => 'PUT',
-            'action' => $this->generateUrl('task_edit', ['id' => $event->getId()]),
+            'action' => $this->generateUrl('event_edit', ['id' => $event->getId()]),
         ]);
 
         $form->handleRequest($request);

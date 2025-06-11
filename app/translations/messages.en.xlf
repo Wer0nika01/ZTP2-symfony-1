@@ -54,13 +54,13 @@
         <source>title.event_list</source>
         <target>event list</target>
       </trans-unit>
-      <trans-unit id="label.created_at">
-        <source>label.created_at</source>
-        <target>Created at</target>
+      <trans-unit id="label.startTime">
+        <source>label.startTime</source>
+        <target>Start time</target>
       </trans-unit>
-      <trans-unit id="label.updated_at">
-        <source>label.updated_at</source>
-        <target>Updated at</target>
+      <trans-unit id="label.endTime">
+        <source>label.endTime</source>
+        <target>End time</target>
       </trans-unit>
       <trans-unit id="label.category">
         <source>label.category</source>
@@ -230,13 +230,13 @@
         <source>message.registration_successful</source>
         <target>Registration successful</target>
       </trans-unit>
-      <trans-unit id="label.comment">
-        <source>label.comment</source>
-        <target>Comment</target>
+      <trans-unit id="label.description">
+        <source>label.description</source>
+        <target>Description</target>
       </trans-unit>
-      <trans-unit id="label.no_comment">
-        <source>label.no_comment</source>
-        <target>No comment</target>
+      <trans-unit id="label.no_description">
+        <source>label.no_description</source>
+        <target>No description</target>
       </trans-unit>
       <trans-unit id="action.change_avatar">
         <source>action.change_avatar</source>
@@ -270,21 +270,33 @@
         <source>title.event_create</source>
         <target>event create</target>
       </trans-unit>
-      <trans-unit id="label.new">
-        <source>label.new</source>
-        <target>New</target>
+      <trans-unit id="label.personal">
+        <source>label.personal</source>
+        <target>Personal</target>
       </trans-unit>
-      <trans-unit id="label.active">
-        <source>label.active</source>
-        <target>Active</target>
+      <trans-unit id="label.important">
+        <source>label.important</source>
+        <target>Important</target>
       </trans-unit>
-      <trans-unit id="label.done">
-        <source>label.done</source>
-        <target>Done</target>
+      <trans-unit id="label.work">
+        <source>label.work</source>
+        <target>Work</target>
       </trans-unit>
-      <trans-unit id="label.canceled">
-        <source>label.canceled</source>
-        <target>Canceled</target>
+      <trans-unit id="label.location">
+        <source>label.location</source>
+        <target>Location</target>
+      </trans-unit>
+      <trans-unit id="label.isAllDay">
+        <source>label.isAllDay</source>
+        <target>Is all day?</target>
+      </trans-unit>
+      <trans-unit id="label.no">
+        <source>label.no</source>
+        <target>No</target>
+      </trans-unit>
+      <trans-unit id="label.yes">
+        <source>label.yes</source>
+        <target>Yes</target>
       </trans-unit>
     </body>
   </file>

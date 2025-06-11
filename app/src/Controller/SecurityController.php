@@ -37,7 +37,7 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils, UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         if ($this->getUser() instanceof UserInterface) {
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('event_index');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();

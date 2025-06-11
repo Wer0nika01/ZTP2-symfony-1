@@ -2,9 +2,6 @@
 
 namespace App\Entity\Enum;
 
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Enum EventStatus.
  *
@@ -13,10 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 enum EventStatus: int
 {
-    case NEW = 1;
-    case ACTIVE = 2;
-    case DONE = 3;
-    case CANCELED = 4;
+    case PERSONAL = 1;
+    case IMPORTANT = 2;
+    case WORK = 3;
 
     /**
      * Get the human-readable label for the enum case.
@@ -26,10 +22,9 @@ enum EventStatus: int
     public function getLabel(): string
     {
         return match($this) {
-            self::NEW => 'label.new',
-            self::ACTIVE => 'label.active',
-            self::DONE => 'label.done',
-            self::CANCELED => 'label.canceled',
+            self::PERSONAL => 'label.personal',
+            self::IMPORTANT => 'label.important',
+            self::WORK => 'label.work',
         };
     }
 
@@ -38,13 +33,12 @@ enum EventStatus: int
      *
      * @return string
      */
-    public function getBadgeClass(): string
+    public function getButtonClass(): string
     {
         return match ($this) {
-            self::NEW => 'btn-secondary',
-            self::ACTIVE => 'btn-primary',
-            self::DONE => 'btn-success',
-            self::CANCELED => 'btn-danger',
+            self::PERSONAL => 'btn-success',
+            self::IMPORTANT => 'btn-danger',
+            self::WORK => 'btn-primary',
         };
     }
 

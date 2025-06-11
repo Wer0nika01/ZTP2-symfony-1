@@ -62,9 +62,9 @@ class EventService implements EventServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => ['event.id', 'event.createdAt', 'event.updatedAt', 'event.title', 'category.title', 'event.status'],
-                'defaultSortFieldName' => 'event.updatedAt',
-                'defaultSortDirection' => 'desc',
+                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime','event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status'],
+                'defaultSortFieldName' => 'event.startTime',
+                'defaultSortDirection' => 'asc',
             ]
         );
     }

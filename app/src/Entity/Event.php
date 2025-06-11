@@ -23,46 +23,72 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Event
 {
     /**
+     * Primary key.
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $id = null;
+
+    /**
+     * Title.
+     */
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 255)]
+    private ?string $title = null;
+
+    /**
+     * Description of the event (replaces or augments 'comment').
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 2000,
+        maxMessage: 'event.description.length_max'
+    )]
+    private ?string $description = null;
+
+    /**
+     * Start time of the event.
+     *
+     * @var \DateTimeImmutable|null
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $startTime = null;
+
+
+    /**
+     * End time of the event.
+     *
+     * @var \DateTimeImmutable|null
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $endTime = null;
+
+    /**
+     * Location of the event.
+     */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'event.location.length_max'
+    )]
+    private ?string $location = null;
+
+    /**
+     * Is this an all-day event?
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isAllDay = false;
+
+
+    /**
      * Category.
      */
     #[ORM\ManyToOne(targetEntity: Category::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     private ?Category $category = null;
-
-    /**
-     * Primary key.
-     */
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
-
-    /**
-     * Title.
-     */
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 3, max: 255)]
-    private ?string $title = null;
-
-    /**
-     * Created at.
-     *
-     * @var \DateTimeImmutable|null
-     */
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Gedmo\Timestampable(on: 'create')]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    /**
-     * Updated at.
-     *
-     * @var \DateTimeImmutable|null
-     */
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Gedmo\Timestampable(on: 'update')]
-    private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * Tags.
@@ -83,20 +109,10 @@ class Event
     private ?User $author;
 
     /**
-     * Comment
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\Length(
-        max: 1000,
-        maxMessage: 'event.comment.length_max'
-    )]
-    private ?string $comment = null;
-
-    /**
      * Status
      */
     #[ORM\Column(type: Types::INTEGER, enumType: EventStatus::class)]
-    private EventStatus $status = EventStatus::NEW;
+    private EventStatus $status = EventStatus::PERSONAL;
 
 
     /**
@@ -106,6 +122,7 @@ class Event
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        // $this->startTime = new \DateTimeImmutable();
     }
 
     /**
@@ -138,44 +155,120 @@ class Event
         $this->title = $title;
     }
 
+
     /**
-     * Getter for created at.
+     * Getter for description.
      *
-     * @return \DateTimeImmutable|null Created at
+     * @return string|null Description
      */
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getDescription(): ?string
     {
-        return $this->createdAt;
+        return $this->description;
     }
 
     /**
-     * Setter for created at.
+     * Setter for description.
      *
-     * @param \DateTimeImmutable|null $createdAt Created at
+     * @param string|null $description Description
+     * @return $this
      */
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+    public function setDescription(?string $description): static
     {
-        $this->createdAt = $createdAt;
+        $this->description = $description;
+
+        return $this;
     }
 
     /**
-     * Getter for updated at.
+     * Getter for startTime.
      *
-     * @return \DateTimeImmutable|null Updated at
+     * @return \DateTimeImmutable|null Start time
      */
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getStartTime(): ?\DateTimeImmutable
     {
-        return $this->updatedAt;
+        return $this->startTime;
     }
 
     /**
-     * Setter for updated at.
+     * Setter for startTime.
      *
-     * @param \DateTimeImmutable|null $updatedAt Updated at
+     * @param \DateTimeImmutable|null $startTime Start time
+     * @return $this
      */
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    public function setStartTime(?\DateTimeImmutable $startTime): static
     {
-        $this->updatedAt = $updatedAt;
+        $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    /**
+     * Getter for endTime.
+     *
+     * @return \DateTimeImmutable|null End time
+     */
+    public function getEndTime(): ?\DateTimeImmutable
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * Setter for endTime.
+     *
+     * @param \DateTimeImmutable|null $endTime End time
+     * @return $this
+     */
+    public function setEndTime(?\DateTimeImmutable $endTime): static
+    {
+        $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    /**
+     * Getter for location.
+     *
+     * @return string|null Location
+     */
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    /**
+     * Setter for location.
+     *
+     * @param string|null $location Location
+     * @return $this
+     */
+    public function setLocation(?string $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Getter for isAllDay.
+     *
+     * @return bool Is all day
+     */
+    public function isAllDay(): bool
+    {
+        return $this->isAllDay;
+    }
+
+    /**
+     * Setter for isAllDay.
+     *
+     * @param bool $isAllDay Is all day
+     * @return $this
+     */
+    public function setIsAllDay(bool $isAllDay): static
+    {
+        $this->isAllDay = $isAllDay;
+
+        return $this;
     }
 
     /**
@@ -186,25 +279,6 @@ class Event
     public function getCategory(): ?Category
     {
         return $this->category;
-    }
-    /**
-     * Getter for comment.
-     *
-     * @return string|null Comment
-     */
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
-
-    /**
-     * Setter for comment.
-     *
-     * @param string|null $comment Comment
-     */
-    public function setComment(?string $comment): void
-    {
-        $this->comment = $comment;
     }
 
     /**
@@ -258,11 +332,18 @@ class Event
         return $this;
     }
 
+    /**
+     * Getter for author.
+     */
+
     public function getAuthor(): ?User
     {
         return $this->author;
     }
 
+    /**
+     * Setter for author.
+     */
     public function setAuthor(?User $author): static
     {
         $this->author = $author;

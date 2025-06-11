@@ -60,7 +60,7 @@ class EventRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('event')
             ->select(
-                'partial event.{id, createdAt, updatedAt, title, status}',
+                'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
                 'partial category.{id, title}',
                 'partial tags.{id, title}'
             )
