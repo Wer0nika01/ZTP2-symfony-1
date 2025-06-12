@@ -34,7 +34,7 @@ class EventRepository extends ServiceEntityRepository
             ->select(
                 'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
                 'partial category.{id, title}',
-                'partial tags.{id, title}'
+                'partial tags.{id, name}'
             )
             ->join('event.category', 'category')
             ->leftJoin('event.tags', 'tags')
@@ -50,7 +50,7 @@ class EventRepository extends ServiceEntityRepository
             ->select(
                 'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
                 'partial category.{id, title}',
-                'partial tags.{id, title}'
+                'partial tags.{id, name}'
             )
             ->join('event.category', 'category')
             ->leftJoin('event.tags', 'tags')
@@ -104,7 +104,6 @@ class EventRepository extends ServiceEntityRepository
 
     /**
      * Applies filters to the query builder for the list.
-     * (Assuming this method exists in your EventRepository for EventListFiltersDto)
      *
      * @param QueryBuilder        $queryBuilder Query builder
      * @param EventListFiltersDto $filters      Filters
@@ -113,16 +112,21 @@ class EventRepository extends ServiceEntityRepository
      */
     private function applyFiltersToList(QueryBuilder $queryBuilder, EventListFiltersDto $filters): QueryBuilder
     {
-        // Example: Add logic here to apply filters from EventListFiltersDto
-        // For instance:
-        // if ($filters->getTitle()) {
-        //     $queryBuilder->andWhere('event.title LIKE :title')
-        //                  ->setParameter('title', '%' . $filters->getTitle() . '%');
-        // }
-        // if ($filters->getCategory()) {
-        //     $queryBuilder->andWhere('category.id = :categoryId')
-        //                  ->setParameter('categoryId', $filters->getCategory()->getId());
-        // }
+        if ($filters->getCategory()) {
+            $queryBuilder->andWhere('category.id = :categoryId')
+                ->setParameter('categoryId', $filters->getCategory()->getId());
+        }
+
+        if ($filters->getStatus()) {
+            $queryBuilder->andWhere('event.status = :status')
+                ->setParameter('status', $filters->getStatus());
+        }
+
+        if (!$filters->getTags()->isEmpty()) {
+            $queryBuilder->leftJoin('event.tags', 'filterTags')
+            ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
+                ->setParameter('tag_ids', $filters->getTags()->map(fn($tag) => $tag->getId())->toArray());
+        }
 
         return $queryBuilder;
     }

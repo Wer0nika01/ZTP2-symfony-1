@@ -9,6 +9,7 @@ use App\Repository\TagRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
 
 /**
  * Class Tag
@@ -22,23 +23,23 @@ class Tag
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
     /**
-     * Title
+     * Name
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
-    private ?string $title = null;
+    private ?string $name = null;
 
     /**
      * Created at.
      *
-     * @var \DateTime|null
+     * @var \DateTimeImmutable|null
      */
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -47,7 +48,7 @@ class Tag
      *
      * @var \DateTimeImmutable|null
      */
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeImmutable $updatedAt = null;
 
@@ -57,8 +58,8 @@ class Tag
      *
      * @var string|null
      */
-    #[ORM\Column(length: 64)]
-    #[Gedmo\Slug(fields: ['title'], unique: true)]
+    #[ORM\Column(length: 64, type: Types::STRING)]
+    #[Gedmo\Slug(fields: ['name'], unique: true)]
     private ?string $slug = null;
 
     /**
@@ -72,23 +73,23 @@ class Tag
     }
 
     /**
-     * Getter for title.
+     * Getter for name.
      *
-     * @return string|null Title
+     * @return string|null Name
      */
-    public function getTitle(): ?string
+    public function getName(): ?string
     {
-        return $this->title;
+        return $this->name;
     }
 
     /**
-     * Setter for title.
+     * Setter for name.
      *
-     * @param string|null $title Title
+     * @param string|null $name Name
      */
-    public function setTitle(?string $title): void
+    public function setName(?string $name): void
     {
-        $this->title = $title;
+        $this->name = $name;
     }
 
     /**

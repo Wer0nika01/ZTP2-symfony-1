@@ -8,6 +8,7 @@ namespace App\Form\DataTransformer;
 use App\Entity\Tag;
 use App\Service\TagServiceInterface;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -27,50 +28,57 @@ class TagsDataTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transform array of tags to string of tag titles.
+     * Transform array of tags to string of tag Names.
      *
      * @param Collection<int, Tag> $value Tags entity collection
      *
      * @return string Result
      */
-    public function transform($value): string
+    public function transform(mixed $value): string
     {
-        if ($value->isEmpty()) {
+        if (!$value instanceof Collection || $value->isEmpty()) {
             return '';
         }
 
-        $tagTitles = [];
+        $tagNames = [];
 
         foreach ($value as $tag) {
-            $tagTitles[] = $tag->getTitle();
+            $tagNames[] = $tag->getName();
         }
 
-        return implode(', ', $tagTitles);
+        return implode(', ', $tagNames);
     }
 
     /**
      * Transform string of tag names into array of Tag entities.
      *
-     * @param string $value String of tag names
+     * @param mixed $value String of tag names
      *
-     * @return array<int, Tag> Result
+     * @return Collection<int, Tag> Result
      */
-    public function reverseTransform($value): array
+    public function reverseTransform(mixed $value): Collection
     {
-        $tagTitles = explode(',', $value);
+        if (null === $value || '' === $value) {
+            /** @var ArrayCollection<int, Tag> */
+            return new ArrayCollection();
+        }
 
-        $tags = [];
+        $tagNames = explode(',', $value);
 
-        foreach ($tagTitles as $tagTitle) {
-            if ('' !== trim($tagTitle)) {
-                $tag = $this->tagService->findOneByTitle(strtolower($tagTitle));
+        /** @var ArrayCollection<int, Tag> $tags */
+        $tags = new ArrayCollection();
+
+        foreach ($tagNames as $tagName) {
+            $trimmedTagName = trim($tagName);
+            if ('' !== trim($tagName)) {
+                $tag = $this->tagService->findOneByName(strtolower($tagName));
                 if (null === $tag) {
                     $tag = new Tag();
-                    $tag->setTitle($tagTitle);
+                    $tag->setName($tagName);
 
                     $this->tagService->save($tag);
                 }
-                $tags[] = $tag;
+                $tags->add($tag);
             }
         }
 

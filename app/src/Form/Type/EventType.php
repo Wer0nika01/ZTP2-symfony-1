@@ -18,12 +18,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\DataTransformer\TagsDataTransformer;
 
 /**
  * Class EventType.
  */
 class EventType extends AbstractType
 {
+    private TagsDataTransformer $tagsDataTransformer;
+
+    public function __construct(TagsDataTransformer $tagsDataTransformer)
+    {
+        $this->tagsDataTransformer = $tagsDataTransformer;
+    }
     /**
      * Builds the form.
      *
@@ -118,7 +125,6 @@ class EventType extends AbstractType
             [
                 'label' => 'label.tags',
                 'required' => false,
-                'attr' => ['max_length' => 128],
             ]
         )
             ->add('status', EnumType::class, [
@@ -126,7 +132,9 @@ class EventType extends AbstractType
                 'choice_label' => fn (EventStatus $choice) => $choice->getLabel(),
                 'label' => 'label.status',
                 'required' => true,
+                'by_reference' => false,
             ]);
+        $builder->get('tags')->addModelTransformer($this->tagsDataTransformer);
     }
 
     /**

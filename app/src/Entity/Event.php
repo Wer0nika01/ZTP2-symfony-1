@@ -95,7 +95,7 @@ class Event
      *
      * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY', orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinTable(name: 'events_tags')]
     private Collection $tags;
 

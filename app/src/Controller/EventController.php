@@ -1,68 +1,54 @@
 <?php
 
-/**
- * Task controller.
- */
-
 namespace App\Controller;
 
-use App\Dto\EventListInputFiltersDto;
+use App\Dto\EventListFiltersDto;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Form\Type\EventType;
-use App\Resolver\EventListInputFiltersDtoResolver;
+
 use App\Security\Voter\EventVoter;
-use App\Service\EventService;
 use App\Service\EventServiceInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
-use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Form\Type\EventListFilterType;
 
-/**
- * Class EventController.
- */
 #[Route('/event')]
 class EventController extends AbstractController
 {
-    /**
-     * Constructor.
-     *
-     * @param EventService $eventService Event service
-     */
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
     }
 
-    /**
-     * Index action.
-     *
-     * @param EventListInputFiltersDto $filters Input filters
-     * @param int                     $page    Page number
-     *
-     * @return Response HTTP response
-     */
-    #[Route(
-        name: 'event_index',
-        methods: 'GET'
-    )]
-    public function index(#[MapQueryString(resolver: EventListInputFiltersDtoResolver::class)] EventListInputFiltersDto $filters, #[MapQueryParameter] int $page = 1): Response
+    #[Route(name: 'event_index', methods: 'GET')]
+    public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
     {
+        $filtersDto = new EventListFiltersDto(null, null, new ArrayCollection());
+
+        $form = $this->createForm(EventListFilterType::class, $filtersDto, ['method' => 'GET']);
+        $form->handleRequest($request);
+
         /** @var User $user */
         $user = $this->getUser();
+
         $pagination = $this->eventService->getPaginatedList(
             $page,
             $user,
-            $filters
+            $filtersDto
         );
 
-        return $this->render('event/index.html.twig', ['pagination' => $pagination]);
+        return $this->render('event/index.html.twig', [
+            'pagination' => $pagination,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

@@ -28,8 +28,8 @@ class TagType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class, [
-                'label' => 'label.title',
+            ->add('name', TextType::class, [
+                'label' => 'label.name',
             ]);
     }
 

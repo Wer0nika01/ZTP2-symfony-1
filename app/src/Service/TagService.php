@@ -31,7 +31,7 @@ class TagService implements TagServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => ['tag.id', 'tag.createdAt', 'tag.updatedAt', 'tag.title'],
+                'sortFieldAllowList' => ['tag.id', 'tag.createdAt', 'tag.updatedAt', 'tag.name'],
                 'defaultSortFieldName' => 'tag.id',
                 'defaultSortDirection' => 'asc',
             ]
@@ -55,11 +55,11 @@ class TagService implements TagServiceInterface
     }
 
     /**
-     * Find by title.
+     * Find by name.
      */
-    public function findOneByTitle(string $title): ?Tag
+    public function findOneByName(string $name): ?Tag
     {
-        return $this->tagRepository->findOneByTitle($title);
+        return $this->tagRepository->findOneByName($name);
     }
 
     /**

@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Repository\ContactRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-
+use App\Dto\ContactListFiltersDto;
 
 /**
  * Class ContactService.
@@ -28,17 +28,16 @@ class ContactService implements ContactServiceInterface
     /**
      * Get paginated list.
      *
-     * @param int                      $page    Page number
-     * @param User                     $author  Current user
-     * @param array<string, mixed>     $filters Filters array
+     * @param int                   $page    Page number
+     * @param User                  $author  Current user
+     * @param ContactListFiltersDto $filters Filters DTO // ZMIANA TYPU: Z array na DTO
      *
      * @return PaginationInterface PaginationInterface
      */
-    public function getPaginatedList(int $page, User $author, array $filters = []): PaginationInterface // ZMIENIONO TYP $filters
+    public function getPaginatedList(int $page, User $author, ContactListFiltersDto $filters): PaginationInterface
     {
-
         return $this->paginator->paginate(
-            $this->contactRepository->queryAll($author, $filters),
+            $this->contactRepository->queryAll($author, $filters), // Przekaż DTO do repozytorium
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [

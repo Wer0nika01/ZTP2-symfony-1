@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Contact;
 use App\Entity\User;
+use App\Dto\ContactListFiltersDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
@@ -52,22 +53,41 @@ class ContactRepository extends ServiceEntityRepository
      * Query all contacts.
      *
      * @param User $author Contacts author
-     * @param array<string, mixed> $filters Filters
+     * @param ContactListFiltersDto $filters Filters
      *
      * @return QueryBuilder Query builder
      */
-    public function queryAll(User $author, array $filters): QueryBuilder
+    public function queryAll(User $author, ContactListFiltersDto $filters): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('contact')
             ->select('contact', 't', 'a')
             ->leftJoin('contact.tags', 't')
-            ->leftJoin('contact.author', 'a')
+            ->leftJoin('contact.author', 'a');
+
+        $queryBuilder
             ->where('contact.author = :author')
             ->setParameter('author', $author);
 
-        if (isset($filters['company']) && $filters['company'] !== '') {
-            $queryBuilder->andWhere('contact.company LIKE :company')
-                ->setParameter('company', '%' . $filters['company'] . '%');
+        $this->applyFiltersToList($queryBuilder, $filters);
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Applies filters to the query builder for the list.
+     *
+     * @param QueryBuilder          $queryBuilder Query builder
+     * @param ContactListFiltersDto $filters      Filters DTO
+     *
+     * @return QueryBuilder Query builder
+     */
+    private function applyFiltersToList(QueryBuilder $queryBuilder, ContactListFiltersDto $filters): QueryBuilder
+    {
+
+        if (!$filters->getTags()->isEmpty()) {
+            $queryBuilder->leftJoin('contact.tags', 'filterTags')
+            ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
+                ->setParameter('tag_ids', $filters->getTags()->map(fn($tag) => $tag->getId())->toArray());
         }
 
         return $queryBuilder;

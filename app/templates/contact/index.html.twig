@@ -7,7 +7,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>{{ 'title.contact_list'|trans }}</h1>
             <div>
-                {% if app.request.query.get('company') is not empty %}                    <a href="{{ path('contact_index') }}" class="btn btn-warning me-2">
+                {% if not form.vars.value.tags.empty %}
+                    <a href="{{ path('contact_index') }}" class="btn btn-warning me-2">
                         {{ 'action.reset_filters'|trans }}
                     </a>
                 {% endif %}
@@ -15,6 +16,24 @@
                     {{ 'action.create'|trans }}
                 </a>
             </div>
+        </div>
+
+        <div class="mb-4 p-3 border rounded bg-light">
+            <h4>{{ 'label.filter_contacts'|trans }}</h4>
+            {{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.tags, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-check-inline'}}) }}
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-info">
+                        {{ 'action.filter'|trans }}
+                    </button>
+                </div>
+            </div>
+            {{ form_end(form) }}
         </div>
 
         {% if pagination.items is empty %}
@@ -30,7 +49,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>{{ 'label.title'|trans }}</th>
+                        <th>{{ 'label.id'|trans }}</th>
                         <th>{{ 'label.firstName'|trans }}</th>
                         <th>{{ 'label.lastName'|trans }}</th>
                         <th>{{ 'label.email'|trans }}</th>
@@ -55,7 +74,7 @@
                             <td>
                                 {% if contact.company is not empty %}
                                     <a class="btn btn-sm btn-outline-primary"
-                                       href="{{ url('contact_index', app.request.query.all|merge({'company': contact.company})) }}"
+                                       href="{{ path('contact_index', {'contact_filter[company]' : contact.company}) }}"
                                        title="Filtruj po firmie: {{ contact.company }}">
                                         {{ contact.company }}
                                     </a>
@@ -67,7 +86,11 @@
                             <td>
                                 {% if contact.tags is not empty %}
                                     {% for tag in contact.tags %}
-                                        <span class="badge bg-secondary me-1">{{ tag.title }}</span>
+                                        <a class="badge bg-secondary me-1"
+                                           href="{{ path('contact_index', {'contact_filter[tags][]' : tag.id}) }}"
+                                           title="Filtruj po tagu: {{ tag.name }}">
+                                            {{ tag.name }}
+                                        </a>
                                     {% endfor %}
                                 {% else %}
                                     <em>{{ 'label.missing'|trans }}</em>

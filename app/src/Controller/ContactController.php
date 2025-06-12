@@ -12,6 +12,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Service\ContactService;
+use App\Dto\ContactListFiltersDto;
+use App\Form\Type\ContactListFilterType;
 
 /**
  * Class ContactController.
@@ -37,16 +39,22 @@ class ContactController extends AbstractController
     #[Route(name: 'contact_index', methods: 'GET')]
     public function index(Request $request): Response
     {
-        $filters = $request->query->all();
-        $page = $request->query->getInt('page', 1);
+        $filtersDto = new ContactListFiltersDto();
+
+        $form = $this->createForm(ContactListFilterType::class, $filtersDto, ['method' => 'GET']);
+        $form->handleRequest($request);
 
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
-        $pagination = $this->contactService->getPaginatedList($page, $user, $filters);
 
+        $pagination = $this->contactService->getPaginatedList(
+            $request->query->getInt('page', 1),
+            $user,
+            $filtersDto
+        );
         return $this->render('contact/index.html.twig', [
             'pagination' => $pagination,
-            'filters' => $filters,
+            'form' => $form->createView(),
         ]);
     }
 

@@ -38,13 +38,13 @@ interface TagServiceInterface
     public function delete(Tag $tag): void;
 
     /**
-     * Find by title.
+     * Find by Name.
      *
-     * @param string $title Tag title
+     * @param string $name Tag name
      *
      * @return Tag|null Tag entity
      */
-    public function findOneByTitle(string $title): ?Tag;
+    public function findOneByName(string $name): ?Tag;
 
     /**
      * Find by Id

@@ -4,6 +4,7 @@ namespace App\Form\Type;
 
 use App\Entity\Contact;
 use App\Entity\Tag;
+use App\Form\DataTransformer\TagsDataTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,8 +16,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ContactType extends AbstractType
 {
+    private TagsDataTransformer $tagsDataTransformer;
+
+    public function __construct(TagsDataTransformer $tagsDataTransformer)
+    {
+        $this->tagsDataTransformer = $tagsDataTransformer;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'label.firstName',
@@ -58,14 +67,11 @@ class ContactType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 2000],
             ])
-            ->add('tags',EntityType::class, [
-                'class' => Tag::class,
-                'choice_label' => 'title',
-                'multiple' => true,
-                'expanded' => false,
+            ->add('tags',TextType::class, [
                 'label' => 'label.tags',
                 'required' => false,
             ]);
+        $builder->get('tags')->addModelTransformer($this->tagsDataTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
