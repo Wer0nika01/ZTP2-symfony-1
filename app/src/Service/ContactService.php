@@ -30,7 +30,7 @@ class ContactService implements ContactServiceInterface
      *
      * @param int                      $page    Page number
      * @param User                     $author  Current user
-     * @param array<string, mixed>     $filters Filters array (PRZYWRÓCONO)
+     * @param array<string, mixed>     $filters Filters array
      *
      * @return PaginationInterface PaginationInterface
      */
@@ -42,7 +42,7 @@ class ContactService implements ContactServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => ['contact.id', 'contact.firstName', 'contact.lastName', 'contact.email', 'contact.company', 'contact.updatedAt'],
+                'sortFieldAllowList' => ['contact.id', 'contact.firstName', 'contact.lastName', 'contact.email', 'contact.company', 'contact.updatedAt', 'contact.tags'],
                 'defaultSortFieldName' => 'contact.id',
                 'defaultSortDirection' => 'asc',
             ]

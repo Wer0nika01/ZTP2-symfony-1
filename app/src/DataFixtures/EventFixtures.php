@@ -79,6 +79,8 @@ class EventFixtures extends AbstractBaseFixtures implements DependentFixtureInte
 
             return $event;
         });
+
+        $this->manager->flush();
     }
 
     /**

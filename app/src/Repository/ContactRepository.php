@@ -59,21 +59,9 @@ class ContactRepository extends ServiceEntityRepository
     public function queryAll(User $author, array $filters): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilder('contact')
-            ->select(
-                'contact.id',
-                'contact.firstName',
-                'contact.lastName',
-                'contact.email',
-                'contact.phone',
-                'contact.address',
-                'contact.company',
-                'contact.jobTitle',
-                'contact.notes',
-                'contact.createdAt',
-                'contact.updatedAt',
-                'author.email AS author_email'
-            )
-            ->join('contact.author', 'author')
+            ->select('contact', 't', 'a')
+            ->leftJoin('contact.tags', 't')
+            ->leftJoin('contact.author', 'a')
             ->where('contact.author = :author')
             ->setParameter('author', $author);
 

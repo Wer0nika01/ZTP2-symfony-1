@@ -7,6 +7,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Contact;
+use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -65,6 +66,13 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
             $author = $this->getRandomReference('user', User::class);
             $contact->setAuthor($author);
 
+            $tagsCount = mt_rand(0, 4); // Randomly add 0 to 4 tags
+            for ($j = 0; $j < $tagsCount; $j++) {
+                /** @var Tag $tag */
+                $tag = $this->getRandomReference('tag', Tag::class);
+                $contact->addTag($tag);
+            }
+
             return $contact;
         });
 
@@ -77,10 +85,10 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
      *
      * @return string[] of dependencies
      *
-     * @psalm-return array{0: UserFixtures::class}
+     * @psalm-return array{0: UserFixtures::class, 1: TagFixtures::class}
      */
     public function getDependencies(): array
     {
-        return [UserFixtures::class];
+        return [UserFixtures::class, TagFixtures::class];
     }
 }

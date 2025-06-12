@@ -7,6 +7,8 @@
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -79,7 +81,7 @@ class Contact
     private ?string $jobTitle = null;
 
     /**
-     * General notes about the contact (Markdown format is good for this).
+     * General notes about the contact.
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 2000)]
@@ -107,6 +109,23 @@ class Contact
     #[Assert\NotNull]
     #[Assert\Type(User::class)]
     private ?User $author = null;
+
+
+    /**
+     * Tags.
+     */
+    #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinTable(name: 'contacts_tags')]
+    private Collection $tags;
+
+    /**
+     * Constructor.
+     * Initializes the tags collection.
+     */
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
 
     // --- Getters and Setters ---
@@ -240,6 +259,43 @@ class Contact
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+    /**
+     * Getter for tags.
+     *
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Add tag.
+     *
+     * @param Tag $tag The tag to add.
+     * @return $this
+     */
+    public function addTag(Tag $tag): static
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove tag.
+     *
+     * @param Tag $tag The tag to remove.
+     * @return $this
+     */
+    public function removeTag(Tag $tag): static
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }

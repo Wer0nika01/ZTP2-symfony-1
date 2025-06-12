@@ -38,6 +38,7 @@
                         <th>{{ 'label.address'|trans }}</th>
                         <th>{{ 'label.company'|trans }}</th>
                         <th>{{ 'label.jobTitle'|trans }}</th>
+                        <th>{{ 'label.tags'|trans }}</th>
                         <th>{{ 'label.notes'|trans }}</th>
                         <th>{{ 'label.actions'|trans }}</th>
                     </tr>
@@ -55,7 +56,7 @@
                                 {% if contact.company is not empty %}
                                     <a class="btn btn-sm btn-outline-primary"
                                        href="{{ url('contact_index', app.request.query.all|merge({'company': contact.company})) }}"
-                                       title="Filtruj po firmie: {{ contact.company }}"> {# Nowy, statyczny tekst tytułu #}
+                                       title="Filtruj po firmie: {{ contact.company }}">
                                         {{ contact.company }}
                                     </a>
                                 {% else %}
@@ -63,6 +64,15 @@
                                 {% endif %}
                             </td>
                             <td>{{ contact.jobTitle ?? 'label.missing'|trans }}</td>
+                            <td>
+                                {% if contact.tags is not empty %}
+                                    {% for tag in contact.tags %}
+                                        <span class="badge bg-secondary me-1">{{ tag.title }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <em>{{ 'label.missing'|trans }}</em>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if contact.notes is not empty %}
                                     {{ contact.notes|length > 50 ? contact.notes|slice(0, 50) ~ '...' : contact.notes }}

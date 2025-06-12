@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tag enitiy.
+ * Tag entity.
  */
 namespace App\Entity;
 
@@ -58,7 +58,7 @@ class Tag
      * @var string|null
      */
     #[ORM\Column(length: 64)]
-    #[Gedmo\Slug(fields: ['title'])]
+    #[Gedmo\Slug(fields: ['title'], unique: true)]
     private ?string $slug = null;
 
     /**

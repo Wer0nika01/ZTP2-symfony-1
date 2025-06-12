@@ -8,11 +8,11 @@ namespace App\Form\Type;
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
 use App\Entity\Event;
-use App\Form\DataTransformer\TagsDataTransformer;
+use App\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType; // Dodano dla isAllDay
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType; // Dodano dla startTime/endTime
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -24,15 +24,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EventType extends AbstractType
 {
-    /**
-     * Constructor.
-     *
-     * @param TagsDataTransformer $tagsDataTransformer Tags data transformer
-     */
-    public function __construct(private readonly TagsDataTransformer $tagsDataTransformer)
-    {
-    }
-
     /**
      * Builds the form.
      *
@@ -136,10 +127,6 @@ class EventType extends AbstractType
                 'label' => 'label.status',
                 'required' => true,
             ]);
-
-        $builder->get('tags')->addModelTransformer(
-            $this->tagsDataTransformer
-        );
     }
 
     /**

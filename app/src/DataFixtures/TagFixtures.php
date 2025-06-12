@@ -12,7 +12,7 @@ use Faker\Generator;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
- * Class EventFixtures.
+ * Class TagFixtures.
  *
  * @psalm-suppress MissingConstructor
  */
@@ -56,5 +56,6 @@ class TagFixtures extends AbstractBaseFixtures
 
             return $tag;
         });
+        $this->manager->flush();
     }
 }

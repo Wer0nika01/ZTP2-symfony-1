@@ -3,6 +3,8 @@
 namespace App\Form\Type;
 
 use App\Entity\Contact;
+use App\Entity\Tag;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -56,24 +58,14 @@ class ContactType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 2000],
             ])
-            // Author nie powinien być edytowalny przez formularz,
-            // zostanie ustawiony automatycznie w kontrolerze.
-            // Jeśli jednak chcesz, aby był widoczny/wybieralny:
-            /*
-            ->add('author', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'email', // Lub 'username'
-                'label' => 'label.author',
-                'required' => true,
-                // Możesz ograniczyć wybór tylko do zalogowanego użytkownika
-                // 'query_builder' => function (EntityRepository $er) {
-                //     return $er->createQueryBuilder('u')
-                //         ->where('u.id = :userId')
-                //         ->setParameter('userId', $this->security->getUser()->getId());
-                // },
-            ])
-            */
-        ;
+            ->add('tags',EntityType::class, [
+                'class' => Tag::class,
+                'choice_label' => 'title',
+                'multiple' => true,
+                'expanded' => false,
+                'label' => 'label.tags',
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
