@@ -61,6 +61,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Avatar $avatar = null;
 
     /**
+     * First name.
+     *
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $firstName = null;
+
+    /**
+     * Last name.
+     *
+     * @var string|null
+     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $lastName = null;
+
+
+    /**
      * Getter for id.
      *
      * @return int|null Id
@@ -157,7 +176,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
@@ -176,5 +194,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avatar = $avatar;
 
         return $this;
+    }
+
+    /**
+     * Getter for firstName.
+     *
+     * @return string|null First name
+     */
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Setter for firstName.
+     *
+     * @param string|null $firstName First name
+     */
+    public function setFirstName(?string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * Getter for lastName.
+     *
+     * @return string|null Last name
+     */
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Setter for lastName.
+     *
+     * @param string|null $lastName Last name
+     */
+    public function setLastName(?string $lastName): void
+    {
+        $this->lastName = $lastName;
     }
 }

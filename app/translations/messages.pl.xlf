@@ -374,6 +374,14 @@
         <source>title.upcoming_events</source>
         <target>Nadchodzące zdarzenia</target>
       </trans-unit>
+      <trans-unit id="action.edit_profile">
+        <source>action.edit_profile</source>
+        <target>Edytuj profil</target>
+      </trans-unit>
+      <trans-unit id="message.profile_updated_successfully">
+        <source>message.profile_updated_successfully</source>
+        <target>Udalo się zedytować profil</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

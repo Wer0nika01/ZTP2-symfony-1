@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ 'title.edit_profile'|trans }}</h1>
+
+        {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.firstName) }}
+        {{ form_row(form.lastName) }}
+        <button type="submit" class="btn btn-primary">{{ 'action.save'|trans }}</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

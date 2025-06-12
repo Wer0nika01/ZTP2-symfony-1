@@ -370,6 +370,18 @@
         <source>title.upcoming_events</source>
         <target>Upcoming events</target>
       </trans-unit>
+      <trans-unit id="title.edit_profile">
+        <source>title.edit_profile</source>
+        <target>Edit profile</target>
+      </trans-unit>
+      <trans-unit id="action.edit_profile">
+        <source>action.edit_profile</source>
+        <target>Edit profile</target>
+      </trans-unit>
+      <trans-unit id="message.profile_updated_successfully">
+        <source>message.profile_updated_successfully</source>
+        <target>Profile updated successfully</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
