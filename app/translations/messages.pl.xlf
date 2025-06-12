@@ -354,6 +354,26 @@
         <source>action.reset_filters</source>
         <target>Resetuj filtry</target>
       </trans-unit>
+      <trans-unit id="title.dashboard">
+        <source>title.dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="title.active_events">
+        <source>title.active_events</source>
+        <target>Aktywne zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="message.no_active_events">
+        <source>message.no_active_events</source>
+        <target>Brak aktywnych zdarzeń</target>
+      </trans-unit>
+      <trans-unit id="action.view_all_events">
+        <source>action.view_all_events</source>
+        <target>Zobacz wszytskie zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="title.upcoming_events">
+        <source>title.upcoming_events</source>
+        <target>Nadchodzące zdarzenia</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

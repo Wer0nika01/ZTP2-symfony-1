@@ -1,27 +1,41 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller;
 
 use App\Repository\EventRepository;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
 class DashboardController extends AbstractController
 {
-    #[Route('/dashboard', name: 'dashboard')]
-    public function index(EventRepository $eventRepository): Response
+    private EventRepository $eventRepository;
+
+    public function __construct(EventRepository $eventRepository)
     {
+        $this->eventRepository = $eventRepository;
+    }
+
+    /**
+     * Dashboard index action.
+     *
+     * @return Response HTTP Response
+     */
+    #[Route('/dashboard', name: 'dashboard_index', methods: 'GET')]
+    #[IsGranted('ROLE_USER')]
+    public function index(): Response
+    {
+        /** @var User $user */
         $user = $this->getUser();
 
-        $upcomingEvents = $eventRepository->findUpcomingEventsForUser($user);
+        $activeEvents = $this->eventRepository->findActiveEvents($user, 5);
+        $upcomingEvents = $this->eventRepository->findUpcomingEvents($user, 5);
 
         return $this->render('dashboard/index.html.twig', [
-            'events' => $upcomingEvents,
+            'activeEvents' => $activeEvents,
+            'upcomingEvents' => $upcomingEvents,
         ]);
     }
 }
