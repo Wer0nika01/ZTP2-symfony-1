@@ -140,7 +140,7 @@ class EventController extends AbstractController
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|PUT'
     )]
-    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    #[IsGranted(EventVoter::EDIT, subject: 'event')]
     public function edit(Request $request, Event $event): Response
     {
         $form = $this->createForm(EventType::class, $event, [
@@ -185,7 +185,7 @@ class EventController extends AbstractController
         methods: 'GET|DELETE'
     )]
 
-    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    #[IsGranted(EventVoter::DELETE, subject: 'event')]
     public function delete(Request $request, Event $event): Response
     {
 
@@ -210,7 +210,7 @@ class EventController extends AbstractController
             'event/delete.html.twig',
             [
                 'form' => $form->createView(),
-                'category' => $event,
+                'event' => $event,
             ]
         );
     }

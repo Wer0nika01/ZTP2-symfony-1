@@ -67,9 +67,6 @@ final class EventVoter extends Voter
         if (!$user instanceof UserInterface) {
             return false;
         }
-        if (!$subject instanceof Event) {
-            return false;
-        }
 
         return match ($attribute) {
             self::EDIT => $this->canEdit($subject, $user),
