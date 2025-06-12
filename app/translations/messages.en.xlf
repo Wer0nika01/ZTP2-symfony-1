@@ -298,6 +298,58 @@
         <source>label.yes</source>
         <target>Yes</target>
       </trans-unit>
+      <trans-unit id="title.contact_list">
+        <source>title.contact_list</source>
+        <target>Contact list</target>
+      </trans-unit>
+      <trans-unit id="label.firstName">
+        <source>label.firstName</source>
+        <target>First name</target>
+      </trans-unit>
+      <trans-unit id="label.lastName">
+        <source>label.lastName</source>
+        <target>Last name</target>
+      </trans-unit>
+      <trans-unit id="label.company">
+        <source>label.company</source>
+        <target>Company</target>
+      </trans-unit>
+      <trans-unit id="label.jobTitle">
+        <source>label.jobTitle</source>
+        <target>Job title</target>
+      </trans-unit>
+      <trans-unit id="title.contact_details">
+        <source>title.contact_details</source>
+        <target>Contact details</target>
+      </trans-unit>
+      <trans-unit id="label.phone">
+        <source>label.phone</source>
+        <target>Phone</target>
+      </trans-unit>
+      <trans-unit id="label.address">
+        <source>label.address</source>
+        <target>Address</target>
+      </trans-unit>
+      <trans-unit id="label.notes">
+        <source>label.notes</source>
+        <target>Notes</target>
+      </trans-unit>
+      <trans-unit id="label.author">
+        <source>label.author</source>
+        <target>Author</target>
+      </trans-unit>
+      <trans-unit id="title.contact_edit">
+        <source>title.contact_edit</source>
+        <target>Edit contact</target>
+      </trans-unit>
+      <trans-unit id="title.contact_create">
+        <source>title.contact_create</source>
+        <target>Create contact</target>
+      </trans-unit>
+      <trans-unit id="action.reset_filters">
+        <source>action.reset_filters</source>
+        <target>Reset filters</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

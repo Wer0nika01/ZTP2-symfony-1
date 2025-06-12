@@ -302,6 +302,58 @@
         <source>label.yes</source>
         <target>Tak</target>
       </trans-unit>
+      <trans-unit id="title.contact_list">
+        <source>title.contact_list</source>
+        <target>Lista kontaktów</target>
+      </trans-unit>
+      <trans-unit id="label.firstName">
+        <source>label.firstName</source>
+        <target>Imię</target>
+      </trans-unit>
+      <trans-unit id="label.lastName">
+        <source>label.lastName</source>
+        <target>Nazwisko</target>
+      </trans-unit>
+      <trans-unit id="label.company">
+        <source>label.company</source>
+        <target>Firma</target>
+      </trans-unit>
+      <trans-unit id="label.jobTitle">
+        <source>label.jobTitle</source>
+        <target>Zawód</target>
+      </trans-unit>
+      <trans-unit id="title.contact_details">
+        <source>title.contact_details</source>
+        <target>Szczegóły kontaktu</target>
+      </trans-unit>
+      <trans-unit id="label.phone">
+        <source>label.phone</source>
+        <target>Telefon</target>
+      </trans-unit>
+      <trans-unit id="label.address">
+        <source>label.address</source>
+        <target>Adres</target>
+      </trans-unit>
+      <trans-unit id="label.notes">
+        <source>label.notes</source>
+        <target>Notatka</target>
+      </trans-unit>
+      <trans-unit id="label.author">
+        <source>label.author</source>
+        <target>Autor</target>
+      </trans-unit>
+      <trans-unit id="title.contact_edit">
+        <source>title.contact_edit</source>
+        <target>Edycja kontaktu</target>
+      </trans-unit>
+      <trans-unit id="title.contact_create">
+        <source>title.contact_create</source>
+        <target>Stwórz kontakt</target>
+      </trans-unit>
+      <trans-unit id="action.reset_filters">
+        <source>action.reset_filters</source>
+        <target>Resetuj filtry</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
