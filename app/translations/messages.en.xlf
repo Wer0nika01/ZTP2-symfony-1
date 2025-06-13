@@ -482,6 +482,14 @@
         <source>role.admin</source>
         <target>Admin</target>
       </trans-unit>
+      <trans-unit id="title.delete_user">
+        <source>title.delete_user</source>
+        <target>Delete user</target>
+      </trans-unit>
+      <trans-unit id="message.cannot_delete_last_admin">
+        <source>message.cannot_delete_last_admin</source>
+        <target>Cannot delete last admin.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -7,6 +7,9 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\UserRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 /**
  * Class UserVoter
@@ -16,13 +19,14 @@ class UserVoter extends Voter
     public const VIEW = 'USER_VIEW';
     public const EDIT = 'USER_EDIT';
     public const DELETE = 'USER_DELETE';
+    public const CAN_CHANGE_ROLES = 'CAN_CHANGE_ROLES';
 
     /**
      * Constructor
      *
      * @param Security $security
      */
-    public function __construct(private readonly Security $security)
+    public function __construct(private readonly Security $security, private readonly userRepository $userRepository)
     {
     }
 
@@ -36,7 +40,7 @@ class UserVoter extends Voter
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::CAN_CHANGE_ROLES])) {
             return false;
         }
 
@@ -71,6 +75,17 @@ class UserVoter extends Voter
         /** @var User $userToOperateOn */
         $userToOperateOn = $subject;
 
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            if ($attribute === self::CAN_CHANGE_ROLES) {
+                try {
+                    return $this->canAdminChangeRoles($userToOperateOn, $loggedInUser);
+                } catch (NoResultException|NonUniqueResultException $e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         return match ($attribute) {
             self::VIEW => $this->canView($userToOperateOn, $loggedInUser),
             self::EDIT => $this->canEdit($userToOperateOn, $loggedInUser),
@@ -81,9 +96,6 @@ class UserVoter extends Voter
 
     /**
      * Checks if the logged-in user can view the given user.
-     *
-     * Zwykły użytkownik może zobaczyć tylko swój własny profil.
-     * Admin może zobaczyć wszystkie profile (już sprawdzone wyżej).
      *
      * @param User        $userToOperateOn The user being viewed
      * @param UserInterface $loggedInUser    The currently logged-in user
@@ -98,9 +110,6 @@ class UserVoter extends Voter
     /**
      * Checks if the logged-in user can edit the given user.
      *
-     * Zwykły użytkownik może edytować tylko swój własny profil.
-     * Admin może edytować wszystkie profile (już sprawdzone wyżej).
-     *
      * @param User        $userToOperateOn The user being edited
      * @param UserInterface $loggedInUser    The currently logged-in user
      *
@@ -114,10 +123,6 @@ class UserVoter extends Voter
     /**
      * Checks if the logged-in user can delete the given user.
      *
-     * Zwykły użytkownik NIE MOŻE usuwać innych użytkowników ani siebie.
-     * Tylko Admin może usuwać użytkowników.
-     * (Dostęp dla admina już sprawdzony wyżej, więc jeśli tu dotarł nie-admin, to zwracamy false).
-     *
      * @param User        $userToOperateOn The user being deleted
      * @param UserInterface $loggedInUser    The currently logged-in user
      *
@@ -126,5 +131,30 @@ class UserVoter extends Voter
     private function canDelete(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
         return false;
+    }
+
+    /**
+     * Checks if an administrator can change the roles of a given user (including their own).
+     *
+     * @param User          $userToOperateOn The user whose roles are being modified
+     * @param UserInterface $loggedInUser    The currently logged-in user (who is an administrator)
+     *
+     * @return bool
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    private function canAdminChangeRoles(User $userToOperateOn, UserInterface $loggedInUser): bool
+    {
+        if ($userToOperateOn->getId() !== $loggedInUser->getId()) {
+            return true;
+        }
+
+        $currentAdminCount = $this -> userRepository->countAdmins();
+
+        if ($currentAdminCount === 1) {
+            return false;
+        }
+
+        return true;
     }
 }

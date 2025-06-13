@@ -9,10 +9,13 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserService implements UserServiceInterface
 {
-    public function __construct(private readonly UserRepository $userRepository, private readonly EntityManagerInterface $em, private readonly PaginatorInterface $paginator)
+    public function __construct(private readonly UserRepository $userRepository, private readonly TranslatorInterface $translator, private readonly PaginatorInterface $paginator)
     {
     }
     public function getPaginatedList(int $page): PaginationInterface
@@ -32,13 +35,16 @@ class UserService implements UserServiceInterface
         return $this->userRepository->findAll();
     }
 
-    public function updateUser(User $user): void
-    {
-        $this->em->flush();
-    }
-
     public function delete(User $user): void
     {
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            $adminCount = $this->userRepository->countAdmins();
+
+            if ($adminCount <= 1) {
+                throw new \RuntimeException($this->translator->trans('message.cannot_delete_last_admin')
+                );}
+        }
+
         $this->userRepository->delete($user);
     }
 
@@ -59,4 +65,18 @@ class UserService implements UserServiceInterface
 
         return count($qb->getQuery()->getResult()) === 0;
     }
+
+    /**
+     * Find a user by their ID.
+     *
+     * @param int $id User ID
+     *
+     * @return User|null User entity or null if not found
+     */
+    public function findOneById(int $id): ?User
+    {
+        return $this->userRepository->find($id);
+    }
+
+
 }

@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Form\Type\UserType;
 use App\Service\UserServiceInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormError;
@@ -14,13 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Bundle\SecurityBundle\Security as SecurityBundle;
+
 
 class UserController extends AbstractController
 {
-    public $translator;
-    public function __construct(private readonly UserServiceInterface $userService, TranslatorInterface $translator)
+    public function __construct(private readonly UserServiceInterface $userService, TranslatorInterface $translator, private readonly SecurityBundle $security)
     {
-        $this->translator = $translator;
     }
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/', name: 'admin_user_index', methods: 'GET')]
     #[IsGranted('ROLE_ADMIN')]
@@ -58,8 +60,8 @@ class UserController extends AbstractController
             if (!$this->userService->isEmailUnique($email, $user->getId())) {
                 $form->get('email')->addError(new FormError($translator->trans('error.email_exists')));
             } else {
-                $this->userService->updateUser($user);
-                $this->addFlash('success', $this->translator->trans('flash.user_saved'));
+                $this->userService->save($user);
+                $this->addFlash('success', $translator->trans('flash.user_saved'));
 
                 return $this->redirectToRoute('admin_user_index');
             }
@@ -70,12 +72,7 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-    #[\Symfony\Component\Routing\Attribute\Route(
-        '/admin/user/{id}/delete',
-        name: 'admin_user_delete',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET', 'DELETE']
-    )]
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/delete', name: 'admin_user_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, User $user): Response
     {
@@ -87,14 +84,40 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->userService->delete($user);
+            try {
+                $currentUser = $this->security->getUser();
+                $isSelfDeletion = ($currentUser instanceof User && $currentUser->getId() === $user->getId());
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('flash.user_deleted')
-            );
+                $this->userService->delete($user);
 
-            return $this->redirectToRoute('admin_user_index');
+                $this->addFlash(
+                    'success',
+                    'flash.user_deleted'
+                );
+
+                if ($isSelfDeletion) {
+                    $this->container->get('security.token_storage')->setToken(null);
+                    $request->getSession()->invalidate();
+
+                    $this->userService->delete($user);
+
+                    return $this->redirectToRoute('app_logout');
+                }
+
+                return $this->redirectToRoute('admin_user_index');
+
+            } catch (NoResultException | NonUniqueResultException $e) {
+                $this->addFlash('danger', 'message.error_counting_admins');
+                error_log($e->getMessage());
+                return $this->redirectToRoute('admin_user_index');
+            } catch (\RuntimeException $e) {
+                $this->addFlash(
+                    'danger',
+                    $e->getMessage()
+                );
+                error_log($e->getMessage());
+                return $this->redirectToRoute('admin_user_index');
+            }
         }
 
         return $this->render('admin/user/delete.html.twig', [
@@ -102,4 +125,5 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
+
 }
