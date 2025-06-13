@@ -494,6 +494,18 @@
         <source>message.cannot_delete_last_admin</source>
         <target>Nie można usunąć ostatniego admina.</target>
       </trans-unit>
+      <trans-unit id="security.account_blocked_message">
+        <source>security.account_blocked_message</source>
+        <target>Twoje konto zostało zablokowane. Skontaktuj się z administratorem.</target>
+      </trans-unit>
+      <trans-unit id="action.block">
+        <source>action.block</source>
+        <target>Zablokuj</target>
+      </trans-unit>
+      <trans-unit id="action.unblock">
+        <source>action.unblock</source>
+        <target>Odblokuj</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

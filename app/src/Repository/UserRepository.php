@@ -65,4 +65,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function toggleBlock(User $user): void
+    {
+        $user->setIsBlocked(!$user->getIsBlocked());
+        $this->getEntityManager()->flush();
+    }
 }

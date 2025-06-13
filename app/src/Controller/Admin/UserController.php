@@ -42,13 +42,7 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-    #[\Symfony\Component\Routing\Attribute\Route(
-        '/admin/user/{id}/edit',
-        name: 'admin_user_edit',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET', 'POST']
-    )]
-
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/edit', name: 'admin_user_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, User $user, TranslatorInterface $translator): Response
     {
@@ -124,6 +118,22 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             'user' => $user,
         ]);
+    }
+
+    #[Route('/admin/user/{id}/toggle-block', name: 'admin_user_toggle_block', requirements: ['id' => '[1-9]\d*'], methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function toggleBlock(User $user, TranslatorInterface $translator): Response
+    {
+        $this->userService->toggleBlock($user);
+
+        $this->addFlash(
+            'success',
+            $user->getIsBlocked()
+                ? $translator->trans('flash.user_blocked')
+                : $translator->trans('flash.user_unblocked')
+        );
+
+        return $this->redirectToRoute('admin_user_index', ['id' => $user->getId()]);
     }
 
 }

@@ -64,4 +64,13 @@ interface UserServiceInterface
      * @return User|null
      */
     public function findOneById(int $id): ?User;
+
+    /**
+     * Toggle to block users
+     *
+     * @param User $user
+     * @return void
+     */
+    public function toggleBlock(User $user): void;
+
 }

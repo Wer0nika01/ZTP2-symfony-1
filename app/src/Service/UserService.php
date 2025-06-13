@@ -78,5 +78,16 @@ class UserService implements UserServiceInterface
         return $this->userRepository->find($id);
     }
 
+    /**
+     * toggle to block users
+     *
+     * @param User $user
+     * @return void
+     */
+    public function toggleBlock(User $user): void
+    {
+        $this->userRepository->toggleBlock($user);
+    }
+
 
 }

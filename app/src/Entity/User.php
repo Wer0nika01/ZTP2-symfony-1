@@ -78,6 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastName = null;
 
 
+
     /**
      * Getter for id.
      *
@@ -233,5 +234,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
+    }
+
+    /**
+     * Getter for is bloocked?
+     *
+     * @var bool
+     */
+    #[ORM\Column(type: 'boolean')]
+    private bool $isBlocked = false;
+
+    public function getIsBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    /**
+     * Setter for Is blocked?
+     *
+     * @param bool $isBlocked
+     * @return $this
+     */
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
+        return $this;
     }
 }

@@ -20,13 +20,15 @@ class UserVoter extends Voter
     public const EDIT = 'USER_EDIT';
     public const DELETE = 'USER_DELETE';
     public const CAN_CHANGE_ROLES = 'CAN_CHANGE_ROLES';
+    public const BLOCK = 'USER_BLOCK';
+
 
     /**
      * Constructor
      *
      * @param Security $security
      */
-    public function __construct(private readonly Security $security, private readonly userRepository $userRepository)
+    public function __construct(private readonly Security $security, private readonly UserRepository $userRepository)
     {
     }
 
@@ -68,28 +70,26 @@ class UserVoter extends Voter
             return false;
         }
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
+        //if ($this->security->isGranted('ROLE_ADMIN')) {
+        //   return true;
+        //}
 
         /** @var User $userToOperateOn */
         $userToOperateOn = $subject;
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            if ($attribute === self::CAN_CHANGE_ROLES) {
-                try {
-                    return $this->canAdminChangeRoles($userToOperateOn, $loggedInUser);
-                } catch (NoResultException|NonUniqueResultException $e) {
-                    return false;
-                }
+        if ($this->security->isGranted('ROLE_ADMIN') && $attribute === self::CAN_CHANGE_ROLES) {
+            try {
+                return $this->canAdminChangeRoles($userToOperateOn, $loggedInUser);
+            } catch (NoResultException|NonUniqueResultException $e) {
+                return false;
             }
-            return true;
         }
 
         return match ($attribute) {
             self::VIEW => $this->canView($userToOperateOn, $loggedInUser),
             self::EDIT => $this->canEdit($userToOperateOn, $loggedInUser),
             self::DELETE => $this->canDelete($userToOperateOn, $loggedInUser),
+            self::BLOCK => $this->canBlock($userToOperateOn, $loggedInUser),
             default => false,
         };
     }
@@ -157,4 +157,14 @@ class UserVoter extends Voter
 
         return true;
     }
+
+    private function canBlock(User $userToOperateOn, UserInterface $loggedInUser): bool
+    {
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

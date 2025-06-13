@@ -490,6 +490,18 @@
         <source>message.cannot_delete_last_admin</source>
         <target>Cannot delete last admin.</target>
       </trans-unit>
+      <trans-unit id="security.account_blocked_message">
+        <source>security.account_blocked_message</source>
+        <target>Your account has been blocked. Please contact your administrator.</target>
+      </trans-unit>
+      <trans-unit id="action.block">
+        <source>action.block</source>
+        <target>Block</target>
+      </trans-unit>
+      <trans-unit id="action.unblock">
+        <source>action.unblock</source>
+        <target>Unblock</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
