@@ -10,17 +10,42 @@ use App\Repository\EventRepository;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EventService implements EventServiceInterface
 {
+    /**
+     * Items per page.
+     *
+     * Use constants to define configuration values that rarely change.
+     *
+     * @constant int
+     */
     private const PAGINATOR_ITEMS_PER_PAGE = 10;
 
+    /**
+     * Constructor.
+     *
+     * @param EventRepository        $eventRepository Event repository
+     * @param PaginatorInterface     $paginator       Paginator
+     * @param EntityManagerInterface $entityManager   Entity Manager
+     */
     public function __construct(
+        private readonly EventRepository $eventRepository,
         private readonly PaginatorInterface $paginator,
-        private readonly EventRepository $eventRepository
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
+    /**
+     * Get paginated list
+     *
+     * @param int                 $page
+     * @param User                $author
+     * @param EventListFiltersDto $filters
+     *
+     * @return PaginationInterface
+     */
     public function getPaginatedList(int $page, User $author, EventListFiltersDto $filters): PaginationInterface
     {
         return $this->paginator->paginate(
@@ -28,20 +53,34 @@ class EventService implements EventServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime','event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'], // DODANE: tags.name
+                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'], // DODANE: tags.name
                 'defaultSortFieldName' => 'event.startTime',
                 'defaultSortDirection' => 'asc',
             ]
         );
     }
 
+    /**
+     * Save event.
+     *
+     * @param Event $event Event entity
+     */
     public function save(Event $event): void
     {
-        $this->eventRepository->save($event);
+        if (null === $event->getId()) {
+            $this->entityManager->persist($event);
+        }
+        $this->entityManager->flush();
     }
 
+    /**
+     * Delete event.
+     *
+     * @param Event $event Event entity
+     */
     public function delete(Event $event): void
     {
-        $this->eventRepository->remove($event);
+        $this->entityManager->remove($event);
+        $this->entityManager->flush();
     }
 }

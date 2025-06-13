@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Contact list filters DTO.
  */
@@ -36,6 +37,7 @@ class ContactListFiltersDto
      * Setter for tags.
      *
      * @param Collection<int, Tag> $tags
+     *
      * @return $this
      */
     public function setTags(Collection $tags): static
@@ -49,6 +51,7 @@ class ContactListFiltersDto
      * Add tag to collection.
      *
      * @param Tag $tag
+     *
      * @return $this
      */
     public function addTag(Tag $tag): static
@@ -64,6 +67,7 @@ class ContactListFiltersDto
      * Remove tag from collection.
      *
      * @param Tag $tag
+     *
      * @return $this
      */
     public function removeTag(Tag $tag): static

@@ -1,6 +1,7 @@
 <?php
 
 // src/Service/UserService.php
+
 namespace App\Service;
 
 use App\Entity\User;
@@ -9,20 +10,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 
-
 class UserService implements UserServiceInterface
 {
-    private UserRepository $userRepository;
-    private EntityManagerInterface $em;
-    private PaginatorInterface $paginator;
-
-
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, PaginatorInterface $paginator)
+    public function __construct(private readonly UserRepository $userRepository, private readonly EntityManagerInterface $em, private readonly PaginatorInterface $paginator)
     {
-        $this->userRepository = $userRepository;
-        $this->em = $em;
-        $this->paginator = $paginator;
-
     }
     public function getPaginatedList(int $page): PaginationInterface
     {

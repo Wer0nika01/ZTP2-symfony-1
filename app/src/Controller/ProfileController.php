@@ -27,7 +27,7 @@ class ProfileController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/profile', name: 'app_profile', methods: 'GET')]
+    #[\Symfony\Component\Routing\Attribute\Route('/profile', name: 'app_profile', methods: 'GET')]
     public function profile(): Response
     {
         /** @var User $user */
@@ -41,12 +41,12 @@ class ProfileController extends AbstractController
     /**
      * Edit user profile data.
      *
-     * @param Request                $request         HTTP Request
-     * @param EntityManagerInterface $entityManager   Entity Manager
+     * @param Request                $request       HTTP Request
+     * @param EntityManagerInterface $entityManager Entity Manager
      *
      * @return Response
      */
-    #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function editProfile(Request $request, EntityManagerInterface $entityManager): Response
     {
         /** @var User $user */
@@ -78,7 +78,7 @@ class ProfileController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
     public function changePassword(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,

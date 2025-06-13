@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Avatar controller.
  */
@@ -21,7 +22,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class AvatarController.
  */
-#[Route('/avatar')]
 class AvatarController extends AbstractController
 {
     /**
@@ -33,7 +33,6 @@ class AvatarController extends AbstractController
     public function __construct(private readonly AvatarServiceInterface $avatarService, private readonly TranslatorInterface $translator)
     {
     }
-
     /**
      * Create action.
      *
@@ -42,7 +41,7 @@ class AvatarController extends AbstractController
      * @return Response HTTP response
      */
     #[Route(
-        '/create',
+        '/avatar/create',
         name: 'avatar_create',
         methods: 'GET|POST'
     )]
@@ -79,7 +78,7 @@ class AvatarController extends AbstractController
                 $this->translator->trans('message.created_successfully')
             );
 
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('dashboard_index');
         }
 
         return $this->render(
@@ -87,7 +86,6 @@ class AvatarController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-
     /**
      * Edit action.
      *
@@ -97,7 +95,7 @@ class AvatarController extends AbstractController
      * @return Response HTTP response
      */
     #[Route(
-        '/{id}/edit',
+        '/avatar/{id}/edit',
         name: 'avatar_edit',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|PUT'
@@ -134,7 +132,7 @@ class AvatarController extends AbstractController
                 $this->translator->trans('message.edited_successfully')
             );
 
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('dashboard_index');
         }
 
         return $this->render(
@@ -145,16 +143,16 @@ class AvatarController extends AbstractController
             ]
         );
     }
-
     /**
      * Delete action.
      *
      * @param Request $request
-     * @param Avatar $avatar
+     * @param Avatar  $avatar
+     *
      * @return Response
      */
     #[IsGranted('DELETE', subject: 'avatar')]
-    #[Route('/{id}/delete', name: 'avatar_delete', requirements: ['id' => '\d+'], methods: ['POST', 'DELETE'])]
+    #[Route('/avatar/{id}/delete', name: 'avatar_delete', requirements: ['id' => '\d+'], methods: ['POST', 'DELETE'])]
     public function delete(Request $request, Avatar $avatar): Response
     {
         $form = $this->createForm(FormType::class, null, [

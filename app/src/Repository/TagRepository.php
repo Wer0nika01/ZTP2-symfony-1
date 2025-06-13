@@ -3,6 +3,7 @@
 /**
  * Tag repository
  */
+
 namespace App\Repository;
 
 use App\Entity\Tag;
@@ -69,5 +70,4 @@ class TagRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($tag);
         $this->getEntityManager()->flush();
     }
-
 }

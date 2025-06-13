@@ -36,6 +36,8 @@
                 <tr>
                     <th>{{ 'label.id'|trans }}</th>
                     <th>{{ 'label.name'|trans }}</th>
+                    <th>{{ 'label.created_at'|trans }}</th>
+                    <th>{{ 'label.updated_at'|trans }}</th>
                     {% if showActions %}
                         <th>{{ 'label.actions'|trans }}</th>
                     {% endif %}
@@ -46,6 +48,8 @@
                     <tr>
                         <td>{{ category.id }}</td>
                         <td>{{ category.title }}</td>
+                        <td>{{ category.createdAt|format_datetime('medium', 'short', locale='pl') }}</td>
+                        <td>{{ category.updatedAt|format_datetime('medium', 'short', locale='pl') }}</td>
                         {% if showActions %}
                             <td>
                                 {% if is_granted('CATEGORY_VIEW', category) %}

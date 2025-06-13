@@ -18,7 +18,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 /**
  * Class SecurityController.
  */
@@ -31,13 +30,14 @@ class SecurityController extends AbstractController
      * @param $passwordHasher
      * @param $request
      * @param $entityManager
+     *
      * @return Response HTTP response
      */
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils, UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         if ($this->getUser() instanceof UserInterface) {
-            return $this->redirectToRoute('event_index');
+            return $this->redirectToRoute('dashboard_index');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();

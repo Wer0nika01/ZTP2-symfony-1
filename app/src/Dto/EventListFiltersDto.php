@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Event list filters DTO.
  */
@@ -16,19 +17,16 @@ use Doctrine\Common\Collections\Collection;
  */
 class EventListFiltersDto
 {
-    /**
-     * @param Category|null      $category   Category entity
-     * @param EventStatus|null    $status Event status
-     * @param Collection<int, Tag> $tags       Collection of Tag entities
-     */
-
-    private ?Category $category;
-    private ?EventStatus $status;
     private Collection $tags;
-    public function __construct(?Category $category = null, ?EventStatus $status = null, Collection $tags)
-    {
-        $this->category = $category;
-        $this->status = $status;
+    public function __construct(
+        Collection $tags, /**
+         * @param Category|null      $category   Category entity
+         * @param EventStatus|null    $status Event status
+         * @param Collection<int, Tag> $tags       Collection of Tag entities
+         */
+        private ?Category $category = null,
+        private ?EventStatus $status = null
+    ) {
         $this->tags = $tags ?? new ArrayCollection();
     }
 
@@ -36,11 +34,13 @@ class EventListFiltersDto
      *Setter for Category
      *
      * @param Category|null $category
+     *
      * @return $this
      */
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -58,12 +58,13 @@ class EventListFiltersDto
      * Setter for status
      *
      * @param EventStatus|null $status
+     *
      * @return $this
      */
-
     public function setStatus(?EventStatus $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -91,6 +92,7 @@ class EventListFiltersDto
      * Setter for tags.
      *
      * @param Collection<int, Tag> $tags
+     *
      * @return $this
      */
     public function setTags(Collection $tags): static
@@ -104,6 +106,7 @@ class EventListFiltersDto
      * Add tag to collection.
      *
      * @param Tag $tag
+     *
      * @return $this
      */
     public function addTag(Tag $tag): static
@@ -119,6 +122,7 @@ class EventListFiltersDto
      * Remove tag from collection.
      *
      * @param Tag $tag
+     *
      * @return $this
      */
     public function removeTag(Tag $tag): static

@@ -25,10 +25,8 @@ class EventListFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => 'label.filter_by_category',
                 'label' => 'label.category',
-                'query_builder' => function (CategoryRepository $er) {
-                    return $er->createQueryBuilder('c')
-                        ->orderBy('c.title', 'ASC');
-                },
+                'query_builder' => fn (CategoryRepository $er) => $er->createQueryBuilder('c')
+                    ->orderBy('c.title', 'ASC'),
             ])
             ->add('status', EnumType::class, [
                 'class' => EventStatus::class,
@@ -45,10 +43,8 @@ class EventListFilterType extends AbstractType
                 'required' => false,
                 'label' => 'label.tags',
                 'placeholder' => 'label.filter_by_tags',
-                'query_builder' => function (TagRepository $tr) {
-                    return $tr->createQueryBuilder('t')
-                        ->orderBy('t.name', 'ASC');
-                },
+                'query_builder' => fn (TagRepository $tr) => $tr->createQueryBuilder('t')
+                    ->orderBy('t.name', 'ASC'),
             ]);
     }
 

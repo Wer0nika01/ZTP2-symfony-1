@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Category service interface.
  */
@@ -49,8 +50,8 @@ interface CategoryServiceInterface
      * Find by Id
      *
      * @param int $id
+     *
      * @return Category|null
      */
     public function findOneById(int $id): ?Category;
 }
-

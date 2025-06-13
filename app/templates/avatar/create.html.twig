@@ -9,11 +9,9 @@
 {{ form_row(form.file) }}
 
 <button class="btn btn-primary">{{ 'action.save'|trans }}</button>
-{{ form_end(form) }}
-
-<p>
-    <a href="{{ path('task_index') }}" class="btn btn-secondary">
+    <a href="{{ path('dashboard_index') }}" class="btn btn-secondary">
         {{ 'action.back_to_list'|trans }}
     </a>
-</p>
+{{ form_end(form) }}
+
 {% endblock %}

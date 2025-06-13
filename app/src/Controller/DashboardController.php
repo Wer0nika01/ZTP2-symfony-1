@@ -11,11 +11,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardController extends AbstractController
 {
-    private EventRepository $eventRepository;
-
-    public function __construct(EventRepository $eventRepository)
+    public function __construct(private readonly EventRepository $eventRepository)
     {
-        $this->eventRepository = $eventRepository;
     }
 
     /**
@@ -23,7 +20,7 @@ class DashboardController extends AbstractController
      *
      * @return Response HTTP Response
      */
-    #[Route('/dashboard', name: 'dashboard_index', methods: 'GET')]
+    #[\Symfony\Component\Routing\Attribute\Route('/dashboard', name: 'dashboard_index', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {

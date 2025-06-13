@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tag service interface.
  */
@@ -17,6 +18,7 @@ interface TagServiceInterface
      * Get paginated list.
      *
      * @param int $page Page number
+     *
      * @return PaginationInterface Paginated list
      */
     public function getPaginatedList(int $page): PaginationInterface;
@@ -25,6 +27,7 @@ interface TagServiceInterface
      * Save tag
      *
      * @param Tag $tag
+     *
      * @return void
      */
     public function save(Tag $tag): void;
@@ -33,6 +36,7 @@ interface TagServiceInterface
      * Delete tag
      *
      * @param Tag $tag
+     *
      * @return void
      */
     public function delete(Tag $tag): void;
@@ -50,6 +54,7 @@ interface TagServiceInterface
      * Find by Id
      *
      * @param string $slug
+     *
      * @return Tag|null
      */
     public function findOneById(int $id): ?Tag;

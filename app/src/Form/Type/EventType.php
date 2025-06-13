@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Event type.
  */
@@ -18,19 +19,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use App\Form\DataTransformer\TagsDataTransformer;
 
 /**
  * Class EventType.
  */
 class EventType extends AbstractType
 {
-    private TagsDataTransformer $tagsDataTransformer;
-
-    public function __construct(TagsDataTransformer $tagsDataTransformer)
-    {
-        $this->tagsDataTransformer = $tagsDataTransformer;
-    }
     /**
      * Builds the form.
      *
@@ -111,9 +105,7 @@ class EventType extends AbstractType
             EntityType::class,
             [
                 'class' => Category::class,
-                'choice_label' => function ($category): string {
-                    return $category->getTitle();
-                },
+                'choice_label' => fn ($category): string => $category->getTitle(),
                 'label' => 'label.category',
                 'placeholder' => 'label.none',
                 'required' => true,
@@ -121,10 +113,17 @@ class EventType extends AbstractType
         );
         $builder->add(
             'tags',
-            TextType::class,
+            EntityType::class,
             [
+                //'label' => 'label.tags',
+                //'required' => false,
+                'class' => Tag::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true,
                 'label' => 'label.tags',
                 'required' => false,
+                'by_reference' => false,
             ]
         )
             ->add('status', EnumType::class, [
@@ -132,9 +131,7 @@ class EventType extends AbstractType
                 'choice_label' => fn (EventStatus $choice) => $choice->getLabel(),
                 'label' => 'label.status',
                 'required' => true,
-                'by_reference' => false,
             ]);
-        $builder->get('tags')->addModelTransformer($this->tagsDataTransformer);
     }
 
     /**

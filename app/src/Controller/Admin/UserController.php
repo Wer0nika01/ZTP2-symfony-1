@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\Admin;
 
 use App\Entity\User;
@@ -14,18 +15,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 
-#[Route('/admin/user')]
 class UserController extends AbstractController
 {
-    private UserServiceInterface $userService;
-
-    public function __construct(UserServiceInterface $userService, TranslatorInterface $translator)
+    public $translator;
+    public function __construct(private readonly UserServiceInterface $userService, TranslatorInterface $translator)
     {
-        $this->userService = $userService;
         $this->translator = $translator;
     }
-
-    #[Route('/', name: 'admin_user_index', methods: 'GET')]
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/', name: 'admin_user_index', methods: 'GET')]
     #[IsGranted('ROLE_ADMIN')]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
@@ -35,8 +32,7 @@ class UserController extends AbstractController
             'pagination' => $pagination,
         ]);
     }
-
-    #[Route('/{id}', name: 'admin_user_view')]
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}', name: 'admin_user_view')]
     #[IsGranted('ROLE_ADMIN')]
     public function show(User $user): Response
     {
@@ -44,9 +40,8 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-
-    #[Route(
-        '/{id}/edit',
+    #[\Symfony\Component\Routing\Attribute\Route(
+        '/admin/user/{id}/edit',
         name: 'admin_user_edit',
         requirements: ['id' => '[1-9]\d*'],
         methods: ['GET', 'POST']
@@ -65,6 +60,7 @@ class UserController extends AbstractController
             } else {
                 $this->userService->updateUser($user);
                 $this->addFlash('success', $this->translator->trans('flash.user_saved'));
+
                 return $this->redirectToRoute('admin_user_index');
             }
         }
@@ -74,9 +70,8 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-
-    #[Route(
-        '/{id}/delete',
+    #[\Symfony\Component\Routing\Attribute\Route(
+        '/admin/user/{id}/delete',
         name: 'admin_user_delete',
         requirements: ['id' => '[1-9]\d*'],
         methods: ['GET', 'DELETE']
@@ -107,5 +102,4 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-
 }

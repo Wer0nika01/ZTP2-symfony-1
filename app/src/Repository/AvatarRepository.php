@@ -52,5 +52,4 @@ class AvatarRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
 }

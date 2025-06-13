@@ -11,7 +11,8 @@ class RegistrationService implements RegistrationServiceInterface
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher
-    ) {}
+    ) {
+    }
 
     public function register(User $user, string $plainPassword): void
     {

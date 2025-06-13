@@ -32,7 +32,6 @@
                 <tr>
                     <th>{{ 'label.id'|trans }}</th>
                     <th>{{ 'label.title'|trans }}</th>
-                    <th>{{ 'label.slug'|trans }}</th>
                     <th>{{ 'label.created_at'|trans }}</th>
                     <th>{{ 'label.updated_at'|trans }}</th>
                     {% if showActions %}
@@ -44,10 +43,9 @@
                 {% for tag in pagination.items %}
                     <tr>
                         <td>{{ tag.id }}</td>
-                        <td>{{ tag.title }}</td>
-                        <td>{{ tag.slug }}</td>
-                        <td>{{ tag.createdAt|date('Y-m-d H:i') }}</td>
-                        <td>{{ tag.updatedAt|date('Y-m-d H:i') }}</td>
+                        <td>{{ tag.name }}</td>
+                        <td>{{ tag.createdAt|format_datetime('medium', 'short', locale='pl')}}</td>
+                        <td>{{ tag.updatedAt|format_datetime('medium', 'short', locale='pl') }}</td>
                         {% if showActions %}
                             <td>
                                 {% if is_granted('TAG_VIEW', tag) %}

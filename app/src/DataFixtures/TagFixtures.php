@@ -24,7 +24,9 @@ class TagFixtures extends AbstractBaseFixtures
      *
      * @param SluggerInterface $slugger
      */
-    public function __construct(private readonly SluggerInterface $slugger) {}
+    public function __construct(private readonly SluggerInterface $slugger)
+    {
+    }
 
     /**
      * Load data

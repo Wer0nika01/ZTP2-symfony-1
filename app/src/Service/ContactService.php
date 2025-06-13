@@ -16,13 +16,8 @@ class ContactService implements ContactServiceInterface
 {
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
-    private ContactRepository $contactRepository;
-    private PaginatorInterface $paginator;
-
-    public function __construct(ContactRepository $contactRepository, PaginatorInterface $paginator)
+    public function __construct(private readonly ContactRepository $contactRepository, private readonly PaginatorInterface $paginator)
     {
-        $this->contactRepository = $contactRepository;
-        $this->paginator = $paginator;
     }
 
     /**

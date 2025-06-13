@@ -8,17 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserType extends AbstractType
 {
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->translator = $translator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,7 +23,7 @@ class UserType extends AbstractType
                     'role.user' => 'ROLE_USER',
                     'role.admin' => 'ROLE_ADMIN',
                 ],
-                'expanded' => true, // checkboxes
+                'expanded' => true,
                 'multiple' => true,
                 'translation_domain' => 'messages',
             ])

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Avatar service interface.
  */
@@ -23,4 +24,3 @@ interface AvatarServiceInterface
      */
     public function create(UploadedFile $uploadedFile, Avatar $avatar, User $user): void;
 }
-

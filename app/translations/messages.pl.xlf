@@ -40,7 +40,7 @@
       </trans-unit>
       <trans-unit id="action.view">
         <source>action.view</source>
-        <target>Pokaż rekord</target>
+        <target>Podgląd</target>
       </trans-unit>
       <trans-unit id="action.back_to_list">
         <source>action.back_to_list</source>
@@ -230,10 +230,6 @@
         <source>label.new_password</source>
         <target>Nowe hasło</target>
       </trans-unit>
-      <trans-unit id="message.registration_successful">
-        <source>message.registration_successful</source>
-        <target>Rejestracja udana</target>
-      </trans-unit>
       <trans-unit id="label.description">
         <source>label.description</source>
         <target>Opis</target>
@@ -378,9 +374,117 @@
         <source>action.edit_profile</source>
         <target>Edytuj profil</target>
       </trans-unit>
+      <trans-unit id="title.edit_profile">
+        <source>title.edit_profile</source>
+        <target>Edytuj profil</target>
+      </trans-unit>
       <trans-unit id="message.profile_updated_successfully">
         <source>message.profile_updated_successfully</source>
         <target>Udalo się zedytować profil</target>
+      </trans-unit>
+      <trans-unit id="message.registration_successful">
+        <source>message.registration_successful</source>
+        <target>Udana rejestracja. Zaloguj się!</target>
+      </trans-unit>
+      <trans-unit id="label.filter_events">
+        <source>label.filter_events</source>
+        <target>Filtr zdarzeń</target>
+      </trans-unit>
+      <trans-unit id="label.filter_by_category">
+        <source>label.filter_by_category</source>
+        <target>Filtruj po kategorii</target>
+      </trans-unit>
+      <trans-unit id="label.filter_by_status">
+        <source>label.filter_by_status</source>
+        <target>Filtruj po statusie</target>
+      </trans-unit>
+      <trans-unit id="action.filter">
+        <source>action.filter</source>
+        <target>Filtruj</target>
+      </trans-unit>
+      <trans-unit id="label.created_at">
+        <source>label.created_at</source>
+        <target>Stworzono</target>
+      </trans-unit>
+      <trans-unit id="label.updated_at">
+        <source>label.updated_at</source>
+        <target>Zaktualizowano</target>
+      </trans-unit>
+      <trans-unit id="title.avatar_create">
+        <source>title.avatar_create</source>
+        <target>Stwórz avatar</target>
+      </trans-unit>
+      <trans-unit id="message.no_upcoming_events">
+        <source>message.no_upcoming_events</source>
+        <target>Brak nadchodzących zdarzeń</target>
+      </trans-unit>
+      <trans-unit id="title.tag_details">
+        <source>title.tag_details</source>
+        <target>Szczegoły tagu</target>
+      </trans-unit>
+      <trans-unit id="label.filter_contacts">
+        <source>label.filter_contacts</source>
+        <target>Filtr kontaktów</target>
+      </trans-unit>
+      <trans-unit id="nav.dashboard">
+        <source>nav.dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="nav.events">
+        <source>nav.events</source>
+        <target>Zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="nav.contacts">
+        <source>nav.contacts</source>
+        <target>Kontakty</target>
+      </trans-unit>
+      <trans-unit id="nav.categories">
+        <source>nav.categories</source>
+        <target>Kategorie</target>
+      </trans-unit>
+      <trans-unit id="nav.tags">
+        <source>nav.tags</source>
+        <target>Tagi</target>
+      </trans-unit>
+      <trans-unit id="nav.admin">
+        <source>nav.admin</source>
+        <target>Admin</target>
+      </trans-unit>
+      <trans-unit id="nav.manage_users">
+        <source>nav.manage_users</source>
+        <target>Zarządzaj użytkownikami</target>
+      </trans-unit>
+      <trans-unit id="nav.profile">
+        <source>nav.profile</source>
+        <target>Profil</target>
+      </trans-unit>
+      <trans-unit id="nav.change_password">
+        <source>nav.change_password</source>
+        <target>Zmień hasło</target>
+      </trans-unit>
+      <trans-unit id="title.user">
+        <source>title.user</source>
+        <target>Użytkownicy</target>
+      </trans-unit>
+      <trans-unit id="label.roles">
+        <source>label.roles</source>
+        <target>Role</target>
+      </trans-unit>
+      <trans-unit id="title.user_details">
+        <source>title.user_details</source>
+        <target>Szczegóły użytkownika</target>
+      </trans-unit>
+      <trans-unit id="title.edit_user">
+        <source>title.edit_user</source>
+        <target>Edytuj użytkownika</target>
+      </trans-unit>
+      <trans-unit id="role.user">
+        <source>role.user</source>
+        <target>Użytkownik</target>
+      </trans-unit>
+      <trans-unit id="role.admin">
+        <source>role.admin</source>
+        <target>Admin</target>
       </trans-unit>
     </body>
   </file>

@@ -13,5 +13,4 @@ interface UserServiceInterface
     public function save(User $user): void;
     public function isEmailUnique(string $email, ?int $excludeUserId = null): bool;
     public function getPaginatedList(int $page): PaginationInterface;
-
 }

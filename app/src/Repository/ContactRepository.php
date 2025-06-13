@@ -23,7 +23,7 @@ class ContactRepository extends ServiceEntityRepository
      * Saves a Contact entity.
      *
      * @param Contact $entity The Contact entity to save.
-     * @param bool $flush Whether to flush the changes immediately.
+     * @param bool    $flush  Whether to flush the changes immediately.
      */
     public function save(Contact $entity, bool $flush = false): void
     {
@@ -38,7 +38,7 @@ class ContactRepository extends ServiceEntityRepository
      * Removes a Contact entity.
      *
      * @param Contact $entity The Contact entity to remove.
-     * @param bool $flush Whether to flush the changes immediately.
+     * @param bool    $flush  Whether to flush the changes immediately.
      */
     public function remove(Contact $entity, bool $flush = false): void
     {
@@ -52,7 +52,7 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Query all contacts.
      *
-     * @param User $author Contacts author
+     * @param User                  $author  Contacts author
      * @param ContactListFiltersDto $filters Filters
      *
      * @return QueryBuilder Query builder
@@ -87,7 +87,7 @@ class ContactRepository extends ServiceEntityRepository
         if (!$filters->getTags()->isEmpty()) {
             $queryBuilder->leftJoin('contact.tags', 'filterTags')
             ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
-                ->setParameter('tag_ids', $filters->getTags()->map(fn($tag) => $tag->getId())->toArray());
+                ->setParameter('tag_ids', $filters->getTags()->map(fn ($tag) => $tag->getId())->toArray());
         }
 
         return $queryBuilder;

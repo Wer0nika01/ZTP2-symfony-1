@@ -30,14 +30,16 @@
         <div class="mb-4 p-3 border rounded bg-light">
             <h4>{{ 'label.filter_events'|trans }}</h4>
             {{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4 col-sm-6">
-                    {{ form_row(form.category, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-control'}}) }}
+            <div class="row g-3">
+                <div class="col-md-8 col-lg-6">
+                    <div class="mb-3">
+                        {{ form_row(form.category, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.status, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-select'}}) }}
+                    </div>
                 </div>
-                <div class="col-md-4 col-sm-6">
-                    {{ form_row(form.status, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-select'}}) }}
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-lg-6">
                     {{ form_row(form.tags, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-check-inline'}}) }}
                 </div>
                 <div class="col-12 text-end">

@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpInconsistentReturnPointsInspection */
+<?php
+
+/** @noinspection PhpInconsistentReturnPointsInspection */
 
 /**
  * Category controller.
@@ -22,19 +24,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CategoryController.
  */
-#[Route('/category')]
 class CategoryController extends AbstractController
 {
     /**
      * Constructor.
      *
      * @param CategoryServiceInterface $categoryService Category service
-     * @param TranslatorInterface $translator Translator
+     * @param TranslatorInterface      $translator      Translator
      */
     public function __construct(private readonly CategoryServiceInterface $categoryService, private readonly TranslatorInterface $translator)
     {
     }
-
     /**
      * Index action.
      *
@@ -42,17 +42,13 @@ class CategoryController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        name: 'category_index',
-        methods: 'GET'
-    )]
+    #[Route('/category', name: 'category_index', methods: 'GET')]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
         $pagination = $this->categoryService->getPaginatedList($page);
 
         return $this->render('category/index.html.twig', ['pagination' => $pagination]);
     }
-
     /**
      * View action.
      *
@@ -60,12 +56,7 @@ class CategoryController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}',
-        name: 'category_view',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    #[Route('/category/{id}', name: 'category_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     public function view(Category $category): Response
     {
         return $this->render(
@@ -73,7 +64,6 @@ class CategoryController extends AbstractController
             ['category' => $category]
         );
     }
-
     /**
      * Create action.
      *
@@ -81,11 +71,7 @@ class CategoryController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/create',
-        name: 'category_create',
-        methods: 'GET|POST'
-    )]
+    #[Route('/category/create', name: 'category_create', methods: 'GET|POST')]
     #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
     {
@@ -109,22 +95,15 @@ class CategoryController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-
     /**
      * Edit action.
      *
-     * @param Request $request HTTP request
+     * @param Request  $request  HTTP request
      * @param Category $category Category entity
      *
      * @return Response HTTP response
      */
-
-    #[Route(
-        '/{id}/edit',
-        name: 'category_edit',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET|PUT'
-    )]
+    #[Route('/category/{id}/edit', name: 'category_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Category $category): Response
     {
@@ -157,7 +136,6 @@ class CategoryController extends AbstractController
             ]
         );
     }
-
     /**
      * Delete action.
      *
@@ -166,19 +144,14 @@ class CategoryController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}/delete',
-        name: 'category_delete',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET|DELETE'
-    )]
+    #[Route('/category/{id}/delete', name: 'category_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Category $category): Response
     {
         if (!$this->categoryService->canBeDeleted($category)) {
             $this->addFlash(
                 'warning',
-                $this->translator->trans('message.category_contains_tasks')
+                $this->translator->trans('message.category_contains_event')
             );
 
             return $this->redirectToRoute('category_index');

@@ -18,15 +18,11 @@ use App\Form\Type\ContactListFilterType;
 /**
  * Class ContactController.
  */
-#[Route('/contact')]
 #[IsGranted('ROLE_USER')]
 class ContactController extends AbstractController
 {
-    private ContactService $contactService;
-
-    public function __construct(ContactService $contactService)
+    public function __construct(private readonly ContactService $contactService)
     {
-        $this->contactService = $contactService;
     }
 
     /**
@@ -36,7 +32,7 @@ class ContactController extends AbstractController
      *
      * @return Response HTTP Response
      */
-    #[Route(name: 'contact_index', methods: 'GET')]
+    #[Route('/contact', name: 'contact_index', methods: 'GET')]
     public function index(Request $request): Response
     {
         $filtersDto = new ContactListFiltersDto();
@@ -52,6 +48,7 @@ class ContactController extends AbstractController
             $user,
             $filtersDto
         );
+
         return $this->render('contact/index.html.twig', [
             'pagination' => $pagination,
             'form' => $form->createView(),
@@ -65,7 +62,7 @@ class ContactController extends AbstractController
      *
      * @return Response HTTP Response
      */
-    #[Route('/{id}', name: 'contact_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
+    #[Route('/contact/{id}', name: 'contact_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted('CONTACT_VIEW', subject: 'contact')]
     public function show(Contact $contact): Response
     {
@@ -81,7 +78,7 @@ class ContactController extends AbstractController
      *
      * @return Response HTTP Response
      */
-    #[Route('/create', name: 'contact_create', methods: ['GET', 'POST'])]
+    #[Route('/contact/create', name: 'contact_create', methods: ['GET', 'POST'])]
     public function create(Request $request): Response
     {
         $contact = new Contact();
@@ -115,7 +112,7 @@ class ContactController extends AbstractController
      *
      * @return Response HTTP Response
      */
-    #[Route('/{id}/edit', name: 'contact_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    #[Route('/contact/{id}/edit', name: 'contact_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('CONTACT_EDIT', subject: 'contact')]
     public function edit(Request $request, Contact $contact): Response
     {
@@ -147,7 +144,7 @@ class ContactController extends AbstractController
      *
      * @return Response HTTP Response
      */
-    #[Route('/{id}/delete', name: 'contact_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    #[Route('/contact/{id}/delete', name: 'contact_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('CONTACT_DELETE', subject: 'contact')]
     public function delete(Request $request, Contact $contact): Response
     {

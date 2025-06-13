@@ -275,6 +275,7 @@ class Contact
      * Add tag.
      *
      * @param Tag $tag The tag to add.
+     *
      * @return $this
      */
     public function addTag(Tag $tag): static
@@ -290,6 +291,7 @@ class Contact
      * Remove tag.
      *
      * @param Tag $tag The tag to remove.
+     *
      * @return $this
      */
     public function removeTag(Tag $tag): static

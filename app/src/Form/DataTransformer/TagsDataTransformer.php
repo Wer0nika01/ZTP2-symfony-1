@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tags data transformer.
  */
@@ -60,10 +61,11 @@ class TagsDataTransformer implements DataTransformerInterface
     {
         if (null === $value || '' === $value) {
             /** @var ArrayCollection<int, Tag> */
+
             return new ArrayCollection();
         }
 
-        $tagNames = explode(',', $value);
+        $tagNames = explode(',', (string) $value);
 
         /** @var ArrayCollection<int, Tag> $tags */
         $tags = new ArrayCollection();
@@ -72,7 +74,7 @@ class TagsDataTransformer implements DataTransformerInterface
             $trimmedTagName = trim($tagName);
             if ('' !== trim($tagName)) {
                 $tag = $this->tagService->findOneByName(strtolower($tagName));
-                if (null === $tag) {
+                if (!$tag instanceof \App\Entity\Tag) {
                     $tag = new Tag();
                     $tag->setName($tagName);
 

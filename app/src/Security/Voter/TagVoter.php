@@ -68,10 +68,6 @@ class TagVoter extends Voter
             return false;
         }
 
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
-            return true;
-        }
-
-        return false;
+        return in_array('ROLE_ADMIN', $user->getRoles(), true);
     }
 }

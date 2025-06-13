@@ -3,6 +3,7 @@
 /**
  * Tag type.
  */
+
 namespace App\Form\Type;
 
 use App\Entity\Tag;
@@ -22,7 +23,8 @@ class TagType extends AbstractType
      * Builds the form.
      *
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
+     *
      * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -37,6 +39,7 @@ class TagType extends AbstractType
      * Configures the options for this type.
      *
      * @param OptionsResolver $resolver
+     *
      * @return void
      */
     public function configureOptions(OptionsResolver $resolver): void

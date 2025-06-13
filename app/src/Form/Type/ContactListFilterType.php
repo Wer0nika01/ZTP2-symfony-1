@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Contact list filter type.
  */
@@ -26,10 +27,8 @@ class ContactListFilterType extends AbstractType
             'required' => false,
             'label' => 'label.tags',
             'placeholder' => 'label.filter_by_tags',
-            'query_builder' => function (TagRepository $tagRepository) {
-                return $tagRepository->createQueryBuilder('t')
-                    ->orderBy('t.name', 'ASC');
-            },
+            'query_builder' => fn (TagRepository $tagRepository) => $tagRepository->createQueryBuilder('t')
+                ->orderBy('t.name', 'ASC'),
         ]);
     }
 

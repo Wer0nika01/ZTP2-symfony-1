@@ -17,12 +17,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\Form\FormError;
 
-
-
-
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[\Symfony\Component\Routing\Attribute\Route('/register', name: 'app_register')]
     public function register(
         Request                      $request,
         RegistrationServiceInterface $registrationService,
@@ -30,7 +27,7 @@ class RegistrationController extends AbstractController
         TranslatorInterface          $translator,
     ): Response {
         if ($this->getUser() instanceof UserInterface) {
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('dashboard_index');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -47,7 +44,7 @@ class RegistrationController extends AbstractController
                 $this->addFlash('success', 'message.registration_successful');
 
                 return $this->redirectToRoute('app_login');
-            } catch (UniqueConstraintViolationException $e) {
+            } catch (UniqueConstraintViolationException) {
                 $form->get('email')->addError(new FormError($translator->trans('message.email_already_used')));
             }
         }

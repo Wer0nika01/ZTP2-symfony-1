@@ -16,11 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ContactType extends AbstractType
 {
-    private TagsDataTransformer $tagsDataTransformer;
-
-    public function __construct(TagsDataTransformer $tagsDataTransformer)
+    public function __construct(private readonly TagsDataTransformer $tagsDataTransformer)
     {
-        $this->tagsDataTransformer = $tagsDataTransformer;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -67,7 +64,7 @@ class ContactType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 2000],
             ])
-            ->add('tags',TextType::class, [
+            ->add('tags', TextType::class, [
                 'label' => 'label.tags',
                 'required' => false,
             ]);

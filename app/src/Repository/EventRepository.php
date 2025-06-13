@@ -23,7 +23,7 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Query all records.
      *
-     * @param User               $author  User entity
+     * @param User                $author  User entity
      * @param EventListFiltersDto $filters Filters
      *
      * @return QueryBuilder Query builder
@@ -64,7 +64,8 @@ class EventRepository extends ServiceEntityRepository
      * An event is considered active if its start time is in the past or now, and its end time is in the future or null.
      *
      * @param User $author User entity
-     * @param int $limit Max number of results
+     * @param int  $limit  Max number of results
+     *
      * @return Event[]
      */
     public function findActiveEvents(User $author, int $limit = 5): array
@@ -86,7 +87,8 @@ class EventRepository extends ServiceEntityRepository
      * An event is considered upcoming if its start time is in the future.
      *
      * @param User $author User entity
-     * @param int $limit Max number of results
+     * @param int  $limit  Max number of results
+     *
      * @return Event[]
      */
     public function findUpcomingEvents(User $author, int $limit = 5): array
@@ -112,12 +114,12 @@ class EventRepository extends ServiceEntityRepository
      */
     private function applyFiltersToList(QueryBuilder $queryBuilder, EventListFiltersDto $filters): QueryBuilder
     {
-        if ($filters->getCategory()) {
+        if ($filters->getCategory() instanceof \App\Entity\Category) {
             $queryBuilder->andWhere('category.id = :categoryId')
                 ->setParameter('categoryId', $filters->getCategory()->getId());
         }
 
-        if ($filters->getStatus()) {
+        if ($filters->getStatus() instanceof \App\Entity\Enum\EventStatus) {
             $queryBuilder->andWhere('event.status = :status')
                 ->setParameter('status', $filters->getStatus());
         }
@@ -125,7 +127,7 @@ class EventRepository extends ServiceEntityRepository
         if (!$filters->getTags()->isEmpty()) {
             $queryBuilder->leftJoin('event.tags', 'filterTags')
             ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
-                ->setParameter('tag_ids', $filters->getTags()->map(fn($tag) => $tag->getId())->toArray());
+                ->setParameter('tag_ids', $filters->getTags()->map(fn ($tag) => $tag->getId())->toArray());
         }
 
         return $queryBuilder;

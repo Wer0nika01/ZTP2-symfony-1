@@ -6,7 +6,6 @@ use App\Dto\EventListFiltersDto;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Form\Type\EventType;
-
 use App\Security\Voter\EventVoter;
 use App\Service\EventServiceInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,17 +20,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Form\Type\EventListFilterType;
 
-#[Route('/event')]
 class EventController extends AbstractController
 {
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
     }
-
-    #[Route(name: 'event_index', methods: 'GET')]
+    #[Route('/event', name: 'event_index', methods: 'GET')]
     public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
     {
-        $filtersDto = new EventListFiltersDto(null, null, new ArrayCollection());
+        $filtersDto = new EventListFiltersDto(new ArrayCollection(), null, null);
 
         $form = $this->createForm(EventListFilterType::class, $filtersDto, ['method' => 'GET']);
         $form->handleRequest($request);
@@ -50,7 +47,6 @@ class EventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * View action.
      *
@@ -59,7 +55,7 @@ class EventController extends AbstractController
      * @return Response HTTP response
      */
     #[Route(
-        '/{id}',
+        '/event/{id}',
         name: 'event_view',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET'
@@ -72,7 +68,6 @@ class EventController extends AbstractController
             ['event' => $event]
         );
     }
-
     /**
      * Create action.
      *
@@ -81,7 +76,7 @@ class EventController extends AbstractController
      * @return Response HTTP response
      */
     #[Route(
-        '/create',
+        '/event/create',
         name: 'event_create',
         methods: 'GET|POST'
     )]
@@ -111,17 +106,16 @@ class EventController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-
     /**
      * Edit action.
      *
      * @param Request $request HTTP request
-     * @param Event $event Category entity
+     * @param Event   $event   Category entity
      *
      * @return Response HTTP response
      */
     #[Route(
-        '/{id}/edit',
+        '/event/{id}/edit',
         name: 'event_edit',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|PUT'
@@ -155,22 +149,20 @@ class EventController extends AbstractController
             ]
         );
     }
-
     /**
      * Delete action.
      *
      * @param Request $request
-     * @param Event $event
+     * @param Event   $event
      *
      * @return Response
      */
     #[Route(
-        '/{id}/delete',
+        '/event/{id}/delete',
         name: 'event_delete',
         requirements: ['id' => '[1-9]\d*'],
         methods: 'GET|DELETE'
     )]
-
     #[IsGranted(EventVoter::DELETE, subject: 'event')]
     public function delete(Request $request, Event $event): Response
     {

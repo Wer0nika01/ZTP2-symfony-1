@@ -106,7 +106,7 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
     #[Assert\Type(User::class)]
-    private ?User $author;
+    private ?User $author = null;
 
     /**
      * Status
@@ -122,7 +122,6 @@ class Event
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-        // $this->startTime = new \DateTimeImmutable();
     }
 
     /**
@@ -170,6 +169,7 @@ class Event
      * Setter for description.
      *
      * @param string|null $description Description
+     *
      * @return $this
      */
     public function setDescription(?string $description): static
@@ -193,6 +193,7 @@ class Event
      * Setter for startTime.
      *
      * @param \DateTimeImmutable|null $startTime Start time
+     *
      * @return $this
      */
     public function setStartTime(?\DateTimeImmutable $startTime): static
@@ -216,6 +217,7 @@ class Event
      * Setter for endTime.
      *
      * @param \DateTimeImmutable|null $endTime End time
+     *
      * @return $this
      */
     public function setEndTime(?\DateTimeImmutable $endTime): static
@@ -239,6 +241,7 @@ class Event
      * Setter for location.
      *
      * @param string|null $location Location
+     *
      * @return $this
      */
     public function setLocation(?string $location): static
@@ -262,6 +265,7 @@ class Event
      * Setter for isAllDay.
      *
      * @param bool $isAllDay Is all day
+     *
      * @return $this
      */
     public function setIsAllDay(bool $isAllDay): static
@@ -285,6 +289,7 @@ class Event
      * Setter for Category.
      *
      * @param Category|null $category
+     *
      * @return $this
      */
     public function setCategory(?Category $category): static
@@ -308,6 +313,7 @@ class Event
      * Add tag.
      *
      * @param Tag $tag
+     *
      * @return $this
      */
     public function addTag(Tag $tag): static
@@ -323,6 +329,7 @@ class Event
      * Remove tags.
      *
      * @param Tag $tag
+     *
      * @return $this
      */
     public function removeTag(Tag $tag): static
@@ -335,7 +342,6 @@ class Event
     /**
      * Getter for author.
      */
-
     public function getAuthor(): ?User
     {
         return $this->author;

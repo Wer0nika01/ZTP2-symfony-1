@@ -21,7 +21,7 @@ enum EventStatus: int
      */
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PERSONAL => 'label.personal',
             self::IMPORTANT => 'label.important',
             self::WORK => 'label.work',
@@ -53,8 +53,8 @@ enum EventStatus: int
     {
         return array_reduce(self::cases(), function (array $carry, self $item) {
             $carry[$item->value] = $item->getLabel();
+
             return $carry;
         }, []);
     }
-
 }
