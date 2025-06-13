@@ -1,0 +1,18 @@
+# config/packages/test/doctrine.yaml
+doctrine:
+    dbal:
+        # Zmień z ':memory:' na ścieżkę do pliku, np. 'var/data.test.db'
+        url: 'sqlite:////tmp/data.test.db' # Ensure there are four forward slashes after sqlite:
+        # Jeśli używasz MySQL/PostgreSQL dla testów, upewnij się, że DATABASE_URL dla env test jest prawidłowy.
+        # W przypadku SQLite nie potrzebujesz username/password/host/port itp.
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore #_v2
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

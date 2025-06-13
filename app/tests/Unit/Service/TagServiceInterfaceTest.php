@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\Unit\Service;
 
-use App\Service\TagServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class TagServiceInterfaceTest extends TestCase
