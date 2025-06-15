@@ -19,6 +19,8 @@ class RegistrationService implements RegistrationServiceInterface
         $user->setPassword(
             $this->passwordHasher->hashPassword($user, $plainPassword)
         );
+        $user->setRoles(['ROLE_USER']);
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }
