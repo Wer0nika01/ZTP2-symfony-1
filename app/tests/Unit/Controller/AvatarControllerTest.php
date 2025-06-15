@@ -4,22 +4,17 @@ namespace App\Tests\Unit\Controller;
 
 use App\Controller\AvatarController;
 use App\Entity\Avatar;
-use App\Entity\User; // Fix: Corrected namespace usage for User and Avatar below
-use App\Form\Type\AvatarType;
+use App\Entity\User;
 use App\Service\AvatarServiceInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse; // Import RedirectResponse
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface; // Important for Router mock
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Security; // Symfony 6.x / 5.x uses Security service
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AvatarControllerTest extends TestCase
@@ -37,20 +32,16 @@ class AvatarControllerTest extends TestCase
         $this->translator = $this->createMock(TranslatorInterface::class);
         $this->mockFormView = $this->createMock(FormView::class);
 
-        // Create a partial mock for the controller to override its base methods.
         $this->controller = $this->getMockBuilder(AvatarController::class)
             ->setConstructorArgs([$this->avatarService, $this->translator])
             ->setMethods(['createForm', 'generateUrl', 'getUser', 'addFlash', 'render', 'redirectToRoute'])
             ->getMock();
 
-        // Configure the mocked methods with default behaviors.
-        // createForm's default callback returns a form that is NOT submitted/valid.
-        // Specific tests will override this when needed.
         $this->controller->method('createForm')->willReturnCallback(function($type, $data, $options) {
             $form = $this->createMock(FormInterface::class);
             $form->method('handleRequest')->willReturnSelf();
-            $form->method('isSubmitted')->willReturn(false); // Default: not submitted
-            $form->method('isValid')->willReturn(false); // Default: not valid
+            $form->method('isSubmitted')->willReturn(false);
+            $form->method('isValid')->willReturn(false);
             $form->method('createView')->willReturn($this->mockFormView);
 
             $fileForm = $this->createMock(FormInterface::class);
@@ -59,10 +50,8 @@ class AvatarControllerTest extends TestCase
             return $form;
         });
 
-        // Mock generateUrl to return a realistic URL string
         $this->controller->method('generateUrl')->willReturnCallback(function($route, $params = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
             $url = '';
-            // Handle specific routes with path parameters
             if (in_array($route, ['avatar_edit', 'avatar_delete'])) {
                 $id = $params['id'] ?? null;
                 if ($id !== null) {
@@ -78,7 +67,6 @@ class AvatarControllerTest extends TestCase
                 $url = '/' . str_replace(['_', '.'], '/', $route);
             }
 
-            // Append remaining parameters as query string
             if (!empty($params) && !in_array($route, ['avatar_edit', 'avatar_delete'])) {
                 $url .= '?' . http_build_query($params);
             }
@@ -88,7 +76,6 @@ class AvatarControllerTest extends TestCase
         $this->controller->method('addFlash'); // addFlash is void
         $this->controller->method('render')->willReturn(new Response());
 
-        // Mock redirectToRoute to simply return a RedirectResponse with a predictable URL.
         $this->controller->method('redirectToRoute')->willReturnCallback(function($route, $params = [], $status = 302) {
             $url = '';
             if (in_array($route, ['avatar_edit', 'avatar_delete'])) {
@@ -136,8 +123,6 @@ class AvatarControllerTest extends TestCase
         $this->controller->method('getUser')->willReturn($user);
         return $user;
     }
-
-    // --- Create Action Tests ---
 
     public function testCreateActionRedirectsIfUserHasAvatar(): void
     {
@@ -249,7 +234,6 @@ class AvatarControllerTest extends TestCase
         $this->assertEquals('/dashboard/index', $response->getTargetUrl());
     }
 
-    // --- Edit Action Tests ---
 
     public function testEditActionRedirectsIfUserHasNoAvatar(): void
     {
@@ -375,7 +359,6 @@ class AvatarControllerTest extends TestCase
         $this->assertEquals('/dashboard/index', $response->getTargetUrl());
     }
 
-    // --- Delete Action Tests ---
 
     public function testDeleteActionValidForm(): void
     {

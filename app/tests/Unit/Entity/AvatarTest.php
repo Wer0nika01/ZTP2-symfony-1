@@ -3,8 +3,7 @@
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Avatar;
-use App\Entity\User; // Assuming User entity exists and is used in Avatar
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
 class AvatarTest extends TestCase
@@ -13,9 +12,7 @@ class AvatarTest extends TestCase
 
     protected function setUp(): void
     {
-        // Call the parent setUp method to ensure proper test case initialization
         parent::setUp();
-        // Create a new Avatar instance before each test
         $this->avatar = new Avatar();
     }
 
@@ -33,19 +30,14 @@ class AvatarTest extends TestCase
      */
     public function testUserGetAndSet(): void
     {
-        // Initial state: user should be null
         $this->assertNull($this->avatar->getUser());
 
-        // Create a mock User object
         $userMock = $this->createMock(User::class);
 
-        // Set the user on the avatar
         $this->avatar->setUser($userMock);
 
-        // Verify that the user is correctly set and retrieved
         $this->assertSame($userMock, $this->avatar->getUser());
 
-        // Test setting user to null
         $this->avatar->setUser(null);
         $this->assertNull($this->avatar->getUser());
     }
@@ -58,11 +50,9 @@ class AvatarTest extends TestCase
         $filename = 'my_avatar.jpg';
         $this->avatar->setFilename($filename);
 
-        // Verify that the filename is correctly set and retrieved
         $this->assertEquals($filename, $this->avatar->getFilename());
         $this->assertIsString($this->avatar->getFilename());
 
-        // Test setting filename to null
         $this->avatar->setFilename(null);
         $this->assertNull($this->avatar->getFilename());
     }

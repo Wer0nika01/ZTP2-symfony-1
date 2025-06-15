@@ -2,10 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Dto\EventListFiltersDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 use DateTimeImmutable;
@@ -131,5 +134,27 @@ class EventRepository extends ServiceEntityRepository
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * Counts the number of events associated with a given category.
+     *
+     * @param Category $category The category entity to count events for.
+     *
+     * @return int The number of events.
+     *
+     * @throws NoResultException // Pozostawione tylko dla kompatybilności z interfejsem CategoryService,
+     * @throws NonUniqueResultException // mimo że to zapytanie ich nie rzuca.
+     */
+    public function countByCategory(Category $category): int
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->andWhere('e.category = :category')
+            ->setParameter('category', $category); // Ustawiamy parametr kategorii
+
+        // getSingleScalarResult() zwróci 0, jeśli nie znajdzie żadnych zdarzeń.
+        // Nie rzuci NoResultException ani NonUniqueResultException dla COUNT().
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

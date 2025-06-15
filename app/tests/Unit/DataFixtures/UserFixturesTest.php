@@ -68,14 +68,11 @@ class UserFixturesTest extends TestCase
                 return sprintf('hashed_%s_%s', $user->getEmail(), $plainPassword);
             });
 
-        // Oczekujemy, że setReference NIE będzie wywołane dla grupy 'user'.
         $this->referenceRepository->expects($this->never())
             ->method('setReference')
             ->with($this->matchesRegularExpression('/^user_\d+$/'), $this->isInstanceOf(User::class));
 
-        // ZMIANA TUTAJ: Oczekujemy, że setReference NIE będzie wywołane również dla grupy 'admin'.
-        // Test zgłasza "actually called 0 times", co oznacza, że żadne wywołanie setReference nie miało miejsca.
-        $this->referenceRepository->expects($this->never()) // <--- ZMIENIONO NA never()
+        $this->referenceRepository->expects($this->never())
         ->method('setReference')
             ->with($this->matchesRegularExpression('/^admin_\d+$/'), $this->isInstanceOf(User::class));
 
