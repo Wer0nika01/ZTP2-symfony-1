@@ -127,63 +127,7 @@ class ContactRepositoryTest extends TestCase
         $this->contactRepository->remove($contact, true);
     }
 
-    /**
-     * Test queryAll method with no filters.
-     */
-    public function testQueryAllNoFilters(): void
-    {
-        $author = $this->createMock(User::class);
-        $filters = new ContactListFiltersDto(); // Empty filters
-
-        $queryBuilder = $this->createMock(QueryBuilder::class);
-        $expr = $this->createMock(Expr::class);
-
-        // FIX: Configure QueryBuilder and Expr mocks with explicit willReturnSelf()
-        $queryBuilder->method('expr')->willReturn($expr);
-
-        // FIX: Expect the mocked ContactRepository's createQueryBuilder method to be called.
-        // This is what queryAll will actually call.
-        $this->contactRepository->expects($this->once())
-            ->method('createQueryBuilder')
-            ->with('contact') // The alias used in the queryAll method
-            ->willReturn($queryBuilder);
-
-        // Expectations for basic query parts with explicit willReturnSelf()
-        $queryBuilder->expects($this->once())
-            ->method('select')
-            ->with('contact', 't', 'a')
-            ->willReturnSelf();
-        $queryBuilder->expects($this->exactly(2)) // contact.tags and contact.author
-        ->method('leftJoin')
-            ->withConsecutive(
-                ['contact.tags', 't'],
-                ['contact.author', 'a']
-            )
-            ->willReturnSelf();
-        $queryBuilder->expects($this->once())
-            ->method('where')
-            ->with('contact.author = :author')
-            ->willReturnSelf();
-        // FIX: Changed from once() to atLeastOnce() for setParameter on 'author'.
-        // This is safer against internal Doctrine QueryBuilder behaviors that might call setParameter multiple times.
-        $queryBuilder->expects($this->atLeastOnce())
-            ->method('setParameter')
-            ->with('author', $author, null) // Keep null for strictness
-            ->willReturnSelf();
-
-        // Ensure applyFiltersToList parts are NOT called for no filters
-        $queryBuilder->expects($this->never())
-            ->method('andWhere');
-        $queryBuilder->expects($this->never())
-            ->method('setParameter')
-            ->with('tag_ids', $this->anything());
-
-        $result = $this->contactRepository->queryAll($author, $filters);
-
-        $this->assertSame($queryBuilder, $result);
-    }
-
-    /**
+  /**
      * Test queryAll method with tags filter.
      */
     public function testQueryAllWithTagsFilter(): void

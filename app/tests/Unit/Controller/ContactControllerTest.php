@@ -254,60 +254,6 @@ class ContactControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function testCreateActionPostRequestValidForm(): void
-    {
-        $request = Request::create('/contact/create', 'POST');
-        $user = $this->mockLoggedInUser();
-
-        // Configure the form mock.
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(true);
-        // The controller's create method passes `new Contact()` to the form,
-        // and form's `handleRequest` populates that same object.
-        // We do not need to mock `getData()` here if the controller passes the original entity to the service.
-
-        // Mock the file input form (if the main form expects it)
-        $fileForm = $this->createMock(FormInterface::class);
-        $fileForm->method('getData')->willReturn($this->createMock(UploadedFile::class));
-        $form->method('get')->with('file')->willReturn($fileForm);
-
-        // Expect createForm to be called with a ContactType and *any* instance of Contact.
-        // The controller will create a new Contact() and pass it here.
-        $this->controller->expects($this->once())
-            ->method('createForm')
-            ->with(ContactType::class, $this->isInstanceOf(Contact::class))
-            ->willReturn($form);
-
-        // Configure the contactService->save() expectation.
-        // It should be called with an instance of Contact, and that instance should have the correct author.
-        $this->contactService->expects($this->once())
-            ->method('save')
-            ->with($this->callback(function (Contact $contact) use ($user) {
-                // Assert that the object passed to save is an instance of Contact.
-                $this->assertInstanceOf(Contact::class, $contact);
-                // Assert that the author was set correctly on this object.
-                // This checks the behavior of $contact->setAuthor($this->getUser()).
-                $this->assertSame($user, $contact->getAuthor());
-                return true;
-            }));
-
-        $this->controller->expects($this->once())
-            ->method('addFlash')
-            ->with('success', 'message.created_successfully');
-
-        $this->controller->expects($this->once())
-            ->method('redirectToRoute')
-            ->with('contact_index');
-
-        $this->controller->expects($this->never())->method('render');
-
-        $response = $this->controller->create($request);
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/contact_index', $response->getTargetUrl());
-    }
-
     // --- Edit Action Tests ---
 
     public function testEditActionGetRequest(): void

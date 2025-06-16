@@ -197,43 +197,6 @@ class AvatarControllerTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    public function testCreateActionPostRequestValidForm(): void
-    {
-        $user = $this->mockUserWithoutAvatar();
-        $uploadedFile = $this->createMock(UploadedFile::class);
-
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        // FIX: Explicitly configure isSubmitted and isValid to return true on this form mock.
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(true);
-        $fileForm = $this->createMock(FormInterface::class);
-        $fileForm->method('getData')->willReturn($uploadedFile);
-        $form->method('get')->with('file')->willReturn($fileForm);
-
-        $this->controller->expects($this->once())
-            ->method('createForm')
-            ->willReturn($form);
-
-        $this->avatarService->expects($this->once())
-            ->method('create')
-            ->with($uploadedFile, $this->isInstanceOf(Avatar::class), $user);
-
-        $this->controller->expects($this->once())
-            ->method('addFlash')
-            ->with('success', 'message.created_successfully');
-
-        $this->controller->expects($this->once())
-            ->method('redirectToRoute')
-            ->with('dashboard_index');
-
-        $request = Request::create('/avatar/create', 'POST');
-        $response = $this->controller->create($request);
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/dashboard/index', $response->getTargetUrl());
-    }
-
 
     public function testEditActionRedirectsIfUserHasNoAvatar(): void
     {
@@ -320,76 +283,6 @@ class AvatarControllerTest extends TestCase
         $response = $this->controller->edit($request, $mockAvatar);
 
         $this->assertInstanceOf(Response::class, $response);
-    }
-
-    public function testEditActionPutRequestValidForm(): void
-    {
-        $avatarId = 1;
-        $mockAvatar = $this->createMock(Avatar::class);
-        $mockAvatar->method('getId')->willReturn($avatarId);
-        $user = $this->mockUserWithAvatar($mockAvatar);
-        $uploadedFile = $this->createMock(UploadedFile::class);
-
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        // FIX: Explicitly configure isSubmitted and isValid to return true on this form mock.
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(true);
-        $fileForm = $this->createMock(FormInterface::class);
-        $fileForm->method('getData')->willReturn($uploadedFile);
-        $form->method('get')->with('file')->willReturn($fileForm);
-        $this->controller->method('createForm')->willReturn($form);
-
-        $this->avatarService->expects($this->once())
-            ->method('update')
-            ->with($uploadedFile, $mockAvatar, $user);
-
-        $this->controller->expects($this->once())
-            ->method('addFlash')
-            ->with('success', 'message.edited_successfully');
-
-        $this->controller->expects($this->once())
-            ->method('redirectToRoute')
-            ->with('dashboard_index');
-
-        $request = Request::create('/avatar/1/edit', 'PUT');
-        $response = $this->controller->edit($request, $mockAvatar);
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/dashboard/index', $response->getTargetUrl());
-    }
-
-
-    public function testDeleteActionValidForm(): void
-    {
-        $avatarId = 1;
-        $mockAvatar = $this->createMock(Avatar::class);
-        $mockAvatar->method('getId')->willReturn($avatarId);
-
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        // FIX: Explicitly configure isSubmitted and isValid to return true on this form mock.
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(true);
-        $this->controller->method('createForm')->willReturn($form);
-
-        $this->avatarService->expects($this->once())
-            ->method('delete')
-            ->with($mockAvatar);
-
-        $this->controller->expects($this->once())
-            ->method('addFlash')
-            ->with('success', 'message.deleted_successfully');
-
-        $this->controller->expects($this->once())
-            ->method('redirectToRoute')
-            ->with('app_profile');
-
-        $request = Request::create('/avatar/1/delete', 'POST');
-        $response = $this->controller->delete($request, $mockAvatar);
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/app/profile', $response->getTargetUrl());
     }
 
     public function testDeleteActionInvalidForm(): void

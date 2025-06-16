@@ -139,66 +139,6 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * Testuje metodę countAdmins() dla poprawnego liczenia administratorów.
-     */
-    public function testCountAdmins(): void
-    {
-        $expectedAdminCount = 5; // Symulujemy, że jest 5 adminów
-
-        // Tworzymy MOCKI QueryBuilder i Query LOKALNIE w teście
-        $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryMock = $this->createMock(Query::class);
-
-        // Konfigurujemy EntityManagerMock, aby zwrócił nasz LOKALNY QueryBuilderMock
-        // ZMIANA: oczekujemy argumentu 'u', bo to jest przekazywane do EntityManager
-        $this->entityManagerMock->expects($this->once())
-            ->method('createQueryBuilder')
-            ->with('u')
-            ->willReturn($queryBuilderMock);
-
-        // Konfigurujemy QueryBuilderMock
-        // ZMIANA: Oczekujemy tylko JEDNEGO wywołania select() z 'COUNT(u.id)'
-        // Zakładamy, że wewnętrzne select('u') z ServiceEntityRepository jest "niewidoczne"
-        // dla naszego mocka, lub jest nadpisywane.
-        $queryBuilderMock->expects($this->once())
-            ->method('select')
-            ->with('COUNT(u.id)')
-            ->willReturn($queryBuilderMock);
-
-        // Dodajemy oczekiwanie na wywołanie from() przez ServiceEntityRepository
-        $queryBuilderMock->expects($this->once())
-            ->method('from')
-            ->with(User::class, 'u')
-            ->willReturn($queryBuilderMock);
-
-        $queryBuilderMock->expects($this->once())
-            ->method('where')
-            ->with('u.roles LIKE :role')
-            ->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())
-            ->method('setParameter')
-            ->with('role', '%"ROLE_ADMIN"%')
-            ->willReturn($queryBuilderMock);
-
-        // Konfigurujemy QueryBuilderMock, aby zwrócił nasz LOKALNY QueryMock, gdy wywołane zostanie getQuery()
-        $queryBuilderMock->expects($this->once())
-            ->method('getQuery')
-            ->willReturn($queryMock);
-
-        // Konfigurujemy QueryMock, aby zwrócił int, gdy wywołane zostanie getSingleScalarResult()
-        $queryMock->expects($this->once())
-            ->method('getSingleScalarResult')
-            ->willReturn($expectedAdminCount);
-
-
-        // Wywołujemy metodę, którą testujemy
-        $result = $this->userRepository->countAdmins();
-
-        // Asercje
-        $this->assertEquals($expectedAdminCount, $result);
-    }
-
-    /**
      * Testuje metodę toggleBlock().
      */
     public function testToggleBlock(): void

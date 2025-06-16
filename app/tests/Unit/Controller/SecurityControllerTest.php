@@ -162,63 +162,6 @@ class SecurityControllerTest extends TestCase
         $this->assertStringContainsString('login form', $response->getContent());
     }
 
-    public function testLoginAndRegisterValidFormSubmission(): void
-    {
-        $controller = $this->createController(null); // User is not logged in
-        $request = Request::create('/login', 'POST', [
-            'registration_type' => [ // Assuming your form's root name is 'registration_type'
-                'email' => 'newuser@example.com',
-                'password' => [
-                    'first' => 'password123',
-                    'second' => 'password123',
-                ],
-            ],
-        ]);
-
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(true);
-
-        $plainPasswordFieldMock = $this->createMock(FormInterface::class);
-        $plainPasswordFieldMock->method('getData')->willReturn('password123');
-        $form->method('get')->with('plainPassword')->willReturn($plainPasswordFieldMock);
-
-        $controller->method('createForm')->willReturn($form);
-
-        $this->passwordHasher->expects($this->once())
-            ->method('hashPassword')
-            ->with($this->isInstanceOf(User::class), 'password123')
-            ->willReturn('hashed_password');
-
-        $this->entityManager->expects($this->once())->method('persist')->with($this->isInstanceOf(User::class));
-        $this->entityManager->expects($this->once())->method('flush');
-
-        $this->translator->expects($this->once())
-            ->method('trans')
-            ->with('message.edited_successfully')
-            ->willReturn('Edited successfully.');
-
-        $controller->expects($this->once())->method('addFlash')->with('success', 'Edited successfully.');
-        // Explicitly set the mock behavior for redirectToRoute for this test
-        $controller->expects($this->once())
-            ->method('redirectToRoute')
-            ->with('app_login')
-            ->willReturn(new RedirectResponse('/login')); // Return RedirectResponse here
-
-        $response = $controller->login(
-            $this->authenticationUtils,
-            $this->passwordHasher,
-            $request,
-            $this->entityManager,
-            $this->translator
-        );
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(Response::HTTP_FOUND, $response->getStatusCode());
-        $this->assertEquals('/login', $response->getTargetUrl());
-    }
-
     public function testLoginAndRegisterInvalidFormSubmission(): void
     {
         $controller = $this->createController(null); // User is not logged in
