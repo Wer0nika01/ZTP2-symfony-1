@@ -7,10 +7,12 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
 
 /**
  * Class Category.
@@ -26,13 +28,13 @@ class Category
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
     /**
      * Title.
      */
-    #[ORM\Column(type: 'string', length: 64)]
+    #[ORM\Column(type: Types::STRING, length: 64)]
     #[Assert\Type('string')]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 64)]
@@ -41,32 +43,30 @@ class Category
     /**
      * Created at.
      */
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Assert\Type(\DateTimeImmutable::class)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Assert\Type(DateTimeImmutable::class)]
     #[Gedmo\Timestampable(on: 'create')]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     /**
      * Updated at.
      */
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Assert\Type(\DateTimeImmutable::class)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Assert\Type(DateTimeImmutable::class)]
     #[Gedmo\Timestampable(on: 'update')]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     /**
      * Slug.
      */
-    #[ORM\Column(type: 'string', length: 64)]
-    #[Assert\Type('string')]
-    #[Assert\Length(min: 3, max: 64)]
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['title'])]
     private ?string $slug = null;
 
     /**
-     * Getter for Id.
+     * Getter for id.
      *
-     * @return int|null Id
+     * @return int|null
      */
     public function getId(): ?int
     {
@@ -76,7 +76,7 @@ class Category
     /**
      * Getter for title.
      *
-     * @return string|null Title
+     * @return string|null
      */
     public function getTitle(): ?string
     {
@@ -86,7 +86,7 @@ class Category
     /**
      * Setter for title.
      *
-     * @param string|null $title Title
+     * @param string|null $title
      */
     public function setTitle(?string $title): void
     {
@@ -96,9 +96,9 @@ class Category
     /**
      * Getter for created at.
      *
-     * @return \DateTimeImmutable|null Created at
+     * @return DateTimeImmutable|null
      */
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -106,9 +106,9 @@ class Category
     /**
      * Setter for created at.
      *
-     * @param \DateTimeImmutable|null $createdAt Created at
+     * @param DateTimeImmutable|null $createdAt
      */
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+    public function setCreatedAt(?DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -116,9 +116,9 @@ class Category
     /**
      * Getter for updated at.
      *
-     * @return \DateTimeImmutable|null Updated at
+     * @return DateTimeImmutable|null
      */
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -126,22 +126,30 @@ class Category
     /**
      * Setter for updated at.
      *
-     * @param \DateTimeImmutable|null $updatedAt Updated at
+     * @param DateTimeImmutable|null $updatedAt
      */
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
+    /**
+     * Getter for slug.
+     *
+     * @return string|null
+     */
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function setSlug(string $slug): static
+    /**
+     * Setter for slug.
+     *
+     * @param string $slug
+     */
+    public function setSlug(string $slug): void
     {
         $this->slug = $slug;
-
-        return $this;
     }
 }

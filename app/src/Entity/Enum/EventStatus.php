@@ -1,17 +1,20 @@
 <?php
 
+/**
+ * Event status.
+ */
+
 namespace App\Entity\Enum;
 
 /**
  * Enum EventStatus.
- *
- * Represents the possible statuses for a event.
- * This is a Backed Enum with integer values.
  */
 enum EventStatus: int
 {
     case PERSONAL = 1;
+
     case IMPORTANT = 2;
+
     case WORK = 3;
 
     /**
@@ -42,12 +45,11 @@ enum EventStatus: int
         };
     }
 
-
     /**
      * Get a map of all enum cases to their human-readable labels.
      * Useful for dropdowns, forms, etc.
      *
-     * @return array<int, string>
+     * @return array[]
      */
     public static function getLabels(): array
     {

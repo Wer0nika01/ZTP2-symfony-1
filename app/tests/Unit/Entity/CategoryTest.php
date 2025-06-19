@@ -1,14 +1,25 @@
 <?php
 
+/**
+ * Category entity Test.
+ */
+
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Category;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class Category Test.
+ */
 class CategoryTest extends TestCase
 {
     private Category $category;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -44,11 +55,10 @@ class CategoryTest extends TestCase
      */
     public function testCreatedAtGetAndSet(): void
     {
-        $dateTime = new \DateTimeImmutable('2023-01-15 10:00:00');
+        $dateTime = new DateTimeImmutable('2023-01-15 10:00:00');
         $this->category->setCreatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->category->getCreatedAt());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $this->category->getCreatedAt());
 
         $this->category->setCreatedAt(null);
         $this->assertNull($this->category->getCreatedAt());
@@ -59,27 +69,12 @@ class CategoryTest extends TestCase
      */
     public function testUpdatedAtGetAndSet(): void
     {
-        $dateTime = new \DateTimeImmutable('2023-01-15 11:30:00');
+        $dateTime = new DateTimeImmutable('2023-01-15 11:30:00');
         $this->category->setUpdatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->category->getUpdatedAt());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $this->category->getUpdatedAt());
 
-        // Test setting to null
         $this->category->setUpdatedAt(null);
         $this->assertNull($this->category->getUpdatedAt());
-    }
-
-    /**
-     * Test setting and getting the slug.
-     */
-    public function testSlugGetAndSet(): void
-    {
-        $slug = 'test-category-slug';
-        $result = $this->category->setSlug($slug);
-
-        $this->assertEquals($slug, $this->category->getSlug());
-        $this->assertIsString($this->category->getSlug());
-        $this->assertSame($this->category, $result);
     }
 }

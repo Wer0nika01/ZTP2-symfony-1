@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Event Controller.
+ * */
+
 namespace App\Controller;
 
 use App\Dto\EventListFiltersDto;
@@ -11,7 +15,6 @@ use App\Service\EventServiceInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -20,11 +23,29 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Form\Type\EventListFilterType;
 
+/**
+ * Class Event controller.
+ */
 class EventController extends AbstractController
 {
+    /**
+     * Constructor.
+     *
+     * @param EventServiceInterface $eventService
+     * @param TranslatorInterface   $translator
+     */
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
     }
+
+    /**
+     * Index.
+     *
+     * @param Request $request
+     * @param int     $page
+     *
+     * @return Response
+     */
     #[Route('/event', name: 'event_index', methods: 'GET')]
     public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
     {
@@ -54,12 +75,7 @@ class EventController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/event/{id}',
-        name: 'event_view',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    #[Route('/event/{id}', name: 'event_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted(EventVoter::VIEW, subject: 'event')]
     public function view(Event $event): Response
     {
@@ -75,11 +91,7 @@ class EventController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/event/create',
-        name: 'event_create',
-        methods: 'GET|POST'
-    )]
+    #[Route('/event/create', name: 'event_create', methods: 'GET|POST')]
     public function create(Request $request): Response
     {
 
@@ -114,12 +126,7 @@ class EventController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/event/{id}/edit',
-        name: 'event_edit',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET|PUT'
-    )]
+    #[Route('/event/{id}/edit', name: 'event_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     #[IsGranted(EventVoter::EDIT, subject: 'event')]
     public function edit(Request $request, Event $event): Response
     {
@@ -157,12 +164,7 @@ class EventController extends AbstractController
      *
      * @return Response
      */
-    #[Route(
-        '/event/{id}/delete',
-        name: 'event_delete',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET|DELETE'
-    )]
+    #[Route('/event/{id}/delete', name: 'event_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted(EventVoter::DELETE, subject: 'event')]
     public function delete(Request $request, Event $event): Response
     {

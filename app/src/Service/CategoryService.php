@@ -35,8 +35,9 @@ class CategoryService implements CategoryServiceInterface
      *
      * @param CategoryRepository $categoryRepository Category repository
      * @param PaginatorInterface $paginator          Paginator
+     * @param EventRepository    $eventRepository    Event repository
      */
-    public function __construct( private readonly CategoryRepository $categoryRepository, private readonly PaginatorInterface $paginator, private readonly EventRepository $eventRepository)
+    public function __construct(private readonly CategoryRepository $categoryRepository, private readonly PaginatorInterface $paginator, private readonly EventRepository $eventRepository)
     {
     }
 
@@ -93,5 +94,4 @@ class CategoryService implements CategoryServiceInterface
             return false;
         }
     }
-
 }

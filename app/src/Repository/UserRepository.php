@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * User repository.
+ */
+
 namespace App\Repository;
 
 use App\Entity\User;
@@ -12,12 +16,17 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
 /**
- * @extends ServiceEntityRepository<User>
+ * Class User repository.
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
+    /**
+     * Constructor.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
@@ -25,6 +34,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param PasswordAuthenticatedUserInterface $user
+     * @param string                             $newHashedPassword
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
@@ -37,11 +49,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Delete.
+     *
+     * @param User $user
+     */
     public function delete(User $user): void
     {
         $this->getEntityManager()->remove($user);
         $this->getEntityManager()->flush();
     }
+
+    /**
+     * Save/
+     *
+     * @param User $user
+     */
     public function save(User $user): void
     {
         $this->getEntityManager()->persist($user);
@@ -66,6 +89,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getSingleScalarResult();
     }
 
+    /**
+     * Toggle block.
+     *
+     * @param User $user
+     */
     public function toggleBlock(User $user): void
     {
         $user->setIsBlocked(!$user->getIsBlocked());

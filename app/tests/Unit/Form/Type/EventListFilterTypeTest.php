@@ -1,26 +1,35 @@
 <?php
 
+/**
+ * Event list filter type Test.
+ */
+
 namespace App\Tests\Unit\Form\Type;
 
 use App\Dto\EventListFiltersDto;
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
 use App\Entity\Tag;
-use App\Form\Type\EventListFilterType; // The form type under test
+use App\Form\Type\EventListFilterType;
 use App\Repository\CategoryRepository;
 use App\Repository\TagRepository;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\QueryBuilder; // Needed for mocking QueryBuilder
+use Doctrine\ORM\QueryBuilder;
 
+/**
+ * Class Event list filter type Test.
+ */
 class EventListFilterTypeTest extends TestCase
 {
     private EventListFilterType $formType;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,15 +41,11 @@ class EventListFilterTypeTest extends TestCase
      */
     public function testBuildForm(): void
     {
-        // Mock the FormBuilderInterface that buildForm will interact with.
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        // FIX: Refactored to use withConsecutive() instead of deprecated at() matcher.
-        // This explicitly defines the arguments for each sequential 'add' call.
         $builder->expects($this->exactly(3))
             ->method('add')
             ->withConsecutive(
-            // Arguments for the first 'add' call ('category' field)
                 [
                     'category',
                     EntityType::class,
@@ -58,7 +63,6 @@ class EventListFilterTypeTest extends TestCase
                         $this->assertArrayHasKey('query_builder', $options);
                         $this->assertIsCallable($options['query_builder']);
 
-                        // Test the query_builder callback for category
                         $mockCategoryRepository = $this->createMock(CategoryRepository::class);
                         $mockQueryBuilder = $this->createMock(QueryBuilder::class);
                         $mockCategoryRepository->expects($this->once())
@@ -71,10 +75,10 @@ class EventListFilterTypeTest extends TestCase
                             ->willReturnSelf();
 
                         call_user_func($options['query_builder'], $mockCategoryRepository);
+
                         return true;
-                    })
+                    }),
                 ],
-                // Arguments for the second 'add' call ('status' field)
                 [
                     'status',
                     EnumType::class,
@@ -94,10 +98,10 @@ class EventListFilterTypeTest extends TestCase
                         $this->assertEquals('label.personal', call_user_func($options['choice_label'], EventStatus::PERSONAL));
                         $this->assertEquals('label.important', call_user_func($options['choice_label'], EventStatus::IMPORTANT));
                         $this->assertEquals('label.work', call_user_func($options['choice_label'], EventStatus::WORK));
+
                         return true;
-                    })
+                    }),
                 ],
-                // Arguments for the third 'add' call ('tags' field)
                 [
                     'tags',
                     EntityType::class,
@@ -119,7 +123,6 @@ class EventListFilterTypeTest extends TestCase
                         $this->assertArrayHasKey('query_builder', $options);
                         $this->assertIsCallable($options['query_builder']);
 
-                        // Test the query_builder callback for tags
                         $mockTagRepository = $this->createMock(TagRepository::class);
                         $mockQueryBuilder = $this->createMock(QueryBuilder::class);
                         $mockTagRepository->expects($this->once())
@@ -132,13 +135,13 @@ class EventListFilterTypeTest extends TestCase
                             ->willReturnSelf();
 
                         call_user_func($options['query_builder'], $mockTagRepository);
+
                         return true;
-                    })
+                    }),
                 ]
             )
-            ->willReturnSelf(); // Allow method chaining for 'add'
+            ->willReturnSelf();
 
-        // Call the method under test
         $this->formType->buildForm($builder, []);
     }
 
@@ -147,28 +150,23 @@ class EventListFilterTypeTest extends TestCase
      */
     public function testConfigureOptions(): void
     {
-        // Mock the OptionsResolver that configureOptions will interact with.
         $resolver = $this->createMock(OptionsResolver::class);
 
-        // Expect 'setDefaults' to be called once with an array containing specific default options.
         $resolver->expects($this->once())
             ->method('setDefaults')
             ->with($this->callback(function (array $defaults) {
-                // Assert that 'data_class' is set to the correct DTO class.
                 $this->assertArrayHasKey('data_class', $defaults);
                 $this->assertEquals(EventListFiltersDto::class, $defaults['data_class']);
 
-                // Assert that 'method' is set to 'GET'.
                 $this->assertArrayHasKey('method', $defaults);
                 $this->assertEquals('GET', $defaults['method']);
 
-                // Assert that 'csrf_protection' is set to false.
                 $this->assertArrayHasKey('csrf_protection', $defaults);
                 $this->assertFalse($defaults['csrf_protection']);
+
                 return true;
             }));
 
-        // Call the configureOptions method on the form type instance.
         $this->formType->configureOptions($resolver);
     }
 
@@ -177,7 +175,6 @@ class EventListFilterTypeTest extends TestCase
      */
     public function testGetBlockPrefix(): void
     {
-        // Assert that the method returns the expected string 'event_filter'.
         $this->assertEquals('event_filter', $this->formType->getBlockPrefix());
     }
 }

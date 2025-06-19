@@ -1,22 +1,29 @@
 <?php
 
+/**
+ * User entity Test.
+ */
+
 namespace App\Tests\Unit\Entity;
 
-use App\Entity\Enum\UserRole; // Assuming this enum exists and is used
+use App\Entity\Enum\UserRole;
 use App\Entity\User;
-use App\Entity\Avatar; // For testing the Avatar relation
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Entity\Avatar;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class User entity Test.
+ */
 class UserTest extends TestCase
 {
     private User $user;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
-        // Call the parent setUp method to ensure proper test case initialization
         parent::setUp();
-        // Create a new User instance before each test
         $this->user = new User();
     }
 
@@ -37,9 +44,7 @@ class UserTest extends TestCase
         $email = 'test@example.com';
         $this->user->setEmail($email);
 
-        // Verify that the email is correctly set and retrieved
         $this->assertEquals($email, $this->user->getEmail());
-        // Verify that the user identifier is the email (as per UserInterface)
         $this->assertEquals($email, $this->user->getUserIdentifier());
     }
 
@@ -48,26 +53,18 @@ class UserTest extends TestCase
      */
     public function testRolesGetAndSet(): void
     {
-        // 1. Test default role: User should always have ROLE_USER
         $this->assertEquals([UserRole::ROLE_USER->value], $this->user->getRoles());
 
-        // 2. Test setting multiple roles
         $roles = [UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value, 'ROLE_EDITOR'];
         $this->user->setRoles($roles);
-        // Use assertEqualsCanonicalizing to ignore array order when comparing
         $this->assertEqualsCanonicalizing([UserRole::ROLE_ADMIN->value, UserRole::ROLE_USER->value, 'ROLE_EDITOR'], $this->user->getRoles());
 
-        // 3. Test that ROLE_USER is automatically added if not explicitly present
         $this->user->setRoles(['ROLE_MANAGER']);
-        // FIX: Corrected syntax for 'ROLE_MANAGER' as it's not part of the UserRole enum
-        // and fixed the concatenation operator from '.' to '->' if it were an enum case.
         $this->assertEqualsCanonicalizing(['ROLE_MANAGER', UserRole::ROLE_USER->value], $this->user->getRoles());
 
-        // 4. Test that ROLE_USER is not duplicated if already present
         $this->user->setRoles([UserRole::ROLE_USER->value, 'ROLE_MANAGER']);
         $this->assertEqualsCanonicalizing([UserRole::ROLE_USER->value, 'ROLE_MANAGER'], $this->user->getRoles());
 
-        // 5. Test setting an empty array of roles - should still result in ROLE_USER
         $this->user->setRoles([]);
         $this->assertEquals([UserRole::ROLE_USER->value], $this->user->getRoles());
     }
@@ -80,7 +77,6 @@ class UserTest extends TestCase
         $password = 'hashed_secure_password_string';
         $this->user->setPassword($password);
 
-        // Verify that the password is correctly set and retrieved
         $this->assertEquals($password, $this->user->getPassword());
     }
 
@@ -93,11 +89,9 @@ class UserTest extends TestCase
     {
         $initialPassword = 'some_temporary_password';
         $this->user->setPassword($initialPassword);
-        $this->assertNotNull($this->user->getPassword()); // Ensure it's set before erasing
+        $this->assertNotNull($this->user->getPassword());
 
         $this->user->eraseCredentials();
-        // FIX: Assert that the password remains the initial value,
-        // because $this->password = null; is commented out in the entity.
         $this->assertEquals($initialPassword, $this->user->getPassword());
     }
 
@@ -112,7 +106,6 @@ class UserTest extends TestCase
         $this->assertEquals($firstName, $this->user->getFirstName());
         $this->assertIsString($this->user->getFirstName());
 
-        // Test setting null
         $this->user->setFirstName(null);
         $this->assertNull($this->user->getFirstName());
     }
@@ -128,7 +121,6 @@ class UserTest extends TestCase
         $this->assertEquals($lastName, $this->user->getLastName());
         $this->assertIsString($this->user->getLastName());
 
-        // Test setting null
         $this->user->setLastName(null);
         $this->assertNull($this->user->getLastName());
     }
@@ -138,14 +130,11 @@ class UserTest extends TestCase
      */
     public function testIsBlockedGetAndSet(): void
     {
-        // Default value should be false (as defined in the entity)
         $this->assertFalse($this->user->getIsBlocked());
 
-        // Test setting to true
         $this->user->setIsBlocked(true);
         $this->assertTrue($this->user->getIsBlocked());
 
-        // Test setting back to false
         $this->user->setIsBlocked(false);
         $this->assertFalse($this->user->getIsBlocked());
     }
@@ -155,26 +144,20 @@ class UserTest extends TestCase
      */
     public function testAvatarGetAndSet(): void
     {
-        // Initial state: avatar should be null
         $this->assertNull($this->user->getAvatar());
 
-        // Create a mock Avatar object
         $avatarMock = $this->createMock(Avatar::class);
 
-        // Expect setAvatar to be called on the avatar mock to establish the bidirectional relation
         $avatarMock->expects($this->once())
             ->method('getUser')
-            ->willReturn(null); // Simulate avatar not yet having this user
+            ->willReturn(null);
         $avatarMock->expects($this->once())
             ->method('setUser')
-            ->with($this->user); // Expect avatar to be linked back to this user
+            ->with($this->user);
 
-        // Set the avatar on the user
         $result = $this->user->setAvatar($avatarMock);
 
-        // Verify that setAvatar returns the User instance (fluent interface)
         $this->assertSame($this->user, $result);
-        // Verify that the user now has the avatar
         $this->assertSame($avatarMock, $this->user->getAvatar());
     }
 }

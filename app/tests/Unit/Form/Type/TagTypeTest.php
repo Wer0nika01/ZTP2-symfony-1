@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tag type test.
+ */
+
 namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\Tag;
@@ -19,16 +23,12 @@ class TagTypeTest extends TypeTestCase
     {
         $form = $this->factory->create(TagType::class);
 
-        // Check if the form has the 'name' field
         $this->assertTrue($form->has('name'));
 
-        // Get the 'name' field
         $nameField = $form->get('name');
 
-        // Check if the 'name' field is of TextType
         $this->assertEquals(TextType::class, $nameField->getConfig()->getType()->getInnerType()::class);
 
-        // Check if the 'name' field has the correct label
         $this->assertEquals('label.name', $nameField->getConfig()->getOption('label'));
     }
 
@@ -37,14 +37,10 @@ class TagTypeTest extends TypeTestCase
      */
     public function testConfigureOptions(): void
     {
-        // Create an instance of the form type
-        $formType = new TagType();
 
-        // Use a mock Tag entity for the data_class option
         $tag = new Tag();
         $form = $this->factory->create(TagType::class, $tag);
 
-        // Assert that the form's data class is correctly configured
         $this->assertEquals(Tag::class, $form->getConfig()->getDataClass());
     }
 }

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contact service
+ */
+
 namespace App\Service;
 
 use App\Entity\Contact;
@@ -16,6 +20,12 @@ class ContactService implements ContactServiceInterface
 {
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
+    /**
+     * Construct.
+     *
+     * @param ContactRepository  $contactRepository
+     * @param PaginatorInterface $paginator
+     */
     public function __construct(private readonly ContactRepository $contactRepository, private readonly PaginatorInterface $paginator)
     {
     }
@@ -25,14 +35,14 @@ class ContactService implements ContactServiceInterface
      *
      * @param int                   $page    Page number
      * @param User                  $author  Current user
-     * @param ContactListFiltersDto $filters Filters DTO // ZMIANA TYPU: Z array na DTO
+     * @param ContactListFiltersDto $filters Filters DTO
      *
      * @return PaginationInterface PaginationInterface
      */
     public function getPaginatedList(int $page, User $author, ContactListFiltersDto $filters): PaginationInterface
     {
         return $this->paginator->paginate(
-            $this->contactRepository->queryAll($author, $filters), // Przekaż DTO do repozytorium
+            $this->contactRepository->queryAll($author, $filters),
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [

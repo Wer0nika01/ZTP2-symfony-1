@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contact repository.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Contact;
@@ -10,10 +14,15 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * @extends ServiceEntityRepository<Contact>
+ * Class Contact repository.
  */
 class ContactRepository extends ServiceEntityRepository
 {
+    /**
+     * Constructor.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Contact::class);
@@ -79,9 +88,9 @@ class ContactRepository extends ServiceEntityRepository
      * @param QueryBuilder          $queryBuilder Query builder
      * @param ContactListFiltersDto $filters      Filters DTO
      *
-     * @return QueryBuilder Query builder
+     * @return void Query builder
      */
-    private function applyFiltersToList(QueryBuilder $queryBuilder, ContactListFiltersDto $filters): QueryBuilder
+    private function applyFiltersToList(QueryBuilder $queryBuilder, ContactListFiltersDto $filters): void
     {
 
         if (!$filters->getTags()->isEmpty()) {
@@ -89,7 +98,5 @@ class ContactRepository extends ServiceEntityRepository
             ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
                 ->setParameter('tag_ids', $filters->getTags()->map(fn ($tag) => $tag->getId())->toArray());
         }
-
-        return $queryBuilder;
     }
 }

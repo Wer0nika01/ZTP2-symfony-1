@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contact controller Test.
+ */
+
 namespace App\Tests\Unit\Controller;
 
 use App\Controller\ContactController;
@@ -17,87 +21,28 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Contracts\Translation\TranslatorInterface; // For addFlash messages
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class Contact controller Test.
+ */
 class ContactControllerTest extends TestCase
 {
     private MockObject|ContactService $contactService;
     private MockObject|ContactController $controller;
     private MockObject|FormView $mockFormView;
-    private MockObject|TranslatorInterface $translator; // For addFlash messages
 
-    // Used to capture the Contact entity created in create/edit actions
-    // This will now be primarily used for tests that do NOT involve form submission leading to data manipulation
     private $capturedContact;
 
-    protected function setUp(): void
-    {
-        // FIX: Corrected syntax to call parent's setUp method
-        parent::setUp();
-
-        $this->contactService = $this->createMock(ContactService::class);
-        $this->translator = $this->createMock(TranslatorInterface::class); // Mock the translator
-        $this->mockFormView = $this->createMock(FormView::class);
-
-        // Create a partial mock for the controller to override its base methods.
-        $this->controller = $this->getMockBuilder(ContactController::class)
-            ->setConstructorArgs([$this->contactService])
-            ->onlyMethods(['createForm', 'getUser', 'addFlash', 'redirectToRoute', 'render', 'createFormBuilder'])
-            ->getMock();
-
-        // FIX: Remove default configure for createForm and createFormBuilder in setUp.
-        // Each test will now explicitly configure the form behavior it needs.
-
-        $this->controller->method('addFlash'); // addFlash is void
-        $this->controller->method('render')->willReturn(new Response());
-        $this->controller->method('redirectToRoute')->willReturnCallback(function ($route, $params = []) {
-            return new RedirectResponse('/' . $route); // Simple mock for redirect
-        });
-
-        // Mock `getUser` to return a mock User object by default, or null for anonymous tests
-        $mockUser = $this->createMock(User::class);
-        $mockUser->method('getId')->willReturn(1);
-        // Ensure getUser() returns a valid User object by default.
-        $this->controller->method('getUser')->willReturn($mockUser);
-
-        // Mock translator for flash messages
-        $this->translator->method('trans')->willReturnArgument(0); // Returns the translation key itself
-
-        // Initialize capturedContact to null for each test
-        $this->capturedContact = null;
-    }
-
     /**
-     * Helper to mock a logged-in user.
+     * test index action get request.
      */
-    private function mockLoggedInUser(?int $id = 1): MockObject|User
-    {
-        $user = $this->createMock(User::class);
-        $user->method('getId')->willReturn($id);
-        $this->controller->method('getUser')->willReturn($user);
-        return $user;
-    }
-
-    /**
-     * Helper to mock an anonymous user.
-     */
-    private function mockAnonymousUser(): void
-    {
-        $this->controller->method('getUser')->willReturn(null);
-    }
-
-    // --- Index Action Tests ---
-
     public function testIndexActionGetRequest(): void
     {
-        $request = Request::create('/contact', 'GET');
+        $request = Request::create('/contact');
         $user = $this->mockLoggedInUser();
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(false);
@@ -121,27 +66,28 @@ class ContactControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $response = $this->controller->index($request);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->index($request);
     }
 
+    /**
+     * Test index action get request with filters.
+     */
     public function testIndexActionGetRequestWithFilters(): void
     {
-        $request = Request::create('/contact?page=2&tags=tag1,tag2', 'GET');
+        $request = Request::create('/contact?page=2&tags=tag1,tag2');
         $user = $this->mockLoggedInUser();
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(true); // Assume valid submission for this test
+        $form->method('isValid')->willReturn(true);
         $form->method('createView')->willReturn($this->mockFormView);
         $this->controller->method('createForm')->willReturn($form);
 
         $pagination = $this->createMock(PaginationInterface::class);
         $this->contactService->expects($this->once())
             ->method('getPaginatedList')
-            ->with(2, $user, $this->isInstanceOf(ContactListFiltersDto::class)) // page 2
+            ->with(2, $user, $this->isInstanceOf(ContactListFiltersDto::class))
             ->willReturn($pagination);
 
         $this->controller->expects($this->once())
@@ -152,13 +98,12 @@ class ContactControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $response = $this->controller->index($request);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->index($request);
     }
 
-
-    // --- Show Action Tests ---
-
+    /**
+     * Test show action.
+     */
     public function testShowAction(): void
     {
         $contact = $this->createMock(Contact::class);
@@ -168,17 +113,16 @@ class ContactControllerTest extends TestCase
             ->with('contact/view.html.twig', ['contact' => $contact])
             ->willReturn(new Response());
 
-        $response = $this->controller->show($contact);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->show($contact);
     }
 
-    // --- Create Action Tests ---
-
+    /**
+     * Test create action get request.
+     */
     public function testCreateActionGetRequest(): void
     {
-        $request = Request::create('/contact/create', 'GET');
+        $request = Request::create('/contact/create');
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(false);
@@ -187,21 +131,21 @@ class ContactControllerTest extends TestCase
         $this->controller->expects($this->once())
             ->method('createForm')
             ->with(ContactType::class, $this->callback(function (Contact $contact) {
-                // Capture the Contact instance created by the controller
                 $this->capturedContact = $contact;
+
                 return true;
             }))
             ->willReturn($form);
 
-        // FIX: Use a callback to assert the `contact` parameter is the actual Contact instance created by the controller.
         $this->controller->expects($this->once())
             ->method('render')
             ->with('contact/create.html.twig', $this->callback(function ($args) {
                 $this->assertArrayHasKey('contact', $args);
-                $this->assertSame($this->capturedContact, $args['contact']); // Assert it's the exact captured instance
+                $this->assertSame($this->capturedContact, $args['contact']);
                 $this->assertInstanceOf(Contact::class, $args['contact']);
                 $this->assertArrayHasKey('form', $args);
                 $this->assertSame($this->mockFormView, $args['form']);
+
                 return true;
             }))
             ->willReturn(new Response());
@@ -210,16 +154,17 @@ class ContactControllerTest extends TestCase
         $this->controller->expects($this->never())->method('addFlash');
         $this->controller->expects($this->never())->method('redirectToRoute');
 
-        $response = $this->controller->create($request);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->create($request);
     }
 
+    /**
+     * Test create action post request invalid form.
+     */
     public function testCreateActionPostRequestInvalidForm(): void
     {
         $request = Request::create('/contact/create', 'POST');
-        $user = $this->mockLoggedInUser(); // A user must be logged in for setAuthor
+        $this->mockLoggedInUser();
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(true);
@@ -227,8 +172,8 @@ class ContactControllerTest extends TestCase
         $form->method('createView')->willReturn($this->mockFormView);
         $this->controller->method('createForm')
             ->with(ContactType::class, $this->callback(function (Contact $contact) {
-                // Capture the Contact instance created by the controller
                 $this->capturedContact = $contact;
+
                 return true;
             }))
             ->willReturn($form);
@@ -237,31 +182,31 @@ class ContactControllerTest extends TestCase
         $this->controller->expects($this->never())->method('addFlash');
         $this->controller->expects($this->never())->method('redirectToRoute');
 
-        // FIX: Use a callback to assert the `contact` parameter is the actual Contact instance created by the controller.
         $this->controller->expects($this->once())
             ->method('render')
             ->with('contact/create.html.twig', $this->callback(function ($args) {
                 $this->assertArrayHasKey('contact', $args);
-                $this->assertSame($this->capturedContact, $args['contact']); // Assert it's the exact captured instance
+                $this->assertSame($this->capturedContact, $args['contact']);
                 $this->assertInstanceOf(Contact::class, $args['contact']);
                 $this->assertArrayHasKey('form', $args);
                 $this->assertSame($this->mockFormView, $args['form']);
+
                 return true;
             }))
             ->willReturn(new Response());
 
-        $response = $this->controller->create($request);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->create($request);
     }
 
-    // --- Edit Action Tests ---
 
+    /**
+     * Test edit action get request.
+     */
     public function testEditActionGetRequest(): void
     {
-        $request = Request::create('/contact/1/edit', 'GET');
+        $request = Request::create('/contact/1/edit');
         $contact = $this->createMock(Contact::class);
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(false);
@@ -283,16 +228,17 @@ class ContactControllerTest extends TestCase
         $this->controller->expects($this->never())->method('addFlash');
         $this->controller->expects($this->never())->method('redirectToRoute');
 
-        $response = $this->controller->edit($request, $contact);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->edit($request, $contact);
     }
 
+    /**
+     * Test edit action post request invalid form.
+     */
     public function testEditActionPostRequestInvalidForm(): void
     {
         $request = Request::create('/contact/1/edit', 'POST');
         $contact = $this->createMock(Contact::class);
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(true);
@@ -314,21 +260,21 @@ class ContactControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $response = $this->controller->edit($request, $contact);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->edit($request, $contact);
     }
 
+    /**
+     * Test edit action post request valid form.
+     */
     public function testEditActionPostRequestValidForm(): void
     {
         $request = Request::create('/contact/1/edit', 'POST');
         $contact = $this->createMock(Contact::class);
 
-        // FIX: Explicitly configure the form mock for this test
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
         $form->method('isSubmitted')->willReturn(true);
         $form->method('isValid')->willReturn(true);
-        // We don't expect createView on success because it redirects
         $this->controller->method('createForm')
             ->with(ContactType::class, $contact)
             ->willReturn($form);
@@ -345,22 +291,23 @@ class ContactControllerTest extends TestCase
             ->method('redirectToRoute')
             ->with('contact_index');
 
-        // FIX: Ensure render is never called when redirecting
         $this->controller->expects($this->never())->method('render');
 
         $response = $this->controller->edit($request, $contact);
         $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('/contact_index', $response->getTargetUrl()); // Matches simple mock behavior
+        $this->assertEquals('/contact_index', $response->getTargetUrl());
     }
 
-    // --- Delete Action Tests ---
 
+
+    /**
+     * Test delete action get request.
+     */
     public function testDeleteActionGetRequest(): void
     {
-        $request = Request::create('/contact/1/delete', 'GET');
+        $request = Request::create('/contact/1/delete');
         $contact = $this->createMock(Contact::class);
 
-        // FIX: Explicitly configure the form builder and form mock for this test
         $formBuilder = $this->createMock(FormBuilderInterface::class);
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
@@ -387,16 +334,17 @@ class ContactControllerTest extends TestCase
         $this->controller->expects($this->never())->method('addFlash');
         $this->controller->expects($this->never())->method('redirectToRoute');
 
-        $response = $this->controller->delete($request, $contact);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->delete($request, $contact);
     }
 
+    /**
+     * Test delete action post request invalid form.
+     */
     public function testDeleteActionPostRequestInvalidForm(): void
     {
         $request = Request::create('/contact/1/delete', 'POST');
         $contact = $this->createMock(Contact::class);
 
-        // FIX: Explicitly configure the form builder and form mock for this test
         $formBuilder = $this->createMock(FormBuilderInterface::class);
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
@@ -422,16 +370,17 @@ class ContactControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $response = $this->controller->delete($request, $contact);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->delete($request, $contact);
     }
 
+    /**
+     * Test delete action post request valid form.
+     */
     public function testDeleteActionPostRequestValidForm(): void
     {
         $request = Request::create('/contact/1/delete', 'POST');
         $contact = $this->createMock(Contact::class);
 
-        // FIX: Explicitly configure the form builder and form mock for this test
         $formBuilder = $this->createMock(FormBuilderInterface::class);
         $form = $this->createMock(FormInterface::class);
         $form->method('handleRequest')->willReturnSelf();
@@ -456,11 +405,58 @@ class ContactControllerTest extends TestCase
             ->method('redirectToRoute')
             ->with('contact_index');
 
-        // FIX: Ensure render is never called when redirecting
         $this->controller->expects($this->never())->method('render');
 
         $response = $this->controller->delete($request, $contact);
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/contact_index', $response->getTargetUrl()); // Matches simple mock behavior
+    }
+
+
+    /**
+     * Set up.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->contactService = $this->createMock(ContactService::class);
+        $translator = $this->createMock(TranslatorInterface::class);
+        $this->mockFormView = $this->createMock(FormView::class);
+
+        $this->controller = $this->getMockBuilder(ContactController::class)
+            ->setConstructorArgs([$this->contactService])
+            ->onlyMethods(['createForm', 'getUser', 'addFlash', 'redirectToRoute', 'render', 'createFormBuilder'])
+            ->getMock();
+
+        $this->controller->method('addFlash');
+        $this->controller->method('render')->willReturn(new Response());
+        $this->controller->method('redirectToRoute')->willReturnCallback(function ($route) {
+            return new RedirectResponse('/'.$route);
+        });
+
+        $mockUser = $this->createMock(User::class);
+        $mockUser->method('getId')->willReturn(1);
+        $this->controller->method('getUser')->willReturn($mockUser);
+
+        // Mock translator for flash messages
+        $translator->method('trans')->willReturnArgument(0);
+
+        $this->capturedContact = null;
+    }
+
+    /**
+     * Helper to mock a logged-in user.
+     *
+     *
+     * @return MockObject|User
+     */
+    private function mockLoggedInUser(): MockObject|User
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getId')->willReturn(1);
+        $this->controller->method('getUser')->willReturn($user);
+
+        return $user;
     }
 }

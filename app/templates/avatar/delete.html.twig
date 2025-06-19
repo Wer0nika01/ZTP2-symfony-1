@@ -5,8 +5,6 @@
 {% block body %}
     <h1>{{ 'title.delete_avatar'|trans }}</h1>
 
-    <p>{{ 'message.confirm_delete_avatar'|trans }}</p>
-
     {{ form_start(form) }}
     <button class="btn btn-danger" type="submit">{{ 'action.delete'|trans }}</button>
     <a href="{{ path('app_profile') }}" class="btn btn-secondary">{{ 'action.cancel'|trans }}</a>

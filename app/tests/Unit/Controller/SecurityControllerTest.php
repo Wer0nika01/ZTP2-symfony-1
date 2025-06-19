@@ -1,12 +1,17 @@
 <?php
 
+/**
+ * Security controller Test.
+ */
+
 namespace App\Tests\Unit\Controller;
 
 use App\Controller\SecurityController;
 use App\Entity\User;
-use App\Form\Type\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +24,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Symfony\Component\Security\Core\Exception\AuthenticationException; // Import AuthenticationException
 
+/**
+ * Class Security controller Test.
+ */
 class SecurityControllerTest extends TestCase
 {
     private $authenticationUtils;
@@ -28,73 +36,15 @@ class SecurityControllerTest extends TestCase
     private $twig;
     private $formFactory;
 
-    protected function setUp(): void
-    {
-        $this->authenticationUtils = $this->createMock(AuthenticationUtils::class);
-        $this->passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->translator = $this->createMock(TranslatorInterface::class);
-        $this->twig = $this->createMock(Environment::class);
-        $this->formFactory = $this->createMock(\Symfony\Component\Form\FormFactoryInterface::class);
-    }
-
     /**
-     * Helper method to create a SecurityController instance with mocked dependencies.
-     *
-     * @param UserInterface|null $userMock Specific user mock to return from getUser().
-     * @param FormInterface|null $formMock Specific form mock to return from createForm().
+     * Test login when user is logged in.
      */
-    private function createController(?UserInterface $userMock = null, ?FormInterface $formMock = null): SecurityController
-    {
-        // Added 'redirectToRoute' back to onlyMethods to make it mockable.
-        $controller = $this->getMockBuilder(SecurityController::class)
-            ->setConstructorArgs([])
-            ->onlyMethods(['getUser', 'createForm', 'render', 'addFlash', 'redirectToRoute'])
-            ->getMock();
-
-        $controller->method('getUser')->willReturn($userMock);
-
-        if ($formMock) {
-            $controller->method('createForm')->willReturn($formMock);
-        } else {
-            $controller->method('createForm')->willReturnCallback(function (string $type, $data = null, array $options = []) {
-                return $this->formFactory->create($type, $data, $options);
-            });
-        }
-
-        $controller->method('render')
-            ->willReturnCallback(function (string $view, array $parameters = []) {
-                $content = $this->twig->render($view, $parameters);
-                return new Response($content);
-            });
-
-        $controller->method('addFlash');
-
-        // redirectToRoute is now globally mocked within the helper.
-        $controller->method('redirectToRoute')->willReturnCallback(function (string $route, array $parameters = []) {
-            $targetUrl = match ($route) {
-                'dashboard_index' => '/dashboard',
-                'app_login' => '/login',
-                default => $route, // Fallback, though ideally all routes would be mapped
-            };
-            return new RedirectResponse($targetUrl);
-        });
-
-        return $controller;
-    }
-
     public function testLoginWhenUserIsLoggedIn(): void
     {
         $user = $this->createMock(User::class);
         $controller = $this->createController($user);
 
-        $request = Request::create('/login', 'GET');
-
-        // No need for explicit redirectToRoute mock here anymore, it's global
-        // $controller->expects($this->once())
-        //            ->method('redirectToRoute')
-        //            ->with('dashboard_index')
-        //            ->willReturn(new RedirectResponse('/dashboard'));
+        $request = Request::create('/login');
 
         $controller->expects($this->never())->method('createForm');
         $this->authenticationUtils->expects($this->never())->method('getLastAuthenticationError');
@@ -112,9 +62,12 @@ class SecurityControllerTest extends TestCase
         $this->assertEquals('/dashboard', $response->getTargetUrl());
     }
 
+    /**
+     * Test login get request.
+     */
     public function testLoginGetRequest(): void
     {
-        $controller = $this->createController(null); // User is not logged in
+        $controller = $this->createController();
 
         $lastAuthenticationError = null;
         $lastUsername = 'test@example.com';
@@ -129,7 +82,7 @@ class SecurityControllerTest extends TestCase
         $form = $this->createMock(FormInterface::class);
         $form->method('createView')->willReturn($formViewMock);
         $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(false); // For GET requests
+        $form->method('isSubmitted')->willReturn(false);
         $form->method('isValid')->willReturn(false);
 
         $controller->method('createForm')->willReturn($form);
@@ -142,12 +95,13 @@ class SecurityControllerTest extends TestCase
                     $this->assertEquals($lastUsername, $parameters['last_username']);
                     $this->assertNull($parameters['error']);
                     $this->assertInstanceOf(FormView::class, $parameters['registrationForm']);
+
                     return true;
                 })
             )
-            ->willReturn('<html>login form</html>');
+            ->willReturn('<html lang="">login form</html>');
 
-        $request = Request::create('/login', 'GET');
+        $request = Request::create('/login');
 
         $response = $controller->login(
             $this->authenticationUtils,
@@ -157,14 +111,16 @@ class SecurityControllerTest extends TestCase
             $this->translator
         );
 
-        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString('login form', $response->getContent());
     }
 
+    /**
+     * Test login and register invalid form submission.
+     */
     public function testLoginAndRegisterInvalidFormSubmission(): void
     {
-        $controller = $this->createController(null); // User is not logged in
+        $controller = $this->createController();
         $request = Request::create('/login', 'POST', [
             'registration_type' => [
                 'email' => 'invalid-email',
@@ -175,7 +131,6 @@ class SecurityControllerTest extends TestCase
             ],
         ]);
 
-        // Corrected: Mock AuthenticationException instead of generic Exception
         $lastAuthenticationError = $this->createMock(AuthenticationException::class);
         $lastUsername = 'test@example.com';
         $this->authenticationUtils->expects($this->once())
@@ -198,7 +153,7 @@ class SecurityControllerTest extends TestCase
         $this->entityManager->expects($this->never())->method('persist');
         $this->entityManager->expects($this->never())->method('flush');
         $controller->expects($this->never())->method('addFlash');
-        $controller->expects($this->never())->method('redirectToRoute'); // This should not be called in this scenario
+        $controller->expects($this->never())->method('redirectToRoute');
 
         $this->twig->expects($this->once())
             ->method('render')
@@ -208,10 +163,11 @@ class SecurityControllerTest extends TestCase
                     $this->assertEquals($lastUsername, $parameters['last_username']);
                     $this->assertEquals($lastAuthenticationError, $parameters['error']);
                     $this->assertInstanceOf(FormView::class, $parameters['registrationForm']);
+
                     return true;
                 })
             )
-            ->willReturn('<html>login form with errors</html>');
+            ->willReturn(value: '<html lang="">login form with errors</html>');
 
         $response = $controller->login(
             $this->authenticationUtils,
@@ -221,19 +177,80 @@ class SecurityControllerTest extends TestCase
             $this->translator
         );
 
-        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString('login form with errors', $response->getContent());
     }
 
+    /**
+     * Test logout.
+     */
     public function testLogout(): void
     {
-        $controller = $this->createController(null);
+        $controller = $this->createController();
 
-        // We expect a LogicException as per the original controller method.
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('This method can be blank - it will be intercepted by the logout key on your firewall.');
 
         $controller->logout();
+    }
+
+
+    /**
+     * Set up.
+     */
+    protected function setUp(): void
+    {
+        $this->authenticationUtils = $this->createMock(AuthenticationUtils::class);
+        $this->passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->twig = $this->createMock(Environment::class);
+        $this->formFactory = $this->createMock(FormFactoryInterface::class);
+    }
+
+    /**
+     * Helper method to create a SecurityController instance with mocked dependencies.
+     *
+     * @param UserInterface|null $userMock
+     *
+     * @return SecurityController
+     */
+    private function createController(?UserInterface $userMock = null): SecurityController
+    {
+        $controller = $this->getMockBuilder(SecurityController::class)
+            ->setConstructorArgs([])
+            ->onlyMethods(['getUser', 'createForm', 'render', 'addFlash', 'redirectToRoute'])
+            ->getMock();
+
+        $controller->method('getUser')->willReturn($userMock);
+
+        if (null) {
+            $controller->method('createForm')->willReturn(null);
+        } else {
+            $controller->method('createForm')->willReturnCallback(function (string $type, $data = null, array $options = []) {
+                return $this->formFactory->create($type, $data, $options);
+            });
+        }
+
+        $controller->method('render')
+            ->willReturnCallback(function (string $view, array $parameters = []) {
+                $content = $this->twig->render($view, $parameters);
+
+                return new Response($content);
+            });
+
+        $controller->method('addFlash');
+
+        $controller->method('redirectToRoute')->willReturnCallback(function (string $route) {
+            $targetUrl = match ($route) {
+                'dashboard_index' => '/dashboard',
+                'app_login' => '/login',
+                default => $route,
+            };
+
+            return new RedirectResponse($targetUrl);
+        });
+
+        return $controller;
     }
 }

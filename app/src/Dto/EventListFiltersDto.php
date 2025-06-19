@@ -9,7 +9,6 @@ namespace App\Dto;
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
 use App\Entity\Tag;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -18,20 +17,21 @@ use Doctrine\Common\Collections\Collection;
 class EventListFiltersDto
 {
     private Collection $tags;
-    public function __construct(
-        Collection $tags, /**
-         * @param Category|null      $category   Category entity
-         * @param EventStatus|null    $status Event status
-         * @param Collection<int, Tag> $tags       Collection of Tag entities
-         */
-        private ?Category $category = null,
-        private ?EventStatus $status = null
-    ) {
-        $this->tags = $tags ?? new ArrayCollection();
+
+    /**
+     * Constructor.
+     *
+     * @param Collection       $tags
+     * @param Category|null    $category
+     * @param EventStatus|null $status
+     */
+    public function __construct(Collection $tags, private ?Category $category = null, private ?EventStatus $status = null)
+    {
+        $this->tags = $tags;
     }
 
     /**
-     *Setter for Category
+     *Setter for Category.
      *
      * @param Category|null $category
      *
@@ -55,7 +55,7 @@ class EventListFiltersDto
     }
 
     /**
-     * Setter for status
+     * Setter for status.
      *
      * @param EventStatus|null $status
      *

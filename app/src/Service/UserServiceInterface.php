@@ -1,12 +1,19 @@
 <?php
 
+/**
+ * User Service Interface.
+ */
 namespace App\Service;
 
 use App\Entity\User;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use RuntimeException;
 
+/**
+ * Interface for User Service.
+ */
 interface UserServiceInterface
 {
     /**
@@ -19,9 +26,9 @@ interface UserServiceInterface
     /**
      * Deletes a user entity.
      *
-     * @param User $user User entity to delete
+     * @param User $user
      *
-     * @throws \RuntimeException If attempting to delete the last administrator
+     * @throws RuntimeException If attempting to delete the last administrator
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
@@ -30,9 +37,9 @@ interface UserServiceInterface
     /**
      * Saves a user entity.
      *
-     * @param User $user User entity to save
+     * @param User $user
      *
-     * @throws \RuntimeException If attempting to remove ROLE_ADMIN from the last administrator
+     * @throws RuntimeException If attempting to remove ROLE_ADMIN from the last administrator
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
@@ -41,8 +48,8 @@ interface UserServiceInterface
     /**
      * Checks if an email is unique for a user (excluding the user themselves during edit).
      *
-     * @param string   $email         Email to check
-     * @param int|null $excludeUserId User ID to exclude from the check (for edit scenarios)
+     * @param string   $email
+     * @param int|null $excludeUserId
      *
      * @return bool True if email is unique, false otherwise
      */
@@ -51,26 +58,25 @@ interface UserServiceInterface
     /**
      * Get paginated list of users.
      *
-     * @param int $page Page number
+     * @param int $page
      *
      * @return PaginationInterface Paginated list
      */
     public function getPaginatedList(int $page): PaginationInterface;
 
     /**
-     * Find by Id.
+     * Find by ID.
      *
      * @param int $id
+     *
      * @return User|null
      */
     public function findOneById(int $id): ?User;
 
     /**
-     * Toggle to block users
+     * Toggle to block users.
      *
      * @param User $user
-     * @return void
      */
     public function toggleBlock(User $user): void;
-
 }

@@ -24,8 +24,6 @@ class Avatar
 {
     /**
      * Primary key.
-     *
-     * @var int|null
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,18 +32,14 @@ class Avatar
 
     /**
      * User.
-     *
-     * @var User|null
      */
-    #[ORM\OneToOne(inversedBy: 'avatar', targetEntity: User::class, cascade: ['persist'], fetch: 'EXTRA_LAZY')]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'avatar', cascade: ['persist'], fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\Type(User::class)]
     private ?User $user = null;
 
     /**
      * Filename.
-     *
-     * @var string|null
      */
     #[ORM\Column(type: 'string', length: 191)]
     #[Assert\Type('string')]
@@ -54,7 +48,7 @@ class Avatar
     /**
      * Getter for Id.
      *
-     * @return int|null Id
+     * @return int|null
      */
     public function getId(): ?int
     {
@@ -64,7 +58,7 @@ class Avatar
     /**
      * Getter for user.
      *
-     * @return User|null User
+     * @return User|null
      */
     public function getUser(): ?User
     {
@@ -74,7 +68,7 @@ class Avatar
     /**
      * Setter for user.
      *
-     * @param User|null $user User
+     * @param User|null $user
      */
     public function setUser(?User $user): void
     {
@@ -84,7 +78,7 @@ class Avatar
     /**
      * Getter for filename.
      *
-     * @return string|null Filename
+     * @return string|null
      */
     public function getFilename(): ?string
     {
@@ -94,7 +88,7 @@ class Avatar
     /**
      * Setter for filename.
      *
-     * @param string|null $filename Filename
+     * @param string|null $filename
      */
     public function setFilename(?string $filename): void
     {

@@ -1,5 +1,3 @@
-{# templates/avatar/edit.html.twig #}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'title.edit_avatar'|trans }}{% endblock %}
@@ -17,7 +15,7 @@
 
     <hr>
 
-    <form method="post" action="{{ path('avatar_delete', {'id': avatar.id}) }}" onsubmit="return confirm('{{ 'message.delete_confirm'|trans }}');" style="display:inline-block;">
+    <form method="post" action="{{ path('avatar_delete', {'id': avatar.id}) }}">
         <input type="hidden" name="_method" value="DELETE">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ avatar.id) }}"> {# Ważne: użyj unikalnego ID dla tokena, np. 'delete'~avatar.id #}
         <button class="btn btn-danger">{{ 'action.delete'|trans }}</button>

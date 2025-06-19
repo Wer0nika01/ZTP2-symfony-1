@@ -1,18 +1,28 @@
 <?php
 
+/**
+ * Contact entity Test.
+ */
+
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Contact;
-use App\Entity\User; // Assuming User entity exists and is used in Contact
-use App\Entity\Tag; // Assuming Tag entity exists and is used in Contact
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Entity\User;
+use App\Entity\Tag;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * Class Contact entity Test.
+ */
 class ContactTest extends TestCase
 {
     private Contact $contact;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,7 +45,7 @@ class ContactTest extends TestCase
         $firstName = 'John';
         $result = $this->contact->setFirstName($firstName);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($firstName, $this->contact->getFirstName());
         $this->assertIsString($this->contact->getFirstName());
 
@@ -51,7 +61,7 @@ class ContactTest extends TestCase
         $lastName = 'Doe';
         $result = $this->contact->setLastName($lastName);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($lastName, $this->contact->getLastName());
         $this->assertIsString($this->contact->getLastName());
 
@@ -67,7 +77,7 @@ class ContactTest extends TestCase
         $email = 'test@example.com';
         $result = $this->contact->setEmail($email);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($email, $this->contact->getEmail());
         $this->assertIsString($this->contact->getEmail());
 
@@ -83,7 +93,7 @@ class ContactTest extends TestCase
         $phone = '123-456-7890';
         $result = $this->contact->setPhone($phone);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($phone, $this->contact->getPhone());
         $this->assertIsString($this->contact->getPhone());
 
@@ -99,7 +109,7 @@ class ContactTest extends TestCase
         $address = '123 Main St, Anytown';
         $result = $this->contact->setAddress($address);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($address, $this->contact->getAddress());
         $this->assertIsString($this->contact->getAddress());
 
@@ -115,7 +125,7 @@ class ContactTest extends TestCase
         $company = 'ABC Corp';
         $result = $this->contact->setCompany($company);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($company, $this->contact->getCompany());
         $this->assertIsString($this->contact->getCompany());
 
@@ -131,7 +141,7 @@ class ContactTest extends TestCase
         $jobTitle = 'Software Engineer';
         $result = $this->contact->setJobTitle($jobTitle);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($jobTitle, $this->contact->getJobTitle());
         $this->assertIsString($this->contact->getJobTitle());
 
@@ -147,7 +157,7 @@ class ContactTest extends TestCase
         $notes = 'Important client contact.';
         $result = $this->contact->setNotes($notes);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertEquals($notes, $this->contact->getNotes());
         $this->assertIsString($this->contact->getNotes());
 
@@ -160,11 +170,10 @@ class ContactTest extends TestCase
      */
     public function testCreatedAtGetAndSet(): void
     {
-        $dateTime = new \DateTimeImmutable();
+        $dateTime = new DateTimeImmutable();
         $this->contact->setCreatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->contact->getCreatedAt());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $this->contact->getCreatedAt());
 
         $this->contact->setCreatedAt(null);
         $this->assertNull($this->contact->getCreatedAt());
@@ -175,11 +184,10 @@ class ContactTest extends TestCase
      */
     public function testUpdatedAtGetAndSet(): void
     {
-        $dateTime = new \DateTimeImmutable();
+        $dateTime = new DateTimeImmutable();
         $this->contact->setUpdatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->contact->getUpdatedAt());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $this->contact->getUpdatedAt());
 
         $this->contact->setUpdatedAt(null);
         $this->assertNull($this->contact->getUpdatedAt());
@@ -193,7 +201,7 @@ class ContactTest extends TestCase
         $author = $this->createMock(User::class);
         $result = $this->contact->setAuthor($author);
 
-        $this->assertSame($this->contact, $result); // Test fluent interface
+        $this->assertSame($this->contact, $result);
         $this->assertSame($author, $this->contact->getAuthor());
 
         $this->contact->setAuthor(null);
@@ -218,16 +226,14 @@ class ContactTest extends TestCase
         $tag2 = $this->createMock(Tag::class);
 
         $result1 = $this->contact->addTag($tag1);
-        $this->assertSame($this->contact, $result1); // Test fluent interface
+        $this->assertSame($this->contact, $result1);
         $this->assertTrue($this->contact->getTags()->contains($tag1));
         $this->assertCount(1, $this->contact->getTags());
 
-        // Try adding the same tag again, should not increase count
         $result2 = $this->contact->addTag($tag1);
-        $this->assertSame($this->contact, $result2); // Test fluent interface
+        $this->assertSame($this->contact, $result2);
         $this->assertCount(1, $this->contact->getTags());
 
-        // Add a second, different tag
         $this->contact->addTag($tag2);
         $this->assertTrue($this->contact->getTags()->contains($tag2));
         $this->assertCount(2, $this->contact->getTags());
@@ -241,24 +247,20 @@ class ContactTest extends TestCase
         $tag1 = $this->createMock(Tag::class);
         $tag2 = $this->createMock(Tag::class);
 
-        // Add tags first
         $this->contact->addTag($tag1);
         $this->contact->addTag($tag2);
         $this->assertCount(2, $this->contact->getTags());
 
-        // Remove one tag
         $result1 = $this->contact->removeTag($tag1);
-        $this->assertSame($this->contact, $result1); // Test fluent interface
+        $this->assertSame($this->contact, $result1);
         $this->assertFalse($this->contact->getTags()->contains($tag1));
         $this->assertCount(1, $this->contact->getTags());
 
-        // Try removing a non-existent tag, should not change count
         $nonExistentTag = $this->createMock(Tag::class);
         $result2 = $this->contact->removeTag($nonExistentTag);
-        $this->assertSame($this->contact, $result2); // Test fluent interface
+        $this->assertSame($this->contact, $result2);
         $this->assertCount(1, $this->contact->getTags());
 
-        // Remove the last tag
         $this->contact->removeTag($tag2);
         $this->assertFalse($this->contact->getTags()->contains($tag2));
         $this->assertCount(0, $this->contact->getTags());

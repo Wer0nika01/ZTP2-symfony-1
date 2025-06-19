@@ -1,15 +1,16 @@
 <?php
 
+/**
+ * Registration controller Test.
+ */
+
 namespace App\Tests\Unit\Controller;
 
 use App\Controller\RegistrationController;
 use App\Entity\User;
-use App\Form\Type\RegistrationType;
 use App\Service\RegistrationServiceInterface;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Doctrine\DBAL\Driver\Exception as DriverExceptionInterface; // Alias for clarity
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,80 +21,26 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+/**
+ * Class Registration controller Test.
+ */
 class RegistrationControllerTest extends TestCase
 {
     private $registrationService;
     private $authenticationUtils;
-    private $translator;
     private $twig;
     private $formFactory;
 
-    protected function setUp(): void
-    {
-        $this->registrationService = $this->createMock(RegistrationServiceInterface::class);
-        $this->authenticationUtils = $this->createMock(AuthenticationUtils::class);
-        $this->translator = $this->createMock(TranslatorInterface::class);
-        $this->twig = $this->createMock(Environment::class);
-        $this->formFactory = $this->createMock(\Symfony\Component\Form\FormFactoryInterface::class);
-    }
-
     /**
-     * Helper method to create a RegistrationController instance with mocked dependencies.
-     *
-     * @param UserInterface|null $userMock Specific user mock to return from getUser().
-     * @param FormInterface|null $formMock Specific form mock to return from createForm().
+     * Test register when user is logged in.
      */
-    private function createController(?UserInterface $userMock = null, ?FormInterface $formMock = null): RegistrationController
-    {
-        $controller = $this->getMockBuilder(RegistrationController::class)
-            ->setConstructorArgs([])
-            ->onlyMethods(['getUser', 'createForm', 'render', 'addFlash', 'redirectToRoute'])
-            ->getMock();
-
-        // Configure getUser behavior
-        $controller->method('getUser')->willReturn($userMock);
-
-        // Configure createForm behavior
-        if ($formMock) {
-            $controller->method('createForm')->willReturn($formMock);
-        } else {
-            $controller->method('createForm')->willReturnCallback(function (string $type, $data = null, array $options = []) {
-                return $this->formFactory->create($type, $data, $options);
-            });
-        }
-
-        // Configure render behavior
-        $controller->method('render')
-            ->willReturnCallback(function (string $view, array $parameters = []) {
-                $content = $this->twig->render($view, $parameters);
-                return new Response($content);
-            });
-
-        // Configure addFlash behavior (void return type)
-        $controller->method('addFlash');
-
-        // Configure redirectToRoute behavior (RedirectResponse return type)
-        $controller->method('redirectToRoute')->willReturnCallback(function (string $route, array $parameters = []) {
-            // Manually map route names to expected URLs for assertions
-            $targetUrl = match ($route) {
-                'dashboard_index' => '/dashboard',
-                'app_login' => '/login',
-                default => $route, // Fallback if not a known route, though should be covered by tests
-            };
-            return new RedirectResponse($targetUrl);
-        });
-
-        return $controller;
-    }
-
     public function testRegisterWhenUserIsLoggedIn(): void
     {
         $user = $this->createMock(User::class);
-        $controller = $this->createController($user); // User is logged in
+        $controller = $this->createController($user);
 
-        $request = Request::create('/register', 'GET');
+        $request = Request::create('/register');
 
-        // Expect redirectToRoute to be called with 'dashboard_index'
         $controller->expects($this->once())->method('redirectToRoute')->with('dashboard_index');
         $controller->expects($this->never())->method('createForm');
         $this->authenticationUtils->expects($this->never())->method('getLastAuthenticationError');
@@ -101,18 +48,20 @@ class RegistrationControllerTest extends TestCase
         $response = $controller->register(
             $request,
             $this->registrationService,
-            $this->authenticationUtils,
-            $this->translator
+            $this->authenticationUtils
         );
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals(Response::HTTP_FOUND, $response->getStatusCode());
-        $this->assertEquals('/dashboard', $response->getTargetUrl()); // Assert against the resolved URL
+        $this->assertEquals('/dashboard', $response->getTargetUrl());
     }
 
+    /**
+     * Test register get request.
+     */
     public function testRegisterGetRequest(): void
     {
-        $controller = $this->createController(null); // User is not logged in
+        $controller = $this->createController();
 
         $lastAuthenticationError = null;
         $lastUsername = 'test@example.com';
@@ -127,8 +76,8 @@ class RegistrationControllerTest extends TestCase
         $form = $this->createMock(FormInterface::class);
         $form->method('createView')->willReturn($formViewMock);
         $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(false); // For GET requests, handleRequest will make isSubmitted return false.
-        $form->method('isValid')->willReturn(false); // Not relevant for GET, but setting default
+        $form->method('isSubmitted')->willReturn(false);
+        $form->method('isValid')->willReturn(false);
 
         $controller->method('createForm')->willReturn($form);
 
@@ -137,32 +86,33 @@ class RegistrationControllerTest extends TestCase
             ->with(
                 'security/register.html.twig',
                 $this->callback(function ($parameters) use ($lastUsername, $lastAuthenticationError) {
-                    // Assert specific scalar values and that 'form' is an instance of FormView
                     $this->assertEquals($lastUsername, $parameters['last_username']);
-                    $this->assertNull($parameters['error']); // Check for null explicitly
+                    $this->assertNull($parameters['error']);
                     $this->assertInstanceOf(FormView::class, $parameters['form']);
-                    return true; // Return true if all checks pass
+
+                    return true;
                 })
             )
-            ->willReturn('<html>registration form</html>');
+            ->willReturn(value: '<html lang="">registration form</html>');
 
-        $request = Request::create('/register', 'GET');
+        $request = Request::create('/register');
 
         $response = $controller->register(
             $request,
             $this->registrationService,
-            $this->authenticationUtils,
-            $this->translator
+            $this->authenticationUtils
         );
 
-        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString('registration form', $response->getContent());
     }
 
+    /**
+     * Test register invalid form submission.
+     */
     public function testRegisterInvalidFormSubmission(): void
     {
-        $controller = $this->createController(null); // User is not logged in
+        $controller = $this->createController();
         $request = Request::create('/register', 'POST', [
             'registration_type' => [
                 'email' => 'invalid-email',
@@ -197,21 +147,78 @@ class RegistrationControllerTest extends TestCase
                     $this->assertEquals('', $parameters['last_username']);
                     $this->assertNull($parameters['error']);
                     $this->assertInstanceOf(FormView::class, $parameters['form']);
+
                     return true;
                 })
             )
-            ->willReturn('<html>registration form with errors</html>');
+            ->willReturn(value: '<html lang="">registration form with errors</html>');
 
         $response = $controller->register(
             $request,
             $this->registrationService,
-            $this->authenticationUtils,
-            $this->translator
+            $this->authenticationUtils
         );
 
-        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString('registration form with errors', $response->getContent());
     }
 
+
+    /**
+     * Set up.
+     */
+    protected function setUp(): void
+    {
+        $this->registrationService = $this->createMock(RegistrationServiceInterface::class);
+        $this->authenticationUtils = $this->createMock(AuthenticationUtils::class);
+        $this->translator = $this->createMock(TranslatorInterface::class);
+        $this->twig = $this->createMock(Environment::class);
+        $this->formFactory = $this->createMock(FormFactoryInterface::class);
+    }
+
+    /**
+     * Helper method to create a RegistrationController instance with mocked dependencies.
+     *
+     * @param UserInterface|null $userMock
+     *
+     * @return RegistrationController
+     */
+    private function createController(?UserInterface $userMock = null): RegistrationController
+    {
+        $controller = $this->getMockBuilder(RegistrationController::class)
+            ->setConstructorArgs([])
+            ->onlyMethods(['getUser', 'createForm', 'render', 'addFlash', 'redirectToRoute'])
+            ->getMock();
+
+        $controller->method('getUser')->willReturn($userMock);
+
+        if (null) {
+            $controller->method('createForm')->willReturn(null);
+        } else {
+            $controller->method('createForm')->willReturnCallback(function (string $type, $data = null, array $options = []) {
+                return $this->formFactory->create($type, $data, $options);
+            });
+        }
+
+        $controller->method('render')
+            ->willReturnCallback(function (string $view, array $parameters = []) {
+                $content = $this->twig->render($view, $parameters);
+
+                return new Response($content);
+            });
+
+        $controller->method('addFlash');
+
+        $controller->method('redirectToRoute')->willReturnCallback(function (string $route) {
+            $targetUrl = match ($route) {
+                'dashboard_index' => '/dashboard',
+                'app_login' => '/login',
+                default => $route,
+            };
+
+            return new RedirectResponse($targetUrl);
+        });
+
+        return $controller;
+    }
 }

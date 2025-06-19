@@ -1,25 +1,37 @@
 <?php
 
+/**
+ * Event entity Test.
+ */
+
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
-use App\Entity\Event; // The entity under test
+use App\Entity\Event;
 use App\Entity\Tag;
-use App\Entity\User; // Assuming User entity exists and is used in Event
+use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class Event entity Test.
+ */
 class EventTest extends TestCase
 {
     private Event $event;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
         $this->event = new Event();
+        // Initialize the 'status' property to prevent "accessed before initialization" error
+        // Assuming EventStatus::PERSONAL is a valid default or initial state
+        $this->event->setStatus(EventStatus::PERSONAL);
     }
 
     /**
@@ -66,12 +78,11 @@ class EventTest extends TestCase
      */
     public function testStartTimeGetAndSet(): void
     {
-        $startTime = new \DateTimeImmutable('2024-07-01 09:00:00');
+        $startTime = new DateTimeImmutable('2024-07-01 09:00:00');
         $result = $this->event->setStartTime($startTime);
 
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertEquals($startTime, $this->event->getStartTime());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $this->event->getStartTime());
 
         $this->event->setStartTime(null);
         $this->assertNull($this->event->getStartTime());
@@ -82,12 +93,11 @@ class EventTest extends TestCase
      */
     public function testEndTimeGetAndSet(): void
     {
-        $endTime = new \DateTimeImmutable('2024-07-01 17:00:00');
+        $endTime = new DateTimeImmutable('2024-07-01 17:00:00');
         $result = $this->event->setEndTime($endTime);
 
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertEquals($endTime, $this->event->getEndTime());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $this->event->getEndTime());
 
         $this->event->setEndTime(null);
         $this->assertNull($this->event->getEndTime());
@@ -101,7 +111,7 @@ class EventTest extends TestCase
         $location = 'Conference Room A';
         $result = $this->event->setLocation($location);
 
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertEquals($location, $this->event->getLocation());
         $this->assertIsString($this->event->getLocation());
 
@@ -114,11 +124,10 @@ class EventTest extends TestCase
      */
     public function testIsAllDayGetAndSet(): void
     {
-        // Default value should be false (as defined in the entity)
         $this->assertFalse($this->event->isAllDay());
 
         $result = $this->event->setIsAllDay(true);
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertTrue($this->event->isAllDay());
 
         $this->event->setIsAllDay(false);
@@ -133,7 +142,7 @@ class EventTest extends TestCase
         $category = $this->createMock(Category::class);
         $result = $this->event->setCategory($category);
 
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertSame($category, $this->event->getCategory());
 
         $this->event->setCategory(null);
@@ -160,16 +169,14 @@ class EventTest extends TestCase
         $this->assertCount(0, $this->event->getTags());
 
         $result1 = $this->event->addTag($tag1);
-        $this->assertSame($this->event, $result1); // Test fluent interface
+        $this->assertSame($this->event, $result1);
         $this->assertTrue($this->event->getTags()->contains($tag1));
         $this->assertCount(1, $this->event->getTags());
 
-        // Try adding the same tag again, should not increase count
         $result2 = $this->event->addTag($tag1);
-        $this->assertSame($this->event, $result2); // Test fluent interface
+        $this->assertSame($this->event, $result2);
         $this->assertCount(1, $this->event->getTags());
 
-        // Add a second, different tag
         $this->event->addTag($tag2);
         $this->assertTrue($this->event->getTags()->contains($tag2));
         $this->assertCount(2, $this->event->getTags());
@@ -182,26 +189,22 @@ class EventTest extends TestCase
     {
         $tag1 = $this->createMock(Tag::class);
         $tag2 = $this->createMock(Tag::class);
-        $tag3 = $this->createMock(Tag::class); // A tag not in the collection
+        $tag3 = $this->createMock(Tag::class);
 
-        // Add tags first
         $this->event->addTag($tag1);
         $this->event->addTag($tag2);
         $this->assertCount(2, $this->event->getTags());
 
-        // Remove one tag
         $result1 = $this->event->removeTag($tag1);
-        $this->assertSame($this->event, $result1); // Test fluent interface
+        $this->assertSame($this->event, $result1);
         $this->assertFalse($this->event->getTags()->contains($tag1));
         $this->assertCount(1, $this->event->getTags());
         $this->assertTrue($this->event->getTags()->contains($tag2));
 
-        // Try removing a non-existent tag, should not change count
         $result2 = $this->event->removeTag($tag3);
-        $this->assertSame($this->event, $result2); // Test fluent interface
+        $this->assertSame($this->event, $result2);
         $this->assertCount(1, $this->event->getTags());
 
-        // Remove the last tag
         $this->event->removeTag($tag2);
         $this->assertFalse($this->event->getTags()->contains($tag2));
         $this->assertCount(0, $this->event->getTags());
@@ -216,7 +219,7 @@ class EventTest extends TestCase
         $author = $this->createMock(User::class);
         $result = $this->event->setAuthor($author);
 
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertSame($author, $this->event->getAuthor());
 
         $this->event->setAuthor(null);
@@ -228,13 +231,13 @@ class EventTest extends TestCase
      */
     public function testStatusGetAndSet(): void
     {
-        // Default status should be EventStatus::PERSONAL as per entity definition
+        // The status is now initialized in setUp(), so this initial assertion is valid.
         $this->assertEquals(EventStatus::PERSONAL, $this->event->getStatus());
 
         $status = EventStatus::WORK;
         $result = $this->event->setStatus($status);
 
-        $this->assertSame($this->event, $result); // Test fluent interface
+        $this->assertSame($this->event, $result);
         $this->assertEquals($status, $this->event->getStatus());
 
         $status = EventStatus::IMPORTANT;

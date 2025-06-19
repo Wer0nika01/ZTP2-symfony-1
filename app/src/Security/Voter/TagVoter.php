@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tag voter
+ * Tag voter.
  */
 
 namespace App\Security\Voter;
@@ -12,30 +12,17 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Class TagVoter
+ * Class TagVoter.
  */
 class TagVoter extends Voter
 {
-    /**
-     * View permission
-     */
     public const VIEW = 'TAG_VIEW';
 
-    /**
-     * Edit permission
-     */
     public const EDIT = 'TAG_EDIT';
 
-    /**
-     * Delete permission
-     */
     public const DELETE = 'TAG_DELETE';
 
-    /**
-     * Create permission
-     */
     public const CREATE = 'TAG_CREATE';
-
 
     /**
      * Determines if the attribute and subject are supported by this voter.

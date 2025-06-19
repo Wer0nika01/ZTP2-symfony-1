@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * Event repository.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Category;
+use App\Entity\Enum\EventStatus;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Dto\EventListFiltersDto;
@@ -14,10 +19,15 @@ use Doctrine\ORM\QueryBuilder;
 use DateTimeImmutable;
 
 /**
- * @extends ServiceEntityRepository<Event>
+ * Class Event repository.
  */
 class EventRepository extends ServiceEntityRepository
 {
+    /**
+     * Constructor.
+     *
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
@@ -46,21 +56,6 @@ class EventRepository extends ServiceEntityRepository
 
         return $this->applyFiltersToList($queryBuilder, $filters);
     }
-
-    private function createBaseQueryBuilder(User $author): QueryBuilder
-    {
-        return $this->createQueryBuilder('event')
-            ->select(
-                'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
-                'partial category.{id, title}',
-                'partial tags.{id, name}'
-            )
-            ->join('event.category', 'category')
-            ->leftJoin('event.tags', 'tags')
-            ->andWhere('event.author = :author')
-            ->setParameter('author', $author);
-    }
-
 
     /**
      * Finds active events for a specific user.
@@ -108,6 +103,47 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
+     * Counts the number of events associated with a given category.
+     *
+     * @param Category $category The category entity to count events for.
+     *
+     * @return int The number of events.
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function countByCategory(Category $category): int
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->andWhere('e.category = :category')
+            ->setParameter('category', $category);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Create base query builder.
+     *
+     * @param User $author
+     *
+     * @return QueryBuilder
+     */
+    private function createBaseQueryBuilder(User $author): QueryBuilder
+    {
+        return $this->createQueryBuilder('event')
+            ->select(
+                'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
+                'partial category.{id, title}',
+                'partial tags.{id, name}'
+            )
+            ->join('event.category', 'category')
+            ->leftJoin('event.tags', 'tags')
+            ->andWhere('event.author = :author')
+            ->setParameter('author', $author);
+    }
+
+    /**
      * Applies filters to the query builder for the list.
      *
      * @param QueryBuilder        $queryBuilder Query builder
@@ -117,44 +153,22 @@ class EventRepository extends ServiceEntityRepository
      */
     private function applyFiltersToList(QueryBuilder $queryBuilder, EventListFiltersDto $filters): QueryBuilder
     {
-        if ($filters->getCategory() instanceof \App\Entity\Category) {
+        if ($filters->getCategory() instanceof Category) {
             $queryBuilder->andWhere('category.id = :categoryId')
                 ->setParameter('categoryId', $filters->getCategory()->getId());
         }
 
-        if ($filters->getStatus() instanceof \App\Entity\Enum\EventStatus) {
+        if ($filters->getStatus() instanceof EventStatus) {
             $queryBuilder->andWhere('event.status = :status')
                 ->setParameter('status', $filters->getStatus());
         }
 
         if (!$filters->getTags()->isEmpty()) {
             $queryBuilder->leftJoin('event.tags', 'filterTags')
-            ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
+                ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
                 ->setParameter('tag_ids', $filters->getTags()->map(fn ($tag) => $tag->getId())->toArray());
         }
 
         return $queryBuilder;
-    }
-
-    /**
-     * Counts the number of events associated with a given category.
-     *
-     * @param Category $category The category entity to count events for.
-     *
-     * @return int The number of events.
-     *
-     * @throws NoResultException // Pozostawione tylko dla kompatybilności z interfejsem CategoryService,
-     * @throws NonUniqueResultException // mimo że to zapytanie ich nie rzuca.
-     */
-    public function countByCategory(Category $category): int
-    {
-        $qb = $this->createQueryBuilder('e')
-            ->select('COUNT(e.id)')
-            ->andWhere('e.category = :category')
-            ->setParameter('category', $category); // Ustawiamy parametr kategorii
-
-        // getSingleScalarResult() zwróci 0, jeśli nie znajdzie żadnych zdarzeń.
-        // Nie rzuci NoResultException ani NonUniqueResultException dla COUNT().
-        return $qb->getQuery()->getSingleScalarResult();
     }
 }

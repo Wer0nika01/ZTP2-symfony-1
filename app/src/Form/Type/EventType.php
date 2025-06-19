@@ -115,8 +115,6 @@ class EventType extends AbstractType
             'tags',
             EntityType::class,
             [
-                //'label' => 'label.tags',
-                //'required' => false,
                 'class' => Tag::class,
                 'choice_label' => 'name',
                 'multiple' => true,

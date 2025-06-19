@@ -1,16 +1,19 @@
 <?php
 
+/**
+ * Contact controller.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Contact;
+use App\Entity\User;
 use App\Form\Type\ContactType;
-use App\Repository\ContactRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Knp\Component\Pager\PaginatorInterface;
 use App\Service\ContactService;
 use App\Dto\ContactListFiltersDto;
 use App\Form\Type\ContactListFilterType;
@@ -21,6 +24,11 @@ use App\Form\Type\ContactListFilterType;
 #[IsGranted('ROLE_USER')]
 class ContactController extends AbstractController
 {
+    /**
+     * Constructor
+     *
+     * @param ContactService $contactService
+     */
     public function __construct(private readonly ContactService $contactService)
     {
     }
@@ -40,7 +48,7 @@ class ContactController extends AbstractController
         $form = $this->createForm(ContactListFilterType::class, $filtersDto, ['method' => 'GET']);
         $form->handleRequest($request);
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $user = $this->getUser();
 
         $pagination = $this->contactService->getPaginatedList(

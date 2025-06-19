@@ -1,19 +1,28 @@
 <?php
 
+/**
+ * Category type Test.
+ */
+
 namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\Category;
-use App\Form\Type\CategoryType; // The form type under test
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Form\Type\CategoryType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class Category type Test.
+ */
 class CategoryTypeTest extends TestCase
 {
     private CategoryType $formType;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -25,17 +34,14 @@ class CategoryTypeTest extends TestCase
      */
     public function testBuildForm(): void
     {
-        // Mock the FormBuilderInterface
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        // Expect the 'add' method to be called once with specific arguments
         $builder->expects($this->once())
             ->method('add')
             ->with(
-                'title', // Field name
-                TextType::class, // Field type
+                'title',
+                TextType::class,
                 $this->callback(function (array $options) {
-                    // Assertions for the options passed to the 'title' field
                     $this->assertArrayHasKey('label', $options);
                     $this->assertEquals('label.title', $options['label']);
 
@@ -47,11 +53,10 @@ class CategoryTypeTest extends TestCase
                     $this->assertArrayHasKey('max_length', $options['attr']);
                     $this->assertEquals(64, $options['attr']['max_length']);
 
-                    return true; // Indicate that the callback assertion passed
+                    return true;
                 })
             );
 
-        // Call the method under test
         $this->formType->buildForm($builder, []);
     }
 
@@ -60,20 +65,17 @@ class CategoryTypeTest extends TestCase
      */
     public function testConfigureOptions(): void
     {
-        // Mock the OptionsResolver
         $resolver = $this->createMock(OptionsResolver::class);
 
-        // Expect setDefaults to be called once with an array containing 'data_class'
         $resolver->expects($this->once())
             ->method('setDefaults')
             ->with($this->callback(function (array $defaults) {
-                // Assert that 'data_class' key exists and has the correct value
                 $this->assertArrayHasKey('data_class', $defaults);
                 $this->assertEquals(Category::class, $defaults['data_class']);
+
                 return true;
             }));
 
-        // Call the method under test
         $this->formType->configureOptions($resolver);
     }
 

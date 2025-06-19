@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * User service Test.
+ */
+
 namespace App\Tests\Unit\Service;
 
 use App\Entity\User;
@@ -10,26 +14,28 @@ use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-// Needed for mocking QueryBuilder
-// IMPORTANT: Changed from AbstractQuery to Query
-
+/**
+ * Class User service Test.
+ */
 class UserServiceTest extends TestCase
 {
     private UserService $userService;
-    private $userRepositoryMock; // Mock for UserRepository
-    private $translatorMock;     // Mock for TranslatorInterface
-    private $paginatorMock;      // Mock for PaginatorInterface
+    private $userRepositoryMock;
+    private $translatorMock;
+    private $paginatorMock;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
-        // Create mocks for all dependencies of UserService
         $this->userRepositoryMock = $this->createMock(UserRepository::class);
         $this->translatorMock = $this->createMock(TranslatorInterface::class);
         $this->paginatorMock = $this->createMock(PaginatorInterface::class);
 
-        // Create an instance of UserService, injecting its mocks as dependencies
         $this->userService = new UserService(
             $this->userRepositoryMock,
             $this->translatorMock,
@@ -44,35 +50,30 @@ class UserServiceTest extends TestCase
     public function testGetPaginatedList(): void
     {
         $page = 1;
-        $expectedPagination = $this->createMock(PaginationInterface::class); // Expected pagination object
+        $expectedPagination = $this->createMock(PaginationInterface::class);
 
-        // Mocking QueryBuilder and its methods
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
         $queryBuilderMock->expects($this->once())
             ->method('orderBy')
             ->with('u.email', 'ASC')
-            ->willReturn($queryBuilderMock); // orderBy method should return the QueryBuilder itself
+            ->willReturn($queryBuilderMock);
 
-        // Expect UserRepository to return our QueryBuilder mock
         $this->userRepositoryMock->expects($this->once())
             ->method('createQueryBuilder')
             ->with('u')
             ->willReturn($queryBuilderMock);
 
-        // Expect PaginatorInterface to be called once with correct arguments
         $this->paginatorMock->expects($this->once())
             ->method('paginate')
             ->with(
-                $queryBuilderMock, // Expect our QueryBuilder mock
+                $queryBuilderMock,
                 $page,
                 UserRepository::PAGINATOR_ITEMS_PER_PAGE
             )
-            ->willReturn($expectedPagination); // Return the expected pagination result
+            ->willReturn($expectedPagination);
 
-        // Call the service method
         $result = $this->userService->getPaginatedList($page);
 
-        // Assertions: Check if the result is what we expect
         $this->assertSame($expectedPagination, $result);
     }
 
@@ -82,17 +83,14 @@ class UserServiceTest extends TestCase
      */
     public function testGetAllUsers(): void
     {
-        $expectedUsers = [new User(), new User()]; // Simulated results
+        $expectedUsers = [new User(), new User()];
 
-        // Expect UserRepository->findAll() to be called once and return our simulated data
         $this->userRepositoryMock->expects($this->once())
             ->method('findAll')
             ->willReturn($expectedUsers);
 
-        // Call the service method
         $result = $this->userService->getAllUsers();
 
-        // Assertions: Check if the result is what we expect
         $this->assertSame($expectedUsers, $result);
     }
 
@@ -103,18 +101,15 @@ class UserServiceTest extends TestCase
     public function testDeleteUserSuccessfullyWhenNotAdmin(): void
     {
         $user = new User();
-        $user->setRoles(['ROLE_USER']); // User is not an admin
+        $user->setRoles(['ROLE_USER']);
 
-        // Expect UserRepository->countAdmins() NOT to be called
         $this->userRepositoryMock->expects($this->never())
             ->method('countAdmins');
 
-        // Expect UserRepository->delete() to be called once with the correct user
         $this->userRepositoryMock->expects($this->once())
             ->method('delete')
             ->with($user);
 
-        // Call the service method
         $this->userService->delete($user);
     }
 
@@ -125,23 +120,19 @@ class UserServiceTest extends TestCase
     public function testDeleteAdminUserSuccessfullyWhenNotLastAdmin(): void
     {
         $adminUser = new User();
-        $adminUser->setRoles(['ROLE_ADMIN']); // User is an admin
+        $adminUser->setRoles(['ROLE_ADMIN']);
 
-        // Expect UserRepository->countAdmins() to be called once and return more than 1 admin
         $this->userRepositoryMock->expects($this->once())
             ->method('countAdmins')
-            ->willReturn(2); // Simulate more than 1 admin
+            ->willReturn(2);
 
-        // Expect TranslatorInterface NOT to be called (no exception)
         $this->translatorMock->expects($this->never())
             ->method('trans');
 
-        // Expect UserRepository->delete() to be called once
         $this->userRepositoryMock->expects($this->once())
             ->method('delete')
             ->with($adminUser);
 
-        // Call the service method
         $this->userService->delete($adminUser);
     }
 
@@ -152,28 +143,23 @@ class UserServiceTest extends TestCase
     public function testDeleteLastAdminUserThrowsException(): void
     {
         $adminUser = new User();
-        $adminUser->setRoles(['ROLE_ADMIN']); // User is an admin
+        $adminUser->setRoles(['ROLE_ADMIN']);
 
-        // Expect UserRepository->countAdmins() to be called once and return 1 admin
         $this->userRepositoryMock->expects($this->once())
             ->method('countAdmins')
-            ->willReturn(1); // Simulate this is the last admin
+            ->willReturn(1);
 
-        // Expect TranslatorInterface->trans() to be called once
         $this->translatorMock->expects($this->once())
             ->method('trans')
             ->with('message.cannot_delete_last_admin')
-            ->willReturn('Cannot delete the last admin.'); // Simulated translation message
+            ->willReturn('Cannot delete the last admin.');
 
-        // Expect RuntimeException to be thrown
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Cannot delete the last admin.'); // Also check the exception message
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot delete the last admin.');
 
-        // Expect UserRepository->delete() NOT to be called
         $this->userRepositoryMock->expects($this->never())
             ->method('delete');
 
-        // Call the service method
         $this->userService->delete($adminUser);
     }
 
@@ -185,12 +171,10 @@ class UserServiceTest extends TestCase
     {
         $user = new User();
 
-        // Expect UserRepository->save() to be called once with the correct user
         $this->userRepositoryMock->expects($this->once())
             ->method('save')
             ->with($user);
 
-        // Call the service method
         $this->userService->save($user);
     }
 
@@ -201,28 +185,23 @@ class UserServiceTest extends TestCase
     {
         $email = 'unique@example.com';
 
-        // Mock QueryBuilder and its methods
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
         $queryBuilderMock->expects($this->once())->method('where')->with('u.email = :email')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('setParameter')->with('email', $email)->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->never())->method('andWhere'); // No andWhere should be called
+        $queryBuilderMock->expects($this->never())->method('andWhere');
 
-        // Mock Query (IMPORTANT: Changed from AbstractQuery to Query)
         $queryMock = $this->createMock(Query::class);
-        $queryMock->expects($this->once())->method('getResult')->willReturn([]); // Empty result = unique
+        $queryMock->expects($this->once())->method('getResult')->willReturn([]);
 
         $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($queryMock);
 
-        // Expect UserRepository to create QueryBuilder
         $this->userRepositoryMock->expects($this->once())
             ->method('createQueryBuilder')
             ->with('u')
             ->willReturn($queryBuilderMock);
 
-        // Call the service method
         $result = $this->userService->isEmailUnique($email);
 
-        // Assertions
         $this->assertTrue($result);
     }
 
@@ -238,9 +217,8 @@ class UserServiceTest extends TestCase
         $queryBuilderMock->expects($this->once())->method('setParameter')->with('email', $email)->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->never())->method('andWhere');
 
-        // Mock Query (IMPORTANT: Changed from AbstractQuery to Query)
         $queryMock = $this->createMock(Query::class);
-        $queryMock->expects($this->once())->method('getResult')->willReturn([new User()]); // Result with existing user
+        $queryMock->expects($this->once())->method('getResult')->willReturn([new User()]);
 
         $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($queryMock);
 
@@ -266,10 +244,9 @@ class UserServiceTest extends TestCase
         $queryBuilderMock->expects($this->once())->method('where')->with('u.email = :email')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('andWhere')->with('u.id != :id')->willReturn($queryBuilderMock);
 
-        // ZMIANA TUTAJ: Używamy withConsecutive() dla wielu wywołań setParameter
-        $queryBuilderMock->expects($this->exactly(2)) // Oczekujemy dokładnie 2 wywołań setParameter
+        $queryBuilderMock->expects($this->exactly(2))
         ->method('setParameter')
-            ->withConsecutive( // Oczekiwane argumenty dla kolejnych wywołań
+            ->withConsecutive(
                 ['email', $email],
                 ['id', $excludeId]
             )
@@ -300,16 +277,13 @@ class UserServiceTest extends TestCase
         $userId = 1;
         $expectedUser = new User();
 
-        // Expect UserRepository->find() to be called once with the correct ID
         $this->userRepositoryMock->expects($this->once())
             ->method('find')
             ->with($userId)
             ->willReturn($expectedUser);
 
-        // Call the service method
         $result = $this->userService->findOneById($userId);
 
-        // Assertions: Check if the result is what we expect
         $this->assertSame($expectedUser, $result);
     }
 
@@ -320,16 +294,13 @@ class UserServiceTest extends TestCase
     {
         $userId = 999;
 
-        // Expect UserRepository->find() to be called once and return null
         $this->userRepositoryMock->expects($this->once())
             ->method('find')
             ->with($userId)
             ->willReturn(null);
 
-        // Call the service method
         $result = $this->userService->findOneById($userId);
 
-        // Assertions: Check if the result is null
         $this->assertNull($result);
     }
 
@@ -341,12 +312,10 @@ class UserServiceTest extends TestCase
     {
         $user = new User();
 
-        // Expect UserRepository->toggleBlock() to be called once with the correct user
         $this->userRepositoryMock->expects($this->once())
             ->method('toggleBlock')
             ->with($user);
 
-        // Call the service method
         $this->userService->toggleBlock($user);
     }
 }

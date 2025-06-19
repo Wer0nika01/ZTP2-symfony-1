@@ -1,16 +1,19 @@
 <?php
 
+/**
+ * Tag Service.
+ */
+
 namespace App\Service;
 
 use App\Entity\Tag;
 use App\Repository\TagRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Class TagService
+ * Class TagService.
  */
 class TagService implements TagServiceInterface
 {
@@ -18,6 +21,9 @@ class TagService implements TagServiceInterface
 
     /**
      * Constructor.
+     *
+     * @param TagRepository      $tagRepository
+     * @param PaginatorInterface $paginator
      */
     public function __construct(private readonly TagRepository $tagRepository, private readonly PaginatorInterface $paginator)
     {
@@ -25,6 +31,10 @@ class TagService implements TagServiceInterface
 
     /**
      * Get paginated list.
+     *
+     * @param int $page
+     *
+     * @return PaginationInterface
      */
     public function getPaginatedList(int $page): PaginationInterface
     {
@@ -42,6 +52,8 @@ class TagService implements TagServiceInterface
 
     /**
      * Save entity.
+     *
+     * @param Tag $tag
      */
     public function save(Tag $tag): void
     {
@@ -50,6 +62,8 @@ class TagService implements TagServiceInterface
 
     /**
      * Delete entity.
+     *
+     * @param Tag $tag
      */
     public function delete(Tag $tag): void
     {
@@ -58,6 +72,10 @@ class TagService implements TagServiceInterface
 
     /**
      * Find by name.
+     *
+     * @param string $name
+     *
+     * @return Tag|null
      */
     public function findOneByName(string $name): ?Tag
     {

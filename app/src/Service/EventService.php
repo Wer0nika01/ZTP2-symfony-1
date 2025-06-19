@@ -1,22 +1,25 @@
 <?php
 
+/**
+ * Event service.
+ */
 namespace App\Service;
 
 use App\Dto\EventListFiltersDto;
-use App\Entity\Enum\EventStatus;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Repository\EventRepository;
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Class Event service.
+ */
 class EventService implements EventServiceInterface
 {
     /**
      * Items per page.
-     *
      * Use constants to define configuration values that rarely change.
      *
      * @constant int
@@ -30,11 +33,8 @@ class EventService implements EventServiceInterface
      * @param PaginatorInterface     $paginator       Paginator
      * @param EntityManagerInterface $entityManager   Entity Manager
      */
-    public function __construct(
-        private readonly EventRepository $eventRepository,
-        private readonly PaginatorInterface $paginator,
-        private readonly EntityManagerInterface $entityManager
-    ) {
+    public function __construct(private readonly EventRepository $eventRepository, private readonly PaginatorInterface $paginator, private readonly EntityManagerInterface $entityManager)
+    {
     }
 
     /**
@@ -53,7 +53,7 @@ class EventService implements EventServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'], // DODANE: tags.name
+                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'],
                 'defaultSortFieldName' => 'event.startTime',
                 'defaultSortDirection' => 'asc',
             ]

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Avatar controller Test.
+ */
+
 namespace App\Tests\Unit\Controller;
 
 use App\Controller\AvatarController;
@@ -10,172 +14,85 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
+/**
+ * Class Avatar controller Test.
+ */
 class AvatarControllerTest extends TestCase
 {
     private MockObject|AvatarServiceInterface $avatarService;
-    private MockObject|TranslatorInterface $translator;
     private MockObject|AvatarController $controller;
     private MockObject|FormView $mockFormView;
+    private MockObject|UrlGeneratorInterface $mockUrlGenerator;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->avatarService = $this->createMock(AvatarServiceInterface::class);
-        $this->translator = $this->createMock(TranslatorInterface::class);
-        $this->mockFormView = $this->createMock(FormView::class);
-
-        $this->controller = $this->getMockBuilder(AvatarController::class)
-            ->setConstructorArgs([$this->avatarService, $this->translator])
-            ->setMethods(['createForm', 'generateUrl', 'getUser', 'addFlash', 'render', 'redirectToRoute'])
-            ->getMock();
-
-        $this->controller->method('createForm')->willReturnCallback(function($type, $data, $options) {
-            $form = $this->createMock(FormInterface::class);
-            $form->method('handleRequest')->willReturnSelf();
-            $form->method('isSubmitted')->willReturn(false);
-            $form->method('isValid')->willReturn(false);
-            $form->method('createView')->willReturn($this->mockFormView);
-
-            $fileForm = $this->createMock(FormInterface::class);
-            $fileForm->method('getData')->willReturn($this->createMock(UploadedFile::class));
-            $form->method('get')->with('file')->willReturn($fileForm);
-            return $form;
-        });
-
-        $this->controller->method('generateUrl')->willReturnCallback(function($route, $params = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
-            $url = '';
-            if (in_array($route, ['avatar_edit', 'avatar_delete'])) {
-                $id = $params['id'] ?? null;
-                if ($id !== null) {
-                    $url = '/avatar/' . $id . (($route === 'avatar_edit') ? '/edit' : '/delete');
-                } else {
-                    $url = '/' . str_replace(['_', '.'], '/', $route);
-                }
-            } elseif ($route === 'dashboard_index') {
-                $url = '/dashboard/index';
-            } elseif ($route === 'app_profile') {
-                $url = '/app/profile';
-            } else {
-                $url = '/' . str_replace(['_', '.'], '/', $route);
-            }
-
-            if (!empty($params) && !in_array($route, ['avatar_edit', 'avatar_delete'])) {
-                $url .= '?' . http_build_query($params);
-            }
-            return $url;
-        });
-
-        $this->controller->method('addFlash'); // addFlash is void
-        $this->controller->method('render')->willReturn(new Response());
-
-        $this->controller->method('redirectToRoute')->willReturnCallback(function($route, $params = [], $status = 302) {
-            $url = '';
-            if (in_array($route, ['avatar_edit', 'avatar_delete'])) {
-                $id = $params['id'] ?? null;
-                if ($id !== null) {
-                    $url = '/avatar/' . $id . (($route === 'avatar_edit') ? '/edit' : '/delete');
-                } else {
-                    $url = '/' . str_replace(['_', '.'], '/', $route);
-                }
-            } elseif ($route === 'dashboard_index') {
-                $url = '/dashboard/index';
-            } elseif ($route === 'app_profile') {
-                $url = '/app/profile';
-            } else {
-                $url = '/' . str_replace(['_', '.'], '/', $route);
-            }
-
-            if (!empty($params) && !in_array($route, ['avatar_edit', 'avatar_delete'])) {
-                $url .= '?' . http_build_query($params);
-            }
-            return new RedirectResponse($url, $status);
-        });
-
-        $this->translator->method('trans')->willReturnArgument(0);
-    }
 
     /**
-     * Helper to mock a user with a specific avatar.
+     * Test create action redirects if user has avatar.
      */
-    private function mockUserWithAvatar(?Avatar $avatar = null): MockObject|User
-    {
-        $user = $this->createMock(User::class);
-        $user->method('getAvatar')->willReturn($avatar);
-        $this->controller->method('getUser')->willReturn($user);
-        return $user;
-    }
-
-    /**
-     * Helper to mock a user without an avatar.
-     */
-    private function mockUserWithoutAvatar(): MockObject|User
-    {
-        $user = $this->createMock(User::class);
-        $user->method('getAvatar')->willReturn(null);
-        $this->controller->method('getUser')->willReturn($user);
-        return $user;
-    }
-
     public function testCreateActionRedirectsIfUserHasAvatar(): void
     {
         $avatarId = 1;
         $mockAvatar = $this->createMock(Avatar::class);
         $mockAvatar->method('getId')->willReturn($avatarId);
+
         $this->mockUserWithAvatar($mockAvatar);
 
         $this->controller->expects($this->once())
             ->method('redirectToRoute')
             ->with('avatar_edit', ['id' => $avatarId]);
 
-        $request = Request::create('/avatar/create', 'GET');
+        $this->mockUrlGenerator->expects($this->once())
+            ->method('generate')
+            ->with('avatar_edit', ['id' => $avatarId], 1)
+            ->willReturn('/avatar/'.$avatarId.'/edit');
+
+        $request = Request::create('/avatar/create');
         $response = $this->controller->create($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/avatar/'.$avatarId.'/edit', $response->getTargetUrl());
     }
 
+    /**
+     * Test create action get request renders form.
+     */
     public function testCreateActionGetRequestRendersForm(): void
     {
         $this->mockUserWithoutAvatar();
+        $form = $this->createMockForm(false, false);
 
-        $form = $this->createMock(FormInterface::class);
-        $form->method('createView')->willReturn($this->mockFormView);
-        $this->controller->method('createForm')->willReturn($form);
+        $this->controller->expects($this->once())
+            ->method('createForm')
+            ->willReturn($form);
 
         $this->controller->expects($this->once())
             ->method('render')
             ->with('avatar/create.html.twig', ['form' => $this->mockFormView])
             ->willReturn(new Response());
 
-        $this->controller->expects($this->once())
-            ->method('generateUrl')
-            ->with('avatar_create')
-            ->willReturn('/avatar/create');
-
-        $request = Request::create('/avatar/create', 'GET');
-        $response = $this->controller->create($request);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $request = Request::create('/avatar/create');
+        $this->controller->create($request);
     }
 
+    /**
+     * Test create action post request invalid form.
+     */
     public function testCreateActionPostRequestInvalidForm(): void
     {
         $this->mockUserWithoutAvatar();
+        $form = $this->createMockForm(true, false);
 
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(false);
-        $form->method('createView')->willReturn($this->mockFormView);
-        $this->controller->method('createForm')->willReturn($form);
+        $this->controller->expects($this->once())
+            ->method('createForm')
+            ->willReturn($form);
 
         $this->avatarService->expects($this->never())->method('create');
         $this->controller->expects($this->never())->method('addFlash');
@@ -186,79 +103,80 @@ class AvatarControllerTest extends TestCase
             ->with('avatar/create.html.twig', ['form' => $this->mockFormView])
             ->willReturn(new Response());
 
-        $this->controller->expects($this->once())
-            ->method('generateUrl')
-            ->with('avatar_create')
-            ->willReturn('/avatar/create');
-
         $request = Request::create('/avatar/create', 'POST');
-        $response = $this->controller->create($request);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->create($request);
     }
 
-
+    /**
+     * Test edit action redirects if user has no avatar.
+     */
     public function testEditActionRedirectsIfUserHasNoAvatar(): void
     {
-        $this->mockUserWithoutAvatar();
         $avatar = $this->createMock(Avatar::class);
+
+        $this->mockUserWithoutAvatar();
 
         $this->controller->expects($this->once())
             ->method('redirectToRoute')
             ->with('avatar_create');
 
-        $request = Request::create('/avatar/1/edit', 'GET');
+        $this->mockUrlGenerator->expects($this->once())
+            ->method('generate')
+            ->with('avatar_create', [], 1)
+            ->willReturn('/avatar/create');
+
+        $request = Request::create('/avatar/1/edit');
         $response = $this->controller->edit($request, $avatar);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
         $this->assertEquals('/avatar/create', $response->getTargetUrl());
     }
 
+    /**
+     * Test edit action get request renders form.
+     */
     public function testEditActionGetRequestRendersForm(): void
     {
         $avatarId = 1;
         $mockAvatar = $this->createMock(Avatar::class);
         $mockAvatar->method('getId')->willReturn($avatarId);
-        $this->mockUserWithAvatar($mockAvatar);
 
-        $form = $this->createMock(FormInterface::class);
-        $form->method('createView')->willReturn($this->mockFormView);
-        $this->controller->method('createForm')->willReturn($form);
+        $this->mockUserWithAvatar($mockAvatar);
+        $form = $this->createMockForm(false, false);
+
+        $this->controller->expects($this->once())
+            ->method('createForm')
+            ->willReturn($form);
 
         $this->controller->expects($this->once())
             ->method('render')
             ->with(
                 'avatar/edit.html.twig',
-                $this->callback(function($args) use ($mockAvatar) {
+                $this->callback(function ($args) use ($mockAvatar) {
                     return $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar;
                 })
             )
             ->willReturn(new Response());
 
-        $this->controller->expects($this->once())
-            ->method('generateUrl')
-            ->with('avatar_edit', ['id' => $avatarId])
-            ->willReturn("/avatar/{$avatarId}/edit");
-
-        $request = Request::create('/avatar/1/edit', 'GET');
-        $response = $this->controller->edit($request, $mockAvatar);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $request = Request::create('/avatar/1/edit');
+        $this->controller->edit($request, $mockAvatar);
     }
 
+    /**
+     * Test edit action put request invalid form.
+     */
     public function testEditActionPutRequestInvalidForm(): void
     {
         $avatarId = 1;
         $mockAvatar = $this->createMock(Avatar::class);
         $mockAvatar->method('getId')->willReturn($avatarId);
-        $this->mockUserWithAvatar($mockAvatar);
 
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(false);
-        $form->method('createView')->willReturn($this->mockFormView);
-        $this->controller->method('createForm')->willReturn($form);
+        $this->mockUserWithAvatar($mockAvatar);
+        $form = $this->createMockForm(true, false);
+
+        $this->controller->expects($this->once())
+            ->method('createForm')
+            ->willReturn($form);
 
         $this->avatarService->expects($this->never())->method('update');
         $this->controller->expects($this->never())->method('addFlash');
@@ -268,35 +186,39 @@ class AvatarControllerTest extends TestCase
             ->method('render')
             ->with(
                 'avatar/edit.html.twig',
-                $this->callback(function($args) use ($mockAvatar) {
+                $this->callback(function ($args) use ($mockAvatar) {
                     return $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar;
                 })
             )
             ->willReturn(new Response());
 
-        $this->controller->expects($this->once())
-            ->method('generateUrl')
-            ->with('avatar_edit', ['id' => $avatarId])
-            ->willReturn("/avatar/{$avatarId}/edit");
-
         $request = Request::create('/avatar/1/edit', 'PUT');
-        $response = $this->controller->edit($request, $mockAvatar);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->controller->edit($request, $mockAvatar);
     }
 
+    /**
+     * Test delete action invalid form.
+     */
     public function testDeleteActionInvalidForm(): void
     {
         $avatarId = 1;
         $mockAvatar = $this->createMock(Avatar::class);
         $mockAvatar->method('getId')->willReturn($avatarId);
 
-        $form = $this->createMock(FormInterface::class);
-        $form->method('handleRequest')->willReturnSelf();
-        $form->method('isSubmitted')->willReturn(true);
-        $form->method('isValid')->willReturn(false);
-        $form->method('createView')->willReturn($this->mockFormView);
-        $this->controller->method('createForm')->willReturn($form);
+        $form = $this->createMockForm(true, false);
+
+        $this->controller->expects($this->once())
+            ->method('createForm')
+            ->willReturn($form);
+        $this->controller->expects($this->once())
+            ->method('generateUrl')
+            ->with('avatar_delete', ['id' => $avatarId]);
+
+        $this->mockUrlGenerator->expects($this->once())
+            ->method('generate')
+            ->with('avatar_delete', ['id' => $avatarId], 1)
+            ->willReturn("/avatar/$avatarId/delete");
+
 
         $this->avatarService->expects($this->never())->method('delete');
         $this->controller->expects($this->never())->method('addFlash');
@@ -306,20 +228,154 @@ class AvatarControllerTest extends TestCase
             ->method('render')
             ->with(
                 'avatar/delete.html.twig',
-                $this->callback(function($args) use ($mockAvatar) {
+                $this->callback(function ($args) use ($mockAvatar) {
                     return $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar;
                 })
             )
             ->willReturn(new Response());
 
+        $request = Request::create('/avatar/1/delete', 'DELETE');
+        $this->controller->delete($request, $mockAvatar);
+    }
+
+    /**
+     * Test delete action with valid form submission.
+     */
+    public function testDeleteActionValidForm(): void
+    {
+        $avatarId = 1;
+        $mockAvatar = $this->createMock(Avatar::class);
+        $mockAvatar->method('getId')->willReturn($avatarId);
+
+        $form = $this->createMockForm(true, true);
+
+        $this->controller->expects($this->once())
+            ->method('createForm')
+            ->willReturn($form);
         $this->controller->expects($this->once())
             ->method('generateUrl')
-            ->with('avatar_delete', ['id' => $avatarId])
-            ->willReturn("/avatar/{$avatarId}/delete");
+            ->with('avatar_delete', ['id' => $avatarId]);
 
-        $request = Request::create('/avatar/1/delete', 'POST');
+        $this->mockUrlGenerator->expects($this->exactly(2))
+            ->method('generate')
+            ->willReturnMap([
+                ['avatar_delete', ['id' => $avatarId], 1, "/avatar/$avatarId/delete"],
+                ['app_profile', [], 1, '/app/profile'],
+            ]);
+
+        $this->avatarService->expects($this->once())->method('delete')->with($mockAvatar);
+        $this->controller->expects($this->once())->method('addFlash')->with('success', 'message.deleted_successfully');
+        $this->controller->expects($this->once())
+            ->method('redirectToRoute')
+            ->with('app_profile');
+        $this->controller->expects($this->never())->method('render');
+
+        $request = Request::create('/avatar/1/delete', 'DELETE');
         $response = $this->controller->delete($request, $mockAvatar);
 
-        $this->assertInstanceOf(Response::class, $response);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals('/app/profile', $response->getTargetUrl());
+    }
+
+    /**
+     * Set up.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->avatarService = $this->createMock(AvatarServiceInterface::class);
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnArgument(0);
+        $this->mockFormView = $this->createMock(FormView::class);
+
+        $mockFormFactory = $this->createMock(FormFactoryInterface::class);
+        $this->mockUrlGenerator = $this->createMock(UrlGeneratorInterface::class);
+        $mockFlashBag = $this->createMock(FlashBagInterface::class);
+
+        $mockSession = $this->createMock(Session::class);
+        $mockSession->method('getFlashBag')->willReturn($mockFlashBag);
+
+        $this->controller = $this->getMockBuilder(AvatarController::class)
+            ->setConstructorArgs([$this->avatarService, $translator])
+            ->onlyMethods([
+                'createForm',
+                'getUser',
+                'addFlash',
+                'redirectToRoute',
+                'render',
+                'generateUrl',
+            ])
+            ->addMethods(['get'])
+            ->getMock();
+
+        $this->controller->method('get')->willReturnMap([
+            ['form.factory', 1, $mockFormFactory],
+            ['router', 1, $this->mockUrlGenerator],
+            ['session', 1, $mockSession],
+        ]);
+
+        $this->controller->method('addFlash');
+
+        $this->controller->method('redirectToRoute')->willReturnCallback(function ($route, $params = [], $status = 302) {
+            $url = $this->mockUrlGenerator->generate($route, $params);
+
+            return new RedirectResponse($url, $status);
+        });
+
+        $this->controller->method('generateUrl')->willReturnCallback(function ($route, $params = []) {
+            return $this->mockUrlGenerator->generate($route, $params);
+        });
+
+        $this->controller->method('render')->willReturn(new Response());
+    }
+
+    /**
+     * Helper to mock a user with a specific avatar.
+     *
+     * @param Avatar|null $avatar
+     *
+     * @return void
+     */
+    private function mockUserWithAvatar(?Avatar $avatar = null): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getAvatar')->willReturn($avatar);
+        $this->controller->expects($this->any())->method('getUser')->willReturn($user);
+    }
+
+    /**
+     * Helper to mock a user without an avatar.
+     *
+     * @return void
+     */
+    private function mockUserWithoutAvatar(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getAvatar')->willReturn(null);
+        $this->controller->expects($this->any())->method('getUser')->willReturn($user);
+    }
+
+    /**
+     * Helper to create a mocked form with necessary behaviors.
+     *
+     * @param bool $isSubmitted
+     * @param bool $isValid
+     *
+     * @return MockObject|FormInterface
+     */
+    private function createMockForm(bool $isSubmitted, bool $isValid): MockObject|FormInterface
+    {
+        $form = $this->createMock(FormInterface::class);
+        $form->method('handleRequest')->willReturnSelf();
+        $form->method('isSubmitted')->willReturn($isSubmitted);
+        $form->method('isValid')->willReturn($isValid);
+        $form->method('createView')->willReturn($this->mockFormView);
+
+        $fileForm = $this->createMock(FormInterface::class);
+        $fileForm->method('getData')->willReturn(null);
+        $form->method('get')->with('file')->willReturn($fileForm);
+
+        return $form;
     }
 }

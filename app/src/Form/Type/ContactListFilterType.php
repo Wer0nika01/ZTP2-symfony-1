@@ -13,10 +13,18 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+/**
+ * Class Contact list filter type.
+ */
 class ContactListFilterType extends AbstractType
 {
+    /**
+     * Builds the form
+     *
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('tags', EntityType::class, [
@@ -32,6 +40,11 @@ class ContactListFilterType extends AbstractType
         ]);
     }
 
+    /**
+     * Configures the options for this type.
+     *
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -43,7 +56,8 @@ class ContactListFilterType extends AbstractType
 
     /**
      * This method specifies the block prefix for the form.
-     * It will be used in the URL query string (e.g., ?contact_filter[tags]=...).
+     *
+     * @return string
      */
     public function getBlockPrefix(): string
     {

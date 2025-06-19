@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Registration type.
+ */
+
 namespace App\Form\Type;
 
 use App\Entity\User;
@@ -11,15 +15,23 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Class Registration type.
+ */
 class RegistrationType extends AbstractType
 {
+    /**
+     * Builds the form.
+     *
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'label.email',
                 'constraints' => [new NotBlank()],
-
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -31,6 +43,11 @@ class RegistrationType extends AbstractType
             ]);
     }
 
+    /**
+     * Configures the options for this type.
+     *
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

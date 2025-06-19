@@ -1,15 +1,25 @@
 <?php
 
+/**
+ * Avatar entity Test.
+ */
+
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Avatar;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class Avatar entity Test.
+ */
 class AvatarTest extends TestCase
 {
     private Avatar $avatar;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();

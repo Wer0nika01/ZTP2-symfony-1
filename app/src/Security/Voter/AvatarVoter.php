@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Avatar voter.
+ */
+
 namespace App\Security\Voter;
 
 use App\Entity\Avatar;
@@ -7,16 +11,36 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * Class Avatar voter.
+ */
 class AvatarVoter extends Voter
 {
     public const DELETE = 'DELETE';
 
-    protected function supports(string $attribute, $subject): bool
+    /**
+     * Supports.
+     *
+     * @param string $attribute
+     * @param mixed  $subject
+     *
+     * @return bool
+     */
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::DELETE && $subject instanceof Avatar;
+        return self::DELETE === $attribute && $subject instanceof Avatar;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
+    /**
+     * Vote one attribute.
+     *
+     * @param string         $attribute
+     * @param mixed          $subject
+     * @param TokenInterface $token
+     *
+     * @return bool
+     */
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 

@@ -1,48 +1,57 @@
 <?php
 
+/**
+ * Category voter Test.
+ */
+
 namespace App\Tests\Unit\Security\Voter;
 
 use App\Entity\Category;
-use App\Entity\User; // Assuming App\Entity\User is your UserInterface implementation
-use App\Security\Voter\CategoryVoter; // The Voter under test
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Entity\User;
+use App\Security\Voter\CategoryVoter;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
+use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Class Category voter Test.
+ */
 class CategoryVoterTest extends TestCase
 {
     private CategoryVoter $categoryVoter;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
-        // Instantiate the CategoryVoter. It has no constructor dependencies.
         $this->categoryVoter = new CategoryVoter();
     }
 
     /**
      * Data provider for the supports method test.
      * [attribute, subject, expectedResult]
+     *
+     * @return array[]
      */
     public function provideSupportsData(): array
     {
-        $category = new Category(); // A valid subject
-        $user = new User(); // An invalid subject type
-        $stdClass = new \stdClass(); // Another invalid subject type
+        $category = new Category();
+        $user = new User();
+        $stdClass = new stdClass();
 
         return [
-            // --- Supported cases ---
             'supports_view_category' => [CategoryVoter::VIEW, $category, true],
             'supports_edit_category' => [CategoryVoter::EDIT, $category, true],
             'supports_delete_category' => [CategoryVoter::DELETE, $category, true],
 
-            // --- Unsupported attribute cases ---
             'does_not_support_create_attribute' => [CategoryVoter::CREATE, $category, false],
             'does_not_support_unknown_attribute' => ['UNKNOWN_ATTRIBUTE', $category, false],
 
-            // --- Unsupported subject cases ---
             'does_not_support_user_subject' => [CategoryVoter::VIEW, $user, false],
             'does_not_support_stdclass_subject' => [CategoryVoter::EDIT, $stdClass, false],
             'does_not_support_null_subject' => [CategoryVoter::DELETE, null, false],
@@ -51,13 +60,19 @@ class CategoryVoterTest extends TestCase
     }
 
     /**
-     * Test the protected supports method.
+     * Test the protected supports' method.
+     *
      * @dataProvider provideSupportsData
+     *
+     * @param string $attribute
+     * @param mixed  $subject
+     * @param bool   $expectedResult
+     *
+     * @throws ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
-        // Use Reflection to call the protected supports method for testing
-        $reflection = new \ReflectionClass(CategoryVoter::class);
+        $reflection = new ReflectionClass(CategoryVoter::class);
         $method = $reflection->getMethod('supports');
 
         $this->assertEquals(
@@ -70,28 +85,25 @@ class CategoryVoterTest extends TestCase
     /**
      * Data provider for the voteOnAttribute method test.
      * [loggedInUser, expectedVoteResult]
+     *
+     * @return array[]
      */
     public function provideVoteOnAttributeData(): array
     {
-        // Mock a User with ROLE_ADMIN
         $adminUser = $this->createMock(User::class);
         $adminUser->method('getRoles')->willReturn(['ROLE_ADMIN', 'ROLE_USER']);
 
-        // Mock a User without ROLE_ADMIN
         $regularUser = $this->createMock(User::class);
         $regularUser->method('getRoles')->willReturn(['ROLE_USER']);
 
-        // Mock a generic UserInterface (not App\Entity\User)
         $genericUserInterface = $this->createMock(UserInterface::class);
-        $genericUserInterface->method('getRoles')->willReturn(['ROLE_USER']); // Even if it had ROLE_ADMIN, voter returns false for non-User entity
+        $genericUserInterface->method('getRoles')->willReturn(['ROLE_USER']);
 
         return [
-            // --- Access Granted cases ---
             'admin_user_can_view' => [$adminUser, CategoryVoter::VIEW, true],
             'admin_user_can_edit' => [$adminUser, CategoryVoter::EDIT, true],
             'admin_user_can_delete' => [$adminUser, CategoryVoter::DELETE, true],
 
-            // --- Access Denied cases ---
             'regular_user_cannot_view' => [$regularUser, CategoryVoter::VIEW, false],
             'regular_user_cannot_edit' => [$regularUser, CategoryVoter::EDIT, false],
             'regular_user_cannot_delete' => [$regularUser, CategoryVoter::DELETE, false],
@@ -102,22 +114,23 @@ class CategoryVoterTest extends TestCase
 
     /**
      * Test the protected voteOnAttribute method.
+     *
      * @dataProvider provideVoteOnAttributeData
+     *
+     * @param UserInterface|null $loggedInUser
+     * @param string             $attribute
+     * @param bool               $expectedResult
+     *
+     * @throws ReflectionException
      */
-    public function testVoteOnAttribute(
-        ?UserInterface $loggedInUser,
-        string $attribute, // The attribute being voted on (e.g., CATEGORY_VIEW)
-        bool $expectedResult // Expected boolean outcome of the vote (true for granted, false for denied)
-    ): void {
-        // The subject is a Category entity, but its specific state doesn't affect the voter's logic.
+    public function testVoteOnAttribute(?UserInterface $loggedInUser, string $attribute, bool $expectedResult): void
+    {
         $subject = $this->createMock(Category::class);
 
-        // Mock the TokenInterface to return the specified user
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($loggedInUser);
 
-        // Use Reflection to call the protected voteOnAttribute method for testing
-        $reflection = new \ReflectionClass(CategoryVoter::class);
+        $reflection = new ReflectionClass(CategoryVoter::class);
         $method = $reflection->getMethod('voteOnAttribute');
 
         $this->assertEquals(

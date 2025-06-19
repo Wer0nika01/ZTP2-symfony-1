@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Registration type Test.
+ */
+
 namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\User;
@@ -8,33 +12,22 @@ use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\Validator\Validation;
 
+/**
+ * Class Registration type Test.
+ */
 class RegistrationTypeTest extends TypeTestCase
 {
-    /**
-     * Set up validator extension.
-     */
-    protected function getExtensions(): array
-    {
-        // This is crucial for enabling validation in form tests.
-        return [new ValidatorExtension(Validation::createValidator())];
-    }
-
     /**
      * Test form structure and options.
      */
     public function testBuildForm(): void
     {
-        // Create the form with no initial data.
         $form = $this->factory->create(RegistrationType::class);
 
-        // Assert that the form has the expected fields.
         $this->assertTrue($form->has('email'));
         $this->assertTrue($form->has('password'));
 
-        // Get the configuration for the 'password' field.
         $passwordConfig = $form->get('password')->getConfig();
-        // Assert that the 'invalid_message' option for the RepeatedType is correctly set.
-        // This message is displayed when the 'first' and 'second' password fields do not match.
         $this->assertEquals('message.passwords_must_match', $passwordConfig->getOption('invalid_message'));
     }
 
@@ -43,7 +36,6 @@ class RegistrationTypeTest extends TypeTestCase
      */
     public function testSubmitValidData(): void
     {
-        // Define the valid form data.
         $formData = [
             'email' => 'test@example.com',
             'password' => [
@@ -52,24 +44,16 @@ class RegistrationTypeTest extends TypeTestCase
             ],
         ];
 
-        // Create a new User entity to bind the form data to.
         $user = new User();
-        // Create the form instance, binding it to the User entity.
         $form = $this->factory->create(RegistrationType::class, $user);
 
-        // Submit the valid form data.
         $form->submit($formData);
 
-        // Assert that the form is synchronized (data was mapped successfully).
         $this->assertTrue($form->isSynchronized());
-        // Assert that the form is valid (no validation errors).
         $this->assertTrue($form->isValid());
-        // Assert that there are no errors on the form or its children.
         $this->assertCount(0, $form->getErrors(true));
 
-        // Assert that the User entity's properties are updated correctly.
         $this->assertEquals('test@example.com', $user->getEmail());
-        // For RepeatedType, the data from the 'first' field is mapped to the model.
         $this->assertEquals('password123', $user->getPassword());
     }
 
@@ -78,7 +62,6 @@ class RegistrationTypeTest extends TypeTestCase
      */
     public function testSubmitMismatchedPasswords(): void
     {
-        // Define form data with mismatched passwords.
         $formData = [
             'email' => 'test@example.com',
             'password' => [
@@ -87,31 +70,31 @@ class RegistrationTypeTest extends TypeTestCase
             ],
         ];
 
-        // Create a new User entity (important for validation context).
         $user = new User();
-        // Create the form instance, binding it to the User entity.
         $form = $this->factory->create(RegistrationType::class, $user);
-        // Submit the form data with mismatched passwords.
         $form->submit($formData);
 
-        // Assert that the form is not valid due to mismatched passwords.
         $this->assertFalse($form->isValid());
 
-        // Get all errors recursively from the form to find the specific message.
-        // The 'invalid_message' of RepeatedType places the error on the parent 'password' field,
-        // but sometimes it can be collected as a global error depending on configuration.
-        $errors = $form->getErrors(true); // 'true' means include errors from child fields.
+        $errors = $form->getErrors(true);
 
         $foundPasswordMismatchError = false;
         foreach ($errors as $error) {
-            // Check if the specific error message template is found among all errors.
             if ($error->getMessageTemplate() === 'message.passwords_must_match') {
                 $foundPasswordMismatchError = true;
                 break;
             }
         }
-        // Assert that the expected mismatched password error was found.
         $this->assertTrue($foundPasswordMismatchError, 'Expected "message.passwords_must_match" error was not found.');
     }
 
+    /**
+     * Set up validator extension.
+     *
+     * @return ValidatorExtension[]
+     */
+    protected function getExtensions(): array
+    {
+        return [new ValidatorExtension(Validation::createValidator())];
+    }
 }

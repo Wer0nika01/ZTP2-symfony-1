@@ -8,8 +8,8 @@ namespace App\Form\DataTransformer;
 
 use App\Entity\Tag;
 use App\Service\TagServiceInterface;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\DataTransformerInterface;
 
 /**
@@ -22,14 +22,14 @@ class TagsDataTransformer implements DataTransformerInterface
     /**
      * Constructor.
      *
-     * @param TagServiceInterface $tagService Tag service
+     * @param TagServiceInterface $tagService
      */
     public function __construct(private readonly TagServiceInterface $tagService)
     {
     }
 
     /**
-     * Transform array of tags to string of tag Names.
+     * Transforms an array of tags to a string of tag names.
      *
      * @param Collection<int, Tag> $value Tags entity collection
      *
@@ -51,7 +51,7 @@ class TagsDataTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transform string of tag names into array of Tag entities.
+     * Transforms a string of tag names into an array of Tag entities.
      *
      * @param mixed $value String of tag names
      *
@@ -60,23 +60,22 @@ class TagsDataTransformer implements DataTransformerInterface
     public function reverseTransform(mixed $value): Collection
     {
         if (null === $value || '' === $value) {
-            /** @var ArrayCollection<int, Tag> */
-
+            /* @var ArrayCollection<int, Tag> */
             return new ArrayCollection();
         }
 
         $tagNames = explode(',', (string) $value);
 
-        /** @var ArrayCollection<int, Tag> $tags */
+        /* @var ArrayCollection<int, Tag> $tags */
         $tags = new ArrayCollection();
 
         foreach ($tagNames as $tagName) {
             $trimmedTagName = trim($tagName);
-            if ('' !== trim($tagName)) {
-                $tag = $this->tagService->findOneByName(strtolower($tagName));
-                if (!$tag instanceof \App\Entity\Tag) {
+            if ('' !== $trimmedTagName) {
+                $tag = $this->tagService->findOneByName(strtolower($trimmedTagName));
+                if (!$tag instanceof Tag) {
                     $tag = new Tag();
-                    $tag->setName($tagName);
+                    $tag->setName($trimmedTagName);
 
                     $this->tagService->save($tag);
                 }

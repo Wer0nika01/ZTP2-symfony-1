@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * User checker Test.
+ */
+
 namespace App\Tests\Unit\Security;
 
 use App\Entity\User;
@@ -10,11 +14,17 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusExce
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * User checker Test.
+ */
 class UserCheckerTest extends TestCase
 {
-    private MockObject|TranslatorInterface $translator;
+    private MockObject $translator;
     private UserChecker $userChecker;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,11 +40,9 @@ class UserCheckerTest extends TestCase
     {
         $user = $this->createMock(UserInterface::class);
 
-        // Ensure translator is not called
         $this->translator->expects($this->never())
             ->method('trans');
 
-        // Removed: expectNotToPerformAssertions() as it conflicts with expects($this->never())
         $this->userChecker->checkPreAuth($user);
     }
 
@@ -47,11 +55,9 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getIsBlocked')->willReturn(false);
 
-        // Ensure translator is not called
         $this->translator->expects($this->never())
             ->method('trans');
 
-        // Removed: expectNotToPerformAssertions() as it conflicts with expects($this->never())
         $this->userChecker->checkPreAuth($user);
     }
 
@@ -65,13 +71,11 @@ class UserCheckerTest extends TestCase
         $user = $this->createMock(User::class);
         $user->method('getIsBlocked')->willReturn(true);
 
-        // Expect the translator to be called with the specific key
         $this->translator->expects($this->once())
             ->method('trans')
             ->with('security.account_blocked_message')
             ->willReturn($blockedMessage);
 
-        // Expect a CustomUserMessageAccountStatusException to be thrown
         $this->expectException(CustomUserMessageAccountStatusException::class);
         $this->expectExceptionMessage($blockedMessage);
 
@@ -85,11 +89,9 @@ class UserCheckerTest extends TestCase
     {
         $user = $this->createMock(UserInterface::class);
 
-        // Ensure no interactions with the translator
         $this->translator->expects($this->never())
             ->method('trans');
 
-        // Removed: expectNotToPerformAssertions() as it conflicts with expects($this->never())
         $this->userChecker->checkPostAuth($user);
     }
 }

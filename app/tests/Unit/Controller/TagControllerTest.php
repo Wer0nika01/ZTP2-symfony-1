@@ -1,27 +1,35 @@
 <?php
 
+/**
+ * Tag controller Test.
+ */
+
 namespace App\Tests\Unit\Controller;
 
 use App\Controller\TagController;
 use App\Entity\Tag;
 use App\Form\Type\TagType;
 use App\Service\TagServiceInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
+use ReflectionProperty;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response; // Corrected: ensure Response is used explicitly
-use Symfony\Component\HttpFoundation\RedirectResponse; // Corrected: ensure RedirectResponse is used explicitly
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface; // Added: For mocking pagination
+use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
  * Class TagControllerTest.
  */
 class TagControllerTest extends WebTestCase
 {
-    private TagServiceInterface|\PHPUnit\Framework\MockObject\MockObject $tagService;
-    private TranslatorInterface|\PHPUnit\Framework\MockObject\MockObject $translator;
-    // Removed RouterInterface and FlashBagInterface properties as they were only written to and never read
+    private TagServiceInterface|MockObject $tagService;
+    private TranslatorInterface|MockObject $translator;
     private TagController $tagController;
 
     /**
@@ -31,12 +39,7 @@ class TagControllerTest extends WebTestCase
     {
         $this->tagService = $this->createMock(TagServiceInterface::class);
         $this->translator = $this->createMock(TranslatorInterface::class);
-        // Removed $this->formFactory as it was only written to and never read
-        // Removed $this->router and $this->flashBag as they were only written to and never read
 
-        // Instantiate the controller with its primary dependencies
-        // The methods inherited from AbstractController (like createForm, render, etc.)
-        // will be mocked directly in each test method using getMockBuilder.
         $this->tagController = new TagController($this->tagService, $this->translator);
     }
 
@@ -45,28 +48,24 @@ class TagControllerTest extends WebTestCase
      */
     public function testIndex(): void
     {
-        // Mock PaginationInterface as the return type for getPaginatedList
         $pagination = $this->createMock(PaginationInterface::class);
 
         $this->tagService->expects($this->once())
             ->method('getPaginatedList')
-            ->with(1) // Assuming page is 1 for this test, as it's the default
+            ->with(1)
             ->willReturn($pagination);
 
-        // Mock render method from AbstractController directly on the controller instance for this test
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
-            ->onlyMethods(['render']) // Only mock 'render'
+            ->onlyMethods(['render'])
             ->getMock();
 
         $this->tagController->expects($this->once())
             ->method('render')
             ->with('tag/index.html.twig', ['pagination' => $pagination, ])
-            ->willReturn(new Response()); // Return a dummy response
+            ->willReturn(new Response());
 
-        $response = $this->tagController->index(1); // Pass explicit page number
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->tagController->index();
     }
 
     /**
@@ -75,10 +74,8 @@ class TagControllerTest extends WebTestCase
     public function testView(): void
     {
         $tag = new Tag();
-        // Removed setId() - ID is usually managed by ORM, not set directly in entity constructor for testing
         $tag->setName('Test Tag');
 
-        // Mock render method
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
             ->onlyMethods(['render'])
@@ -89,9 +86,7 @@ class TagControllerTest extends WebTestCase
             ->with('tag/view.html.twig', ['tag' => $tag])
             ->willReturn(new Response());
 
-        $response = $this->tagController->view($tag);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->tagController->view($tag);
     }
 
     /**
@@ -99,12 +94,11 @@ class TagControllerTest extends WebTestCase
      */
     public function testCreateActionValidData(): void
     {
-        $request = new Request([], ['name' => 'New Tag']); // Simulate POST data
+        $request = new Request([], ['name' => 'New Tag']);
         $request->setMethod('POST');
 
-        $tag = new Tag(); // The entity that will be passed to the form
         $form = $this->createMock(FormInterface::class);
-        $formView = $this->createMock(\Symfony\Component\Form\FormView::class); // Mock FormView
+        $this->createMock(FormView::class);
 
         $form->expects($this->once())
             ->method('handleRequest')
@@ -115,18 +109,13 @@ class TagControllerTest extends WebTestCase
         $form->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
-        // Removed ->method('getData') expectation as it's not explicitly called by the controller
-        // Removed createView expectation, as it's not called on redirect
-        // $form->expects($this->never())->method('createView');
 
 
-        // Mock controller methods that depend on the container (createForm, redirectToRoute, addFlash, render)
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
             ->onlyMethods(['createForm', 'redirectToRoute', 'addFlash', 'render'])
             ->getMock();
 
-        // Configure the mocked createForm method to return our form mock
         $this->tagController->expects($this->once())
             ->method('createForm')
             ->with(TagType::class, $this->isInstanceOf(Tag::class))
@@ -141,19 +130,16 @@ class TagControllerTest extends WebTestCase
             ->with('message.created_successfully')
             ->willReturn('Tag created successfully!');
 
-        // Configure the mocked addFlash method
         $this->tagController->expects($this->once())
             ->method('addFlash')
             ->with('success', 'Tag created successfully!');
 
-        // Configure the mocked redirectToRoute method
         $this->tagController->expects($this->once())
             ->method('redirectToRoute')
             ->with('tag_index')
-            ->willReturn(new RedirectResponse('/tag')); // Fully qualify RedirectResponse
+            ->willReturn(new RedirectResponse('/tag'));
 
-        // Expect the render call
-        $this->tagController->expects($this->never()) // Should not render on valid data redirection
+        $this->tagController->expects($this->never())
         ->method('render');
 
         $response = $this->tagController->create($request);
@@ -167,11 +153,11 @@ class TagControllerTest extends WebTestCase
      */
     public function testCreateActionInvalidData(): void
     {
-        $request = new Request([], ['name' => '']); // Simulate invalid POST data
+        $request = new Request([], ['name' => '']);
         $request->setMethod('POST');
 
         $form = $this->createMock(FormInterface::class);
-        $formView = $this->createMock(\Symfony\Component\Form\FormView::class); // Mock FormView
+        $formView = $this->createMock(FormView::class);
 
         $form->expects($this->once())
             ->method('handleRequest')
@@ -181,12 +167,11 @@ class TagControllerTest extends WebTestCase
             ->willReturn(true);
         $form->expects($this->once())
             ->method('isValid')
-            ->willReturn(false); // Form is invalid
-        $form->expects($this->once()) // Ensure createView is called exactly once by the controller
+            ->willReturn(false);
+        $form->expects($this->once())
         ->method('createView')
             ->willReturn($formView);
 
-        // Mock controller methods
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
             ->onlyMethods(['createForm', 'render'])
@@ -197,20 +182,18 @@ class TagControllerTest extends WebTestCase
             ->with(TagType::class, $this->isInstanceOf(Tag::class))
             ->willReturn($form);
 
-        $this->tagService->expects($this->never()) // Save should not be called
+        $this->tagService->expects($this->never())
         ->method('save');
 
-        $this->translator->expects($this->never()) // Flash message should not be added
+        $this->translator->expects($this->never())
         ->method('trans');
 
         $this->tagController->expects($this->once())
             ->method('render')
-            ->with('tag/create.html.twig', ['form' => $formView]) // Use the mocked FormView object
+            ->with('tag/create.html.twig', ['form' => $formView])
             ->willReturn(new Response());
 
-        $response = $this->tagController->create($request);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->tagController->create($request);
     }
 
     /**
@@ -219,14 +202,13 @@ class TagControllerTest extends WebTestCase
     public function testEditActionValidData(): void
     {
         $tag = new Tag();
-        // Removed setId()
         $tag->setName('Original Tag');
 
         $request = new Request([], ['name' => 'Updated Tag']);
-        $request->setMethod('PUT'); // Simulate PUT method
+        $request->setMethod('PUT');
 
         $form = $this->createMock(FormInterface::class);
-        $formView = $this->createMock(\Symfony\Component\Form\FormView::class); // Mock FormView
+        $this->createMock(FormView::class);
 
 
         $form->expects($this->once())
@@ -238,15 +220,10 @@ class TagControllerTest extends WebTestCase
         $form->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
-        // Removed ->method('getData') expectation
-        // Removed createView expectation, as it's not called on redirect
-        // $form->expects($this->never())->method('createView');
 
-
-        // Mock controller methods
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
-            ->onlyMethods(['createForm', 'redirectToRoute', 'addFlash', 'render']) // Added render to mocks
+            ->onlyMethods(['createForm', 'redirectToRoute', 'addFlash', 'render'])
             ->getMock();
 
         $this->tagController->expects($this->once())
@@ -270,9 +247,9 @@ class TagControllerTest extends WebTestCase
         $this->tagController->expects($this->once())
             ->method('redirectToRoute')
             ->with('tag_index')
-            ->willReturn(new RedirectResponse('/tag')); // Fully qualify RedirectResponse
+            ->willReturn(new RedirectResponse('/tag'));
 
-        $this->tagController->expects($this->never()) // Should not render on valid data redirection
+        $this->tagController->expects($this->never())
         ->method('render');
 
 
@@ -291,11 +268,11 @@ class TagControllerTest extends WebTestCase
         // Removed setId()
         $tag->setName('Original Tag');
 
-        $request = new Request([], ['name' => '']); // Simulate invalid data
+        $request = new Request([], ['name' => '']);
         $request->setMethod('PUT');
 
         $form = $this->createMock(FormInterface::class);
-        $formView = $this->createMock(\Symfony\Component\Form\FormView::class); // Mock FormView
+        $formView = $this->createMock(FormView::class);
 
 
         $form->expects($this->once())
@@ -311,7 +288,6 @@ class TagControllerTest extends WebTestCase
             ->method('createView')
             ->willReturn($formView);
 
-        // Mock controller methods
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
             ->onlyMethods(['createForm', 'render'])
@@ -330,12 +306,10 @@ class TagControllerTest extends WebTestCase
 
         $this->tagController->expects($this->once())
             ->method('render')
-            ->with('tag/edit.html.twig', ['form' => $formView, 'tag' => $tag]) // Use the mocked FormView object
+            ->with('tag/edit.html.twig', ['form' => $formView, 'tag' => $tag])
             ->willReturn(new Response());
 
-        $response = $this->tagController->edit($request, $tag);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->tagController->edit($request, $tag);
     }
 
     /**
@@ -344,12 +318,11 @@ class TagControllerTest extends WebTestCase
     public function testDeleteActionValidData(): void
     {
         $tag = new Tag();
-        // Removed setId()
         $tag->setName('Tag to Delete');
-        // Setting a dummy ID for generateUrl to work, since getId() is used
-        // In a real entity, this would be handled by a persistent layer (ORM)
-        // For unit test, we just need a value for the mock to expect.
-        $reflection = new \ReflectionProperty($tag, 'id');
+        try {
+            $reflection = new ReflectionProperty($tag, 'id');
+        } catch (ReflectionException) {
+        }
         $reflection->setValue($tag, 1);
 
 
@@ -357,8 +330,7 @@ class TagControllerTest extends WebTestCase
         $request->setMethod('DELETE');
 
         $form = $this->createMock(FormInterface::class);
-        $formView = $this->createMock(\Symfony\Component\Form\FormView::class); // Mock FormView
-
+        $this->createMock(FormView::class);
 
         $form->expects($this->once())
             ->method('handleRequest')
@@ -369,25 +341,24 @@ class TagControllerTest extends WebTestCase
         $form->expects($this->once())
             ->method('isValid')
             ->willReturn(true);
-        $form->expects($this->never()) // createView should NOT be called on successful redirect
+        $form->expects($this->never())
         ->method('createView');
 
-        // Mock controller methods
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
-            ->onlyMethods(['createForm', 'redirectToRoute', 'addFlash', 'generateUrl', 'render']) // Render may be called if form is not valid, although not the case here
+            ->onlyMethods(['createForm', 'redirectToRoute', 'addFlash', 'generateUrl', 'render'])
             ->getMock();
 
         $this->tagController->expects($this->once())
             ->method('generateUrl')
             ->with('tag_delete', ['id' => $tag->getId()])
-            ->willReturn('/tag/1/delete'); // Mock the URL generation
+            ->willReturn('/tag/1/delete');
 
         $this->tagController->expects($this->once())
             ->method('createForm')
-            ->with(\Symfony\Component\Form\Extension\Core\Type\FormType::class, $tag, [
+            ->with(FormType::class, $tag, [
                 'method' => 'DELETE',
-                'action' => '/tag/1/delete', // Use the mocked URL here
+                'action' => '/tag/1/delete',
             ])
             ->willReturn($form);
 
@@ -407,9 +378,9 @@ class TagControllerTest extends WebTestCase
         $this->tagController->expects($this->once())
             ->method('redirectToRoute')
             ->with('tag_index')
-            ->willReturn(new RedirectResponse('/tag')); // Fully qualify RedirectResponse
+            ->willReturn(new RedirectResponse('/tag'));
 
-        $this->tagController->expects($this->never()) // Should not render on valid data redirection
+        $this->tagController->expects($this->never())
         ->method('render');
 
         $response = $this->tagController->delete($request, $tag);
@@ -424,18 +395,19 @@ class TagControllerTest extends WebTestCase
     public function testDeleteActionInvalidData(): void
     {
         $tag = new Tag();
-        // Removed setId()
         $tag->setName('Tag to Delete');
-        // Setting a dummy ID for generateUrl to work, since getId() is used
-        $reflection = new \ReflectionProperty($tag, 'id');
+        try {
+            $reflection = new ReflectionProperty($tag, 'id');
+        } catch (ReflectionException) {
+        }
         $reflection->setValue($tag, 1);
 
 
         $request = new Request();
-        $request->setMethod('GET'); // Simulate GET request, form won't be submitted/valid
+        $request->setMethod('GET');
 
         $form = $this->createMock(FormInterface::class);
-        $formView = $this->createMock(\Symfony\Component\Form\FormView::class); // Mock FormView
+        $formView = $this->createMock(FormView::class);
 
 
         $form->expects($this->once())
@@ -443,14 +415,13 @@ class TagControllerTest extends WebTestCase
             ->with($request);
         $form->expects($this->once())
             ->method('isSubmitted')
-            ->willReturn(false); // Form not submitted on GET
-        $form->expects($this->never()) // isValid should not be called if not submitted
+            ->willReturn(false);
+        $form->expects($this->never())
         ->method('isValid');
         $form->expects($this->once())
             ->method('createView')
             ->willReturn($formView);
 
-        // Mock controller methods
         $this->tagController = $this->getMockBuilder(TagController::class)
             ->setConstructorArgs([$this->tagService, $this->translator])
             ->onlyMethods(['createForm', 'generateUrl', 'render'])
@@ -463,15 +434,15 @@ class TagControllerTest extends WebTestCase
 
         $this->tagController->expects($this->once())
             ->method('createForm')
-            ->with(\Symfony\Component\Form\Extension\Core\Type\FormType::class, $tag, [
+            ->with(FormType::class, $tag, [
                 'method' => 'DELETE',
-                'action' => '/tag/1/delete', // Use the mocked URL here
+                'action' => '/tag/1/delete',
             ])
             ->willReturn($form);
 
-        $this->tagService->expects($this->never()) // Delete should not be called
+        $this->tagService->expects($this->never())
         ->method('delete');
-        $this->translator->expects($this->never()) // Flash message should not be added
+        $this->translator->expects($this->never())
         ->method('trans');
 
         $this->tagController->expects($this->once())
@@ -479,14 +450,12 @@ class TagControllerTest extends WebTestCase
             ->with(
                 'tag/delete.html.twig',
                 [
-                    'form' => $formView, // Use the mocked FormView object
+                    'form' => $formView,
                     'tag' => $tag,
                 ]
             )
             ->willReturn(new Response());
 
-        $response = $this->tagController->delete($request, $tag);
-
-        $this->assertInstanceOf(Response::class, $response);
+        $this->tagController->delete($request, $tag);
     }
 }

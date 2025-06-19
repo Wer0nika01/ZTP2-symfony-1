@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * User Checker.
+ */
+
 namespace App\Security;
 
 use App\Entity\User;
@@ -8,21 +12,24 @@ use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
-
+/**
+ * Class User checker.
+ */
 class UserChecker implements UserCheckerInterface
 {
     /**
+     * Constructor
+     *
      * @param TranslatorInterface $translator
      */
     public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 
-
     /**
+     * Check Preauth.
+     *
      * @param UserInterface $user
-     * @return void
      */
     public function checkPreAuth(UserInterface $user): void
     {
@@ -36,8 +43,9 @@ class UserChecker implements UserCheckerInterface
     }
 
     /**
+     * Check PostAuth.
+     *
      * @param UserInterface $user
-     * @return void
      */
     public function checkPostAuth(UserInterface $user): void
     {

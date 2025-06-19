@@ -1,15 +1,24 @@
 <?php
 
+/**
+ * Event status enum Test.
+ */
+
 namespace App\Tests\Unit\Entity\Enum;
 
-use App\Entity\Enum\EventStatus; // The enum under test
+use App\Entity\Enum\EventStatus;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class Event status enum Test.
+ */
 class EventStatusTest extends TestCase
 {
     /**
      * Data provider for testing getLabel method.
      * [enumCase, expectedLabel]
+     *
+     * @return array[]
      */
     public function provideLabels(): array
     {
@@ -22,7 +31,11 @@ class EventStatusTest extends TestCase
 
     /**
      * Test the getLabel method for each enum case.
+     *
      * @dataProvider provideLabels
+     *
+     * @param EventStatus $enumCase
+     * @param string      $expectedLabel
      */
     public function testGetLabel(EventStatus $enumCase, string $expectedLabel): void
     {
@@ -32,6 +45,8 @@ class EventStatusTest extends TestCase
     /**
      * Data provider for testing getButtonClass method.
      * [enumCase, expectedButtonClass]
+     *
+     * @return array[]
      */
     public function provideButtonClasses(): array
     {
@@ -44,7 +59,11 @@ class EventStatusTest extends TestCase
 
     /**
      * Test the getButtonClass method for each enum case.
+     *
      * @dataProvider provideButtonClasses
+     *
+     * @param EventStatus $enumCase
+     * @param string      $expectedButtonClass
      */
     public function testGetButtonClass(EventStatus $enumCase, string $expectedButtonClass): void
     {

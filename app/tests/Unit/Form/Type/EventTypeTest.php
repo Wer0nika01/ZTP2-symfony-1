@@ -1,27 +1,36 @@
 <?php
 
+/**
+ * Event type Test.
+ */
+
 namespace App\Tests\Unit\Form\Type;
 
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
-use App\Entity\Event; // The entity the form is for
+use App\Entity\Event;
 use App\Entity\Tag;
-use App\Form\Type\EventType; // The form type under test
-use PHPUnit\Framework\MockObject\MockObject;
+use App\Form\Type\EventType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType; // FIX: Corrected use statement
-use Symfony\Component\Form\Extension\Core\Type\EnumType; // FIX: Corrected use statement
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class Event type Test.
+ */
 class EventTypeTest extends TestCase
 {
     private EventType $formType;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,15 +42,11 @@ class EventTypeTest extends TestCase
      */
     public function testBuildForm(): void
     {
-        // Mock the FormBuilderInterface that buildForm will interact with.
         $builder = $this->createMock(FormBuilderInterface::class);
 
-        // Expect 'add' to be called 9 times in total.
-        // Use withConsecutive to define expectations for each call sequentially.
         $builder->expects($this->exactly(9))
             ->method('add')
             ->withConsecutive(
-            // 1. 'title' field
                 [
                     'title',
                     TextType::class,
@@ -51,7 +56,6 @@ class EventTypeTest extends TestCase
                         'attr' => ['max_length' => 255],
                     ],
                 ],
-                // 2. 'description' field
                 [
                     'description',
                     TextareaType::class,
@@ -61,7 +65,6 @@ class EventTypeTest extends TestCase
                         'attr' => ['rows' => 7],
                     ],
                 ],
-                // 3. 'startTime' field
                 [
                     'startTime',
                     DateTimeType::class,
@@ -72,7 +75,6 @@ class EventTypeTest extends TestCase
                         'required' => true,
                     ],
                 ],
-                // 4. 'endTime' field
                 [
                     'endTime',
                     DateTimeType::class,
@@ -83,7 +85,6 @@ class EventTypeTest extends TestCase
                         'required' => false,
                     ],
                 ],
-                // 5. 'location' field
                 [
                     'location',
                     TextType::class,
@@ -93,7 +94,6 @@ class EventTypeTest extends TestCase
                         'attr' => ['max_length' => 255],
                     ],
                 ],
-                // 6. 'isAllDay' field
                 [
                     'isAllDay',
                     CheckboxType::class,
@@ -102,7 +102,6 @@ class EventTypeTest extends TestCase
                         'required' => false,
                     ],
                 ],
-                // 7. 'category' field
                 [
                     'category',
                     EntityType::class,
@@ -110,7 +109,7 @@ class EventTypeTest extends TestCase
                         $this->assertArrayHasKey('class', $options);
                         $this->assertEquals(Category::class, $options['class']);
                         $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertIsCallable($options['choice_label']); // It's a callable function
+                        $this->assertIsCallable($options['choice_label']);
                         $this->assertArrayHasKey('label', $options);
                         $this->assertEquals('label.category', $options['label']);
                         $this->assertArrayHasKey('placeholder', $options);
@@ -118,7 +117,6 @@ class EventTypeTest extends TestCase
                         $this->assertArrayHasKey('required', $options);
                         $this->assertTrue($options['required']);
 
-                        // Test the choice_label callback for category
                         $mockCategory = $this->createMock(Category::class);
                         $mockCategory->method('getTitle')->willReturn('Test Category Title');
                         $this->assertEquals('Test Category Title', call_user_func($options['choice_label'], $mockCategory));
@@ -126,7 +124,6 @@ class EventTypeTest extends TestCase
                         return true;
                     }),
                 ],
-                // 8. 'tags' field
                 [
                     'tags',
                     EntityType::class,
@@ -149,7 +146,6 @@ class EventTypeTest extends TestCase
                         return true;
                     }),
                 ],
-                // 9. 'status' field
                 [
                     'status',
                     EnumType::class,
@@ -163,7 +159,6 @@ class EventTypeTest extends TestCase
                         $this->assertArrayHasKey('required', $options);
                         $this->assertTrue($options['required']);
 
-                        // Test the choice_label callback for status enum
                         $this->assertEquals('label.personal', call_user_func($options['choice_label'], EventStatus::PERSONAL));
                         $this->assertEquals('label.important', call_user_func($options['choice_label'], EventStatus::IMPORTANT));
                         $this->assertEquals('label.work', call_user_func($options['choice_label'], EventStatus::WORK));
@@ -172,9 +167,8 @@ class EventTypeTest extends TestCase
                     }),
                 ]
             )
-            ->willReturnSelf(); // Allow method chaining for 'add'
+            ->willReturnSelf();
 
-        // Call the method under test
         $this->formType->buildForm($builder, []);
     }
 
@@ -183,20 +177,17 @@ class EventTypeTest extends TestCase
      */
     public function testConfigureOptions(): void
     {
-        // Mock the OptionsResolver
         $resolver = $this->createMock(OptionsResolver::class);
 
-        // Expect setDefaults to be called once with an array containing 'data_class'
         $resolver->expects($this->once())
             ->method('setDefaults')
             ->with($this->callback(function (array $defaults) {
-                // Assert that 'data_class' key exists and has the correct value
                 $this->assertArrayHasKey('data_class', $defaults);
                 $this->assertEquals(Event::class, $defaults['data_class']);
+
                 return true;
             }));
 
-        // Call the method under test
         $this->formType->configureOptions($resolver);
     }
 

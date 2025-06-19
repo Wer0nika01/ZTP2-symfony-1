@@ -1,22 +1,32 @@
 <?php
 
+/**
+ * Event list input filters dto Test.
+ */
+
 namespace App\Tests\Unit\Dto;
 
-use App\Dto\EventListInputFiltersDto; // The DTO under test
+use App\Dto\EventListInputFiltersDto;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class Event list input filters dto Test.
+ */
 class EventListInputFiltersDtoTest extends TestCase
 {
     /**
      * Test the constructor and ensure properties are correctly assigned.
      *
      * @dataProvider provideConstructorData
+     *
+     * @param int|null $categoryId
+     * @param int|null $tagId
+     * @param int|null $statusId
      */
     public function testConstructor(?int $categoryId, ?int $tagId, ?int $statusId): void
     {
         $dto = new EventListInputFiltersDto($categoryId, $tagId, $statusId);
 
-        // Assert that the public readonly properties are correctly assigned
         $this->assertEquals($categoryId, $dto->categoryId);
         $this->assertEquals($tagId, $dto->tagId);
         $this->assertEquals($statusId, $dto->statusId);
@@ -25,6 +35,8 @@ class EventListInputFiltersDtoTest extends TestCase
     /**
      * Data provider for testConstructor.
      * [categoryId, tagId, statusId]
+     *
+     * @return array
      */
     public function provideConstructorData(): array
     {
@@ -37,9 +49,8 @@ class EventListInputFiltersDtoTest extends TestCase
             'category_and_tag' => [100, 200, null],
             'category_and_status' => [100, null, 300],
             'tag_and_status' => [null, 200, 300],
-            'zero_values' => [0, 0, 0], // Test with zero which is a valid int
-            'negative_values' => [-1, -2, -3], // Test with negative integers if applicable
+            'zero_values' => [0, 0, 0],
+            'negative_values' => [-1, -2, -3],
         ];
     }
 }
-

@@ -3,7 +3,6 @@
 /**
  * Contact list filters DTO.
  */
-
 namespace App\Dto;
 
 use App\Entity\Tag;
@@ -16,11 +15,12 @@ use Doctrine\Common\Collections\Collection;
 class ContactListFiltersDto
 {
     /**
-     * @param Collection<int, Tag> $tags Collection of Tag entities
+     * Constructor
+     *
+     * @param Collection $tags
      */
-    public function __construct(
-        private Collection $tags = new ArrayCollection(),
-    ) {
+    public function __construct(private Collection $tags = new ArrayCollection())
+    {
     }
 
     /**
@@ -36,7 +36,7 @@ class ContactListFiltersDto
     /**
      * Setter for tags.
      *
-     * @param Collection<int, Tag> $tags
+     * @param Collection $tags
      *
      * @return $this
      */

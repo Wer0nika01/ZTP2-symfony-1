@@ -1,15 +1,24 @@
 <?php
 
+/**
+ * User role enum Test.
+ */
+
 namespace App\Tests\Unit\Entity\Enum;
 
-use App\Entity\Enum\UserRole; // The enum under test
+use App\Entity\Enum\UserRole;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class User role enum Test.
+ */
 class UserRoleTest extends TestCase
 {
     /**
      * Data provider for testing the label() method.
      * [enumCase, expectedLabel]
+     *
+     * @return array[]
      */
     public function provideLabels(): array
     {
@@ -21,7 +30,11 @@ class UserRoleTest extends TestCase
 
     /**
      * Test the label() method for each enum case.
+     *
      * @dataProvider provideLabels
+     *
+     * @param UserRole $enumCase
+     * @param string   $expectedLabel
      */
     public function testLabel(UserRole $enumCase, string $expectedLabel): void
     {

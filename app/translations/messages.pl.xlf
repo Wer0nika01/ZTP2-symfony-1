@@ -506,6 +506,58 @@
         <source>action.unblock</source>
         <target>Odblokuj</target>
       </trans-unit>
+      <trans-unit id="title.contact_delete">
+        <source>title.contact_delete</source>
+        <target>Usuń kontakt</target>
+      </trans-unit>
+      <trans-unit id="title.delete_avatar">
+        <source>title.delete_avatar</source>
+        <target>Usuń avatar</target>
+      </trans-unit>
+      <trans-unit id="message.category_contains_event">
+        <source>message.category_contains_event</source>
+        <target>Kategoria zawiera zdarzenia, nie może zostać usunięta</target>
+      </trans-unit>
+      <trans-unit id="message.category_delete_blocked">
+        <source>message.category_delete_blocked</source>
+        <target>Usunięcie kategorii zablokowane</target>
+      </trans-unit>
+      <trans-unit id="message.form_error">
+        <source>message.form_error</source>
+        <target>Błąd formularza</target>
+      </trans-unit>
+      <trans-unit id="message.already_logged_in_as">
+        <source>message.already_logged_in_as</source>
+        <target>Już zalogowany</target>
+      </trans-unit>
+      <trans-unit id="error.email_exists">
+        <source>error.email_exists</source>
+        <target>Email już istnieje</target>
+      </trans-unit>
+      <trans-unit id="flash.user_saved">
+        <source>flash.user_saved</source>
+        <target>Użytkownik zapisany</target>
+      </trans-unit>
+      <trans-unit id="flash.user_blocked">
+        <source>flash.user_blocked</source>
+        <target>Użytkownik zablokowany</target>
+      </trans-unit>
+      <trans-unit id="flash.user_unblocked">
+        <source>flash.user_unblocked</source>
+        <target>Użytkownik odblokowany</target>
+      </trans-unit>
+      <trans-unit id="label.user_avatar">
+        <source>label.user_avatar</source>
+        <target>Avatar użytkownika</target>
+      </trans-unit>
+      <trans-unit id="label.no_category">
+        <source>label.no_category</source>
+        <target>Brak kategorii</target>
+      </trans-unit>
+      <trans-unit id="title.category_delete">
+        <source>title.category_delete</source>
+        <target>Usuń kategorię</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

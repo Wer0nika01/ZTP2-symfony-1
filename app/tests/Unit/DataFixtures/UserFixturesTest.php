@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * User data fixtures Test.
+ */
+
 namespace App\Tests\Unit\DataFixtures;
 
 use App\DataFixtures\UserFixtures;
@@ -10,22 +14,28 @@ use Faker\Generator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Common\DataFixtures\ReferenceRepository;
 
+/**
+ * Class User data fixtures Test.
+ */
 class UserFixturesTest extends TestCase
 {
     private MockObject|UserPasswordHasherInterface $passwordHasher;
     private MockObject|ObjectManager $objectManager;
-    private MockObject|Generator $faker;
     private UserFixtures $userFixtures;
     private MockObject|ReferenceRepository $referenceRepository;
 
+    /**
+     * Set up.
+     */
     protected function setUp(): void
     {
         $this->passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
         $this->objectManager = $this->createMock(ObjectManager::class);
-        $this->faker = $this->createMock(Generator::class);
+        $faker = $this->createMock(Generator::class);
 
         $this->userFixtures = new UserFixtures($this->passwordHasher);
 
@@ -38,11 +48,11 @@ class UserFixturesTest extends TestCase
         $managerProperty->setValue($this->userFixtures, $this->objectManager);
 
         $fakerProperty = $reflection->getProperty('faker');
-        $fakerProperty->setValue($this->userFixtures, $this->faker);
+        $fakerProperty->setValue($this->userFixtures, $faker);
     }
 
     /**
-     * Testuje, czy fixture poprawnie tworzy i utrwala użytkowników oraz administratorów.
+     * Tests that fixture correctly creates and fixes users and administrators.
      */
     public function testLoadData(): void
     {
@@ -79,7 +89,10 @@ class UserFixturesTest extends TestCase
 
         $reflection = new ReflectionClass($this->userFixtures);
         $loadDataMethod = $reflection->getMethod('loadData');
-        $loadDataMethod->invoke($this->userFixtures);
+        try {
+            $loadDataMethod->invoke($this->userFixtures);
+        } catch (ReflectionException) {
+        }
 
         $this->assertCount($totalExpectedUsers, $persistedUsers);
 

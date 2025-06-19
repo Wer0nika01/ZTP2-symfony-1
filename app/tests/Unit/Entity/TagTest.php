@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tag entity Test.
+ */
+
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Tag;
@@ -10,14 +14,18 @@ use PHPUnit\Framework\TestCase;
  */
 class TagTest extends TestCase
 {
+    /**
+     * Test get and set ID.
+     */
     public function testGetAndSetId(): void
     {
         $tag = new Tag();
-        // ID is typically set by the ORM, so we can't directly set it.
-        // We can only assert it's initially null or check its type.
         $this->assertNull($tag->getId());
     }
 
+    /**
+     * Test get and set name.
+     */
     public function testGetAndSetName(): void
     {
         $tag = new Tag();
@@ -27,6 +35,9 @@ class TagTest extends TestCase
         $this->assertEquals($name, $tag->getName());
     }
 
+    /**
+     * Test get and set createdAt.
+     */
     public function testGetAndSetCreatedAt(): void
     {
         $tag = new Tag();
@@ -36,6 +47,9 @@ class TagTest extends TestCase
         $this->assertEquals($createdAt, $tag->getCreatedAt());
     }
 
+    /**
+     * Test get and set updatedAt.
+     */
     public function testGetAndSetUpdatedAt(): void
     {
         $tag = new Tag();
@@ -43,16 +57,6 @@ class TagTest extends TestCase
         $tag->setUpdatedAt($updatedAt);
 
         $this->assertEquals($updatedAt, $tag->getUpdatedAt());
-    }
-
-    public function testGetAndSetSlug(): void
-    {
-        $tag = new Tag();
-        $slug = 'test-tag-slug';
-        $tag->setSlug($slug);
-
-        $this->assertEquals($slug, $tag->getSlug());
-        $this->assertInstanceOf(Tag::class, $tag->setSlug($slug), 'Setter for slug should return $this');
     }
 
     /**

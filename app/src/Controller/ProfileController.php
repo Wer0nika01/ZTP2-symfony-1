@@ -1,24 +1,24 @@
 <?php
 
 /**
- * Profile Controller
+ * Profile Controller.
  */
 
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\Type\ChangePasswordType;
 use App\Form\Type\ProfileEditType;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\User;
 
 /**
- * Class ProfileController
+ * Class ProfileController.
  */
 class ProfileController extends AbstractController
 {
@@ -27,7 +27,7 @@ class ProfileController extends AbstractController
      *
      * @return Response
      */
-    #[\Symfony\Component\Routing\Attribute\Route('/profile', name: 'app_profile', methods: 'GET')]
+    #[Route('/profile', name: 'app_profile', methods: 'GET')]
     public function profile(): Response
     {
         /** @var User $user */
@@ -46,7 +46,7 @@ class ProfileController extends AbstractController
      *
      * @return Response
      */
-    #[\Symfony\Component\Routing\Attribute\Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
+    #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function editProfile(Request $request, EntityManagerInterface $entityManager): Response
     {
         /** @var User $user */
@@ -78,12 +78,9 @@ class ProfileController extends AbstractController
      *
      * @return Response
      */
-    #[\Symfony\Component\Routing\Attribute\Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
-    public function changePassword(
-        Request $request,
-        UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
-    ): Response {
+    #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 

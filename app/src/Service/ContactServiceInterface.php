@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contact Service Interface
+ */
+
 namespace App\Service;
 
 use App\Entity\Contact;
@@ -7,6 +11,9 @@ use App\Entity\User;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use App\Dto\ContactListFiltersDto;
 
+/**
+ * Interface of Contact service.
+ */
 interface ContactServiceInterface
 {
     /**
@@ -18,7 +25,19 @@ interface ContactServiceInterface
      *
      * @return PaginationInterface PaginationInterface
      */
-    public function getPaginatedList(int $page, User $author, ContactListFiltersDto $filters): PaginationInterface; // ZMIANA SYGNATURY
+    public function getPaginatedList(int $page, User $author, ContactListFiltersDto $filters): PaginationInterface;
+
+    /**
+     * Save.
+     *
+     * @param Contact $contact
+     */
     public function save(Contact $contact): void;
+
+    /**
+     * Remove.
+     *
+     * @param Contact $contact
+     */
     public function remove(Contact $contact): void;
 }

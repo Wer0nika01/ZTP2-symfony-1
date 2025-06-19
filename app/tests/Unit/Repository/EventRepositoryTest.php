@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Event repository Test.
+ */
+
 namespace App\Tests\Unit\Repository;
 
 use App\Dto\EventListFiltersDto;
@@ -8,57 +12,24 @@ use App\Entity\Event;
 use App\Entity\Enum\EventStatus;
 use App\Entity\Tag;
 use App\Entity\User;
-use App\Repository\EventRepository; // The repository under test
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection; // For DTO filters
+use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata; // For ServiceEntityRepository constructor mock
-use Doctrine\ORM\NonUniqueResultException; // For countByCategory exception
-use Doctrine\ORM\NoResultException; // For countByCategory exception
-use Doctrine\ORM\Query; // For getQuery and getResult/getSingleScalarResult mocks
-use Doctrine\ORM\Query\Expr; // For mocking QueryBuilder->expr()
-use Doctrine\ORM\QueryBuilder; // FIX: Correctly imported QueryBuilder
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use DateTimeImmutable; // For date comparisons
+use DateTimeImmutable;
 
+/**
+ * Class Event repository Test.
+ */
 class EventRepositoryTest extends TestCase
 {
-    private MockObject|ManagerRegistry $managerRegistry;
-    private MockObject|EntityManagerInterface $entityManager;
-    private MockObject|EventRepository $eventRepository; // The repository under test, mocked partially
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Mock EntityManagerInterface
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-
-        // Mock ManagerRegistry
-        $this->managerRegistry = $this->createMock(ManagerRegistry::class);
-
-        // Configure ManagerRegistry to return the mocked EntityManager
-        $this->managerRegistry->method('getManagerForClass')
-            ->with(Event::class)
-            ->willReturn($this->entityManager);
-        $this->managerRegistry->method('getManager')
-            ->willReturn($this->entityManager);
-
-        // Mock ClassMetadata for ServiceEntityRepository constructor
-        $mockClassMetadata = $this->createMock(ClassMetadata::class);
-        $mockClassMetadata->name = Event::class;
-        $this->entityManager->method('getClassMetadata')
-            ->with(Event::class)
-            ->willReturn($mockClassMetadata);
-
-        // Partially mock EventRepository to control inherited methods like createQueryBuilder
-        $this->eventRepository = $this->getMockBuilder(EventRepository::class)
-            ->setConstructorArgs([$this->managerRegistry])
-            ->onlyMethods(['createQueryBuilder']) // We will mock createQueryBuilder
-            ->getMock();
-    }
+    private MockObject|EventRepository $eventRepository;
 
     /**
      * Test queryAll method with no filters.
@@ -66,21 +37,16 @@ class EventRepositoryTest extends TestCase
     public function testQueryAllNoFilters(): void
     {
         $author = $this->createMock(User::class);
-        // Assuming EventListFiltersDto requires TagRepository and CategoryRepository for its constructor
-        // For unit tests of the repository, we can just pass mocks or dummy collections.
-        // The DTO itself is a data holder here.
-        $filters = new EventListFiltersDto(new ArrayCollection(), null); // Assuming tags is first, category second and nullable
+        $filters = new EventListFiltersDto(new ArrayCollection(), null);
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
-        $expr = $this->createMock(Expr::class); // For expr() call, if any, within applyFiltersToList
+        $this->createMock(Expr::class);
 
-        // Configure the mocked repository's createQueryBuilder method
         $this->eventRepository->expects($this->once())
             ->method('createQueryBuilder')
             ->with('event')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods for the base query in queryAll
         $queryBuilder->expects($this->once())
             ->method('select')
             ->with(
@@ -106,11 +72,8 @@ class EventRepositoryTest extends TestCase
             ->with('author', $author)
             ->willReturnSelf();
 
-        // Ensure applyFiltersToList does not add further conditions for no filters
         $queryBuilder->expects($this->never())
-            ->method('expr'); // No expr() calls for empty filters
-        // FIX: Removed conflicting 'never' expectations for andWhere and setParameter
-        // The existing 'once' expectations are sufficient to ensure no *additional* calls occur.
+            ->method('expr');
 
         $result = $this->eventRepository->queryAll($author, $filters);
 
@@ -125,7 +88,7 @@ class EventRepositoryTest extends TestCase
         $author = $this->createMock(User::class);
         $category = $this->createMock(Category::class);
         $category->method('getId')->willReturn(1);
-        $filters = new EventListFiltersDto(new ArrayCollection(), $category); // Category filter applied
+        $filters = new EventListFiltersDto(new ArrayCollection(), $category);
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
 
@@ -134,26 +97,23 @@ class EventRepositoryTest extends TestCase
             ->with('event')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods (initial part of queryAll)
         $queryBuilder->method('select')->willReturnSelf();
         $queryBuilder->method('join')->willReturnSelf();
         $queryBuilder->method('leftJoin')->willReturnSelf();
 
-        // FIX: Use withConsecutive for andWhere calls
         $queryBuilder->expects($this->exactly(2))
             ->method('andWhere')
             ->withConsecutive(
-                ['event.author = :author'], // First call from queryAll()
-                ['category.id = :categoryId'] // Second call from applyFiltersToList()
+                ['event.author = :author'],
+                ['category.id = :categoryId']
             )
             ->willReturnSelf();
 
-        // FIX: Use withConsecutive for setParameter calls
         $queryBuilder->expects($this->exactly(2))
             ->method('setParameter')
             ->withConsecutive(
-                ['author', $author], // First call from queryAll()
-                ['categoryId', $category->getId()] // Second call from applyFiltersToList()
+                ['author', $author],
+                ['categoryId', $category->getId()]
             )
             ->willReturnSelf();
 
@@ -168,7 +128,7 @@ class EventRepositoryTest extends TestCase
     {
         $author = $this->createMock(User::class);
         $status = EventStatus::PERSONAL;
-        $filters = new EventListFiltersDto(new ArrayCollection(), null, $status); // Status filter applied
+        $filters = new EventListFiltersDto(new ArrayCollection(), null, $status);
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
 
@@ -177,26 +137,23 @@ class EventRepositoryTest extends TestCase
             ->with('event')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods (initial part of queryAll)
         $queryBuilder->method('select')->willReturnSelf();
         $queryBuilder->method('join')->willReturnSelf();
         $queryBuilder->method('leftJoin')->willReturnSelf();
 
-        // FIX: Use withConsecutive for andWhere calls
         $queryBuilder->expects($this->exactly(2))
             ->method('andWhere')
             ->withConsecutive(
-                ['event.author = :author'], // First call from queryAll()
-                ['event.status = :status'] // Second call from applyFiltersToList()
+                ['event.author = :author'],
+                ['event.status = :status']
             )
             ->willReturnSelf();
 
-        // FIX: Use withConsecutive for setParameter calls
         $queryBuilder->expects($this->exactly(2))
             ->method('setParameter')
             ->withConsecutive(
-                ['author', $author], // First call from queryAll()
-                ['status', $status] // Second call from applyFiltersToList()
+                ['author', $author],
+                ['status', $status]
             )
             ->willReturnSelf();
 
@@ -214,54 +171,50 @@ class EventRepositoryTest extends TestCase
         $tag1->method('getId')->willReturn(1);
         $tag2 = $this->createMock(Tag::class);
         $tag2->method('getId')->willReturn(2);
-        $filters = new EventListFiltersDto(new ArrayCollection([$tag1, $tag2]), null); // Tags filter applied
+        $filters = new EventListFiltersDto(new ArrayCollection([$tag1, $tag2]), null);
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $expr = $this->createMock(Expr::class);
-        $exprFuncMock = $this->createMock(Expr\Func::class); // Mock for expr()->in() return
+        $exprFuncMock = $this->createMock(Expr\Func::class);
 
         $this->eventRepository->expects($this->once())
             ->method('createQueryBuilder')
             ->with('event')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods (initial part of queryAll)
         $queryBuilder->method('select')->willReturnSelf();
         $queryBuilder->method('join')->willReturnSelf();
-        $queryBuilder->expects($this->exactly(2)) // FIX: Two leftJoin calls
+        $queryBuilder->expects($this->exactly(2))
         ->method('leftJoin')
             ->withConsecutive(
-                ['event.tags', 'tags'], // First leftJoin from queryAll()
-                ['event.tags', 'filterTags'] // Second leftJoin from applyFiltersToList()
+                ['event.tags', 'tags'],
+                ['event.tags', 'filterTags']
             )
             ->willReturnSelf();
 
-        // FIX: Use withConsecutive for andWhere calls
         $queryBuilder->expects($this->exactly(2))
             ->method('andWhere')
             ->withConsecutive(
-                ['event.author = :author'], // First andWhere from queryAll()
-                [$exprFuncMock] // Second andWhere from applyFiltersToList() with expr()->in() result
+                ['event.author = :author'],
+                [$exprFuncMock]
             )
             ->willReturnSelf();
 
-        // FIX: Use withConsecutive for setParameter calls
         $queryBuilder->expects($this->exactly(2))
             ->method('setParameter')
             ->withConsecutive(
-                ['author', $author], // First setParameter from queryAll()
-                ['tag_ids', [1, 2]] // Second setParameter from applyFiltersToList()
+                ['author', $author],
+                ['tag_ids', [1, 2]]
             )
             ->willReturnSelf();
 
-        // Expectations for applyFiltersToList for tags filter
-        $queryBuilder->expects($this->once()) // FIX: expr() is called once
+        $queryBuilder->expects($this->once())
         ->method('expr')
             ->willReturn($expr);
-        $expr->expects($this->once()) // FIX: in() is called once
+        $expr->expects($this->once())
         ->method('in')
             ->with('filterTags.id', ':tag_ids')
-            ->willReturn($exprFuncMock); // expr()->in() returns an Expr\Func object
+            ->willReturn($exprFuncMock);
 
 
         $result = $this->eventRepository->queryAll($author, $filters);
@@ -275,18 +228,16 @@ class EventRepositoryTest extends TestCase
     {
         $author = $this->createMock(User::class);
         $limit = 5;
-        $expectedEvents = [$this->createMock(Event::class)]; // Sample result
+        $expectedEvents = [$this->createMock(Event::class)];
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $query = $this->createMock(Query::class);
 
-        // Configure createQueryBuilder to return our mock QueryBuilder
         $this->eventRepository->expects($this->once())
             ->method('createQueryBuilder')
             ->with('event')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods for createBaseQueryBuilder and findActiveEvents
         $queryBuilder->expects($this->once())
             ->method('select')
             ->with(
@@ -298,17 +249,15 @@ class EventRepositoryTest extends TestCase
         $queryBuilder->expects($this->once())->method('join')->willReturnSelf();
         $queryBuilder->expects($this->once())->method('leftJoin')->willReturnSelf();
 
-        // FIX: Expect exactly three andWhere calls now
         $queryBuilder->expects($this->exactly(3))
             ->method('andWhere')
             ->withConsecutive(
-                ['event.author = :author'], // From createBaseQueryBuilder
-                ['event.startTime <= :now'], // First from findActiveEvents
-                ['event.endTime IS NULL OR event.endTime >= :now'] // Second from findActiveEvents
+                ['event.author = :author'],
+                ['event.startTime <= :now'],
+                ['event.endTime IS NULL OR event.endTime >= :now']
             )
             ->willReturnSelf();
 
-        // FIX: Expect exactly two setParameter calls
         $queryBuilder->expects($this->exactly(2))
             ->method('setParameter')
             ->withConsecutive(
@@ -344,18 +293,16 @@ class EventRepositoryTest extends TestCase
     {
         $author = $this->createMock(User::class);
         $limit = 5;
-        $expectedEvents = [$this->createMock(Event::class)]; // Sample result
+        $expectedEvents = [$this->createMock(Event::class)];
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $query = $this->createMock(Query::class);
 
-        // Configure createQueryBuilder to return our mock QueryBuilder
         $this->eventRepository->expects($this->once())
             ->method('createQueryBuilder')
             ->with('event')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods for createBaseQueryBuilder and findUpcomingEvents
         $queryBuilder->expects($this->once())
             ->method('select')
             ->with(
@@ -367,16 +314,14 @@ class EventRepositoryTest extends TestCase
         $queryBuilder->expects($this->once())->method('join')->willReturnSelf();
         $queryBuilder->expects($this->once())->method('leftJoin')->willReturnSelf();
 
-        // FIX: Expect exactly two andWhere calls
         $queryBuilder->expects($this->exactly(2))
             ->method('andWhere')
             ->withConsecutive(
-                ['event.author = :author'], // From createBaseQueryBuilder
-                ['event.startTime > :now'] // From findUpcomingEvents
+                ['event.author = :author'],
+                ['event.startTime > :now']
             )
             ->willReturnSelf();
 
-        // FIX: Expect exactly two setParameter calls
         $queryBuilder->expects($this->exactly(2))
             ->method('setParameter')
             ->withConsecutive(
@@ -396,7 +341,6 @@ class EventRepositoryTest extends TestCase
             ->method('getQuery')
             ->willReturn($query);
 
-        // Configure Query to return results
         $query->expects($this->once())
             ->method('getResult')
             ->willReturn($expectedEvents);
@@ -416,13 +360,11 @@ class EventRepositoryTest extends TestCase
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $query = $this->createMock(Query::class);
 
-        // Configure createQueryBuilder to return our mock QueryBuilder
         $this->eventRepository->expects($this->once())
             ->method('createQueryBuilder')
             ->with('e')
             ->willReturn($queryBuilder);
 
-        // Configure QueryBuilder chain methods
         $queryBuilder->expects($this->once())
             ->method('select')
             ->with('COUNT(e.id)')
@@ -439,7 +381,6 @@ class EventRepositoryTest extends TestCase
             ->method('getQuery')
             ->willReturn($query);
 
-        // Configure Query to return the count
         $query->expects($this->once())
             ->method('getSingleScalarResult')
             ->willReturn($expectedCount);
@@ -464,7 +405,6 @@ class EventRepositoryTest extends TestCase
         $queryBuilder->method('setParameter')->willReturnSelf();
         $queryBuilder->method('getQuery')->willReturn($query);
 
-        // FIX: getSingleScalarResult should return 0, not throw an exception for COUNT queries
         $query->expects($this->once())
             ->method('getSingleScalarResult')
             ->willReturn(0);
@@ -489,12 +429,40 @@ class EventRepositoryTest extends TestCase
         $queryBuilder->method('setParameter')->willReturnSelf();
         $queryBuilder->method('getQuery')->willReturn($query);
 
-        // FIX: getSingleScalarResult should return 0, not throw an exception for COUNT queries
         $query->expects($this->once())
             ->method('getSingleScalarResult')
             ->willReturn(0);
 
         $result = $this->eventRepository->countByCategory($category);
         $this->assertEquals(0, $result);
+    }
+
+    /**
+     * Set up.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+
+        $managerRegistry = $this->createMock(ManagerRegistry::class);
+
+        $managerRegistry->method('getManagerForClass')
+            ->with(Event::class)
+            ->willReturn($entityManager);
+        $managerRegistry->method('getManager')
+            ->willReturn($entityManager);
+
+        $mockClassMetadata = $this->createMock(ClassMetadata::class);
+        $mockClassMetadata->name = Event::class;
+        $entityManager->method('getClassMetadata')
+            ->with(Event::class)
+            ->willReturn($mockClassMetadata);
+
+        $this->eventRepository = $this->getMockBuilder(EventRepository::class)
+            ->setConstructorArgs([$managerRegistry])
+            ->onlyMethods(['createQueryBuilder'])
+            ->getMock();
     }
 }

@@ -3,7 +3,6 @@
 /**
  * Contact fixtures.
  */
-
 namespace App\DataFixtures;
 
 use App\Entity\Contact;
@@ -22,10 +21,6 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
 {
     /**
      * Load data.
-     *
-     * @psalm-suppress PossiblyNullPropertyFetch
-     * @psalm-suppress PossiblyNullReference
-     * @psalm-suppress UnusedClosureParam
      */
     public function loadData(): void
     {
@@ -33,7 +28,7 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
             return;
         }
 
-        $this->createMany(50, 'contact', function (int $i) {
+        $this->createMany(50, 'contact', function () {
             $contact = new Contact();
             $contact->setFirstName($this->faker->firstName);
             $contact->setLastName($this->faker->lastName);
@@ -50,7 +45,7 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
                 $contact->setAddress($this->faker->address);
             }
 
-            if ($this->faker->boolean(50)) {
+            if ($this->faker->boolean()) {
                 $contact->setCompany($this->faker->company);
             }
 
@@ -66,8 +61,8 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
             $author = $this->getRandomReference('user', User::class);
             $contact->setAuthor($author);
 
-            $tagsCount = mt_rand(0, 4); // Randomly add 0 to 4 tags
-            for ($j = 0; $j < $tagsCount; $j++) {
+            $tagsCount = mt_rand(0, 4);
+            for ($j = 0; $j < $tagsCount; ++$j) {
                 /** @var Tag $tag */
                 $tag = $this->getRandomReference('tag', Tag::class);
                 $contact->addTag($tag);
@@ -84,8 +79,6 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
      * on which the implementing class depends on.
      *
      * @return string[] of dependencies
-     *
-     * @psalm-return array{0: UserFixtures::class, 1: TagFixtures::class}
      */
     public function getDependencies(): array
     {
