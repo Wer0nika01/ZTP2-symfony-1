@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Profile Controller.
- */
+/** * Profile Controller. */
 
 namespace App\Controller;
 
@@ -16,17 +14,21 @@ use App\Form\Type\ProfileEditType;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use App\Entity\User;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class ProfileController.
- */
+/** * Class ProfileController. */
 class ProfileController extends AbstractController
 {
-    /**
-     * Profile dashboard.
+    /** * Constructor.
      *
-     * @return Response
-     */
+     * @param TranslatorInterface   $translator */
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
+    /** * Profile dashboard.
+     *
+     * @return Response */
     #[Route('/profile', name: 'app_profile', methods: 'GET')]
     public function profile(): Response
     {
@@ -38,14 +40,12 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * Edit user profile data.
+    /** * Edit user profile data.
      *
      * @param Request                $request       HTTP Request
      * @param EntityManagerInterface $entityManager Entity Manager
      *
-     * @return Response
-     */
+     * @return Response */
     #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function editProfile(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -58,7 +58,7 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'message.profile_updated_successfully');
+            $this->addFlash('success', $this->translator->trans('message.profile_updated_successfully'));
 
             return $this->redirectToRoute('app_profile');
         }
@@ -69,15 +69,13 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * Change password.
+    /** * Change password.
      *
      * @param Request                     $request        HTTP Request
      * @param UserPasswordHasherInterface $passwordHasher Password Hasher
      * @param EntityManagerInterface      $entityManager  Entity Manager
      *
-     * @return Response
-     */
+     * @return Response */
     #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
@@ -97,7 +95,7 @@ class ProfileController extends AbstractController
             $user->setPassword($hashedPassword);
 
             $entityManager->flush();
-            $this->addFlash('success', 'message.password_changed_successfully');
+            $this->addFlash('success', $this->translator->trans('message.password_changed_successfully'));
 
             return $this->redirectToRoute('app_profile');
         }

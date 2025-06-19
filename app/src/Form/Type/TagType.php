@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Tag type.
- */
+/** * Tag type. */
 
 namespace App\Form\Type;
 
@@ -12,17 +10,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class TagType.
- */
+/** * Class TagType. */
 class TagType extends AbstractType
 {
-    /**
-     * Builds the form.
+    /** * Builds the form.
      *
      * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
+     * @param array $options */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,11 +25,9 @@ class TagType extends AbstractType
             ]);
     }
 
-    /**
-     * Configures the options for this type.
+    /** * Configures the options for this type.
      *
-     * @param OptionsResolver $resolver
-     */
+     * @param OptionsResolver $resolver */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

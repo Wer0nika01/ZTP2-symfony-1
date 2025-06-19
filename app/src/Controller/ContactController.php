@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Contact controller.
- */
+/** * Contact controller. */
 
 namespace App\Controller;
 
@@ -17,29 +15,26 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Service\ContactService;
 use App\Dto\ContactListFiltersDto;
 use App\Form\Type\ContactListFilterType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class ContactController.
- */
+/** * Class ContactController. */
 #[IsGranted('ROLE_USER')]
 class ContactController extends AbstractController
 {
-    /**
-     * Constructor
+    /** * Constructor.
      *
      * @param ContactService $contactService
+     * @param TranslatorInterface $translator
      */
-    public function __construct(private readonly ContactService $contactService)
+    public function __construct(private readonly ContactService $contactService, private readonly TranslatorInterface $translator)
     {
     }
 
-    /**
-     * Index action.
+    /** * Index action.
      *
      * @param Request $request HTTP Request
      *
-     * @return Response HTTP Response
-     */
+     * @return Response HTTP Response */
     #[Route('/contact', name: 'contact_index', methods: 'GET')]
     public function index(Request $request): Response
     {
@@ -63,13 +58,11 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * Show action.
+    /** * Show action.
      *
      * @param Contact $contact Contact entity
      *
-     * @return Response HTTP Response
-     */
+     * @return Response HTTP Response */
     #[Route('/contact/{id}', name: 'contact_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted('CONTACT_VIEW', subject: 'contact')]
     public function show(Contact $contact): Response
@@ -79,8 +72,7 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * Create action.
+    /** * Create action.
      *
      * @param Request $request HTTP Request
      *
@@ -100,7 +92,7 @@ class ContactController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'message.created_successfully'
+                $this->translator->trans('message.created_successfully')
             );
 
             return $this->redirectToRoute('contact_index');
@@ -112,14 +104,12 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * Edit action.
+    /** * Edit action.
      *
      * @param Request $request HTTP Request
      * @param Contact $contact Contact entity
      *
-     * @return Response HTTP Response
-     */
+     * @return Response HTTP Response */
     #[Route('/contact/{id}/edit', name: 'contact_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('CONTACT_EDIT', subject: 'contact')]
     public function edit(Request $request, Contact $contact): Response
@@ -132,7 +122,7 @@ class ContactController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'message.edited_successfully'
+                $this->translator->trans('message.edited_successfully')
             );
 
             return $this->redirectToRoute('contact_index');
@@ -144,14 +134,12 @@ class ContactController extends AbstractController
         ]);
     }
 
-    /**
-     * Delete action.
+    /** * Delete action.
      *
      * @param Request $request HTTP Request
      * @param Contact $contact Contact entity
      *
-     * @return Response HTTP Response
-     */
+     * @return Response HTTP Response */
     #[Route('/contact/{id}/delete', name: 'contact_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('CONTACT_DELETE', subject: 'contact')]
     public function delete(Request $request, Contact $contact): Response
@@ -164,7 +152,7 @@ class ContactController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'message.deleted_successfully'
+                $this->translator->trans('message.deleted_successfully')
             );
 
             return $this->redirectToRoute('contact_index');

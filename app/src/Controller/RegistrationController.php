@@ -1,13 +1,12 @@
 <?php
 
-/**
- * Registration controller.
- */
+/** * Registration controller. */
 
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\Type\RegistrationType;
+use App\Service\EventServiceInterface;
 use App\Service\RegistrationServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,21 +14,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class Registration controller.
- */
+/** * Class Registration controller. */
 class RegistrationController extends AbstractController
 {
-    /**
-     * Register
+    /** * Constructor.
+     *
+     * @param TranslatorInterface   $translator */
+    public function __construct(private readonly TranslatorInterface $translator)
+    {
+    }
+
+    /** * Register.
      *
      * @param Request                      $request
      * @param RegistrationServiceInterface $registrationService
      * @param AuthenticationUtils          $authenticationUtils
      *
-     * @return Response
-     */
+     * @return Response */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, RegistrationServiceInterface $registrationService, AuthenticationUtils $authenticationUtils): Response
     {
@@ -47,7 +50,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $registrationService->register($user, $form->get('password')->getData());
 
-            $this->addFlash('success', 'message.registration_successful');
+            $this->addFlash('success', $this -> translator->trans('message.registration_successful'));
 
             return $this->redirectToRoute('app_login');
         }

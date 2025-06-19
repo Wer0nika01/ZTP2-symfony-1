@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Tag controller.
- */
+/** * Tag controller. */
 
 namespace App\Controller;
 
@@ -18,41 +16,35 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class TagController.
- */
+/** * Class TagController. */
 class TagController extends AbstractController
 {
-    /**
-     * Constructor
+    /** * Constructor.
      *
      * @param TagServiceInterface $tagService
-     * @param TranslatorInterface $translator
-     */
+     * @param TranslatorInterface $translator */
     public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator)
     {
     }
-    /**
-     * Index action.
+
+    /** * Index action.
      *
      * @param int $page Page number
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/tag', name: 'tag_index', methods: ['GET'])]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
         $pagination = $this->tagService->getPaginatedList($page);
 
-        return $this->render('tag/index.html.twig', ['pagination' => $pagination, ]);
+        return $this->render('tag/index.html.twig', ['pagination' => $pagination]);
     }
-    /**
-     * View action.
+
+    /** * View action.
      *
      * @param Tag $tag Tag entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/tag/{id}', name: 'tag_view', requirements: ['id' => '[1-9]\d*'], methods: ['GET'])]
     public function view(Tag $tag): Response
     {
@@ -60,13 +52,12 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
-    /**
-     * Create action.
+
+    /** * Create action.
      *
      * @param Request $request
      *
-     * @return Response
-     */
+     * @return Response */
     #[Route('/tag/create', name: 'tag_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
@@ -90,14 +81,13 @@ class TagController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * Edit action.
+
+    /** * Edit action.
      *
      * @param Request $request HTTP request
      * @param Tag     $tag     Tag entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/tag/{id}/edit', name: 'tag_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Tag $tag): Response
@@ -118,14 +108,13 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
-    /**
-     * Delete action.
+
+    /** * Delete action.
      *
      * @param Request $request
      * @param Tag     $tag
      *
-     * @return Response
-     */
+     * @return Response  */
     #[Route('/tag/{id}/delete', name: 'tag_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Tag $tag): Response

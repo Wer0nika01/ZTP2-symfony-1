@@ -558,6 +558,14 @@
         <source>title.category_delete</source>
         <target>Usuń kategorię</target>
       </trans-unit>
+      <trans-unit id="message.error_counting_admins">
+        <source>message.error_counting_admins</source>
+        <target>Pojawił się błąd w czasie liczenia adminów.</target>
+      </trans-unit>
+      <trans-unit id="message.password_changed_successfully">
+        <source>message.password_changed_successfully</source>
+        <target>Chaslo zostało zmienione.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Avatar controller.
- */
+/** * Avatar controller. */
 
 namespace App\Controller;
 
@@ -19,27 +17,22 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class AvatarController.
- */
+/** * Class AvatarController. */
 class AvatarController extends AbstractController
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
      * @param AvatarServiceInterface $avatarService Avatar service
-     * @param TranslatorInterface    $translator    Translator
-     */
+     * @param TranslatorInterface    $translator    Translator */
     public function __construct(private readonly AvatarServiceInterface $avatarService, private readonly TranslatorInterface $translator)
     {
     }
-    /**
-     * Create action.
+
+    /** * Create action.
      *
      * @param Request $request HTTP request
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route(
         '/avatar/create',
         name: 'avatar_create',
@@ -86,14 +79,13 @@ class AvatarController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-    /**
-     * Edit action.
+
+    /** * Edit action.
      *
      * @param Request $request HTTP request
      * @param Avatar  $avatar  Avatar entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route(
         '/avatar/{id}/edit',
         name: 'avatar_edit',
@@ -143,14 +135,13 @@ class AvatarController extends AbstractController
             ]
         );
     }
-    /**
-     * Delete action.
+
+    /** * Delete action.
      *
      * @param Request $request
      * @param Avatar  $avatar
      *
-     * @return Response
-     */
+     * @return Response */
     #[IsGranted('DELETE', subject: 'avatar')]
     #[Route('/avatar/{id}/delete', name: 'avatar_delete', requirements: ['id' => '\d+'], methods: ['POST', 'DELETE'])]
     public function delete(Request $request, Avatar $avatar): Response

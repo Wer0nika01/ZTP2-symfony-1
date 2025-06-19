@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Dashboard controller.
- */
+/** * Dashboard controller. */
 
 namespace App\Controller;
 
@@ -13,25 +11,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Class Dashboard controller.
- */
+/** * Class Dashboard controller. */
 class DashboardController extends AbstractController
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
-     * @param EventRepository $eventRepository
-     */
+     * @param EventRepository $eventRepository */
     public function __construct(private readonly EventRepository $eventRepository)
     {
     }
 
-    /**
-     * Dashboard index action.
+    /** * Dashboard index action.
      *
-     * @return Response HTTP Response
-     */
+     * @return Response HTTP Response */
     #[Route('/dashboard', name: 'dashboard_index', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response

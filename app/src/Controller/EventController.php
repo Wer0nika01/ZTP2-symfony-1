@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Event Controller.
- * */
+/** * Event Controller. */
 
 namespace App\Controller;
 
@@ -23,29 +21,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Form\Type\EventListFilterType;
 
-/**
- * Class Event controller.
- */
+/** * Class Event controller. */
 class EventController extends AbstractController
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
      * @param EventServiceInterface $eventService
-     * @param TranslatorInterface   $translator
-     */
+     * @param TranslatorInterface   $translator */
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
     }
 
-    /**
-     * Index.
+    /** * Index.
      *
      * @param Request $request
      * @param int     $page
      *
-     * @return Response
-     */
+     * @return Response */
     #[Route('/event', name: 'event_index', methods: 'GET')]
     public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
     {
@@ -68,13 +60,12 @@ class EventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    /**
-     * View action.
+
+    /** * View action.
      *
      * @param Event $event Event entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/event/{id}', name: 'event_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted(EventVoter::VIEW, subject: 'event')]
     public function view(Event $event): Response
@@ -84,19 +75,18 @@ class EventController extends AbstractController
             ['event' => $event]
         );
     }
-    /**
-     * Create action.
+
+    /** * Create action.
      *
      * @param Request $request HTTP request
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/event/create', name: 'event_create', methods: 'GET|POST')]
     public function create(Request $request): Response
     {
 
         /** @var User $user */
-        $user = $this->getUser();
+        $this->getUser();
         $event = new Event();
         $event->setAuthor($this->getUser());
         $form = $this->createForm(EventType::class, $event);
@@ -118,14 +108,13 @@ class EventController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-    /**
-     * Edit action.
+
+    /** * Edit action.
      *
      * @param Request $request HTTP request
      * @param Event   $event   Category entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/event/{id}/edit', name: 'event_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     #[IsGranted(EventVoter::EDIT, subject: 'event')]
     public function edit(Request $request, Event $event): Response
@@ -150,20 +139,18 @@ class EventController extends AbstractController
 
         return $this->render(
             'event/edit.html.twig',
-            [
-            'form' => $form->createView(),
-            'event' => $event,
+            ['form' => $form->createView(),
+                'event' => $event,
             ]
         );
     }
-    /**
-     * Delete action.
+
+    /** * Delete action.
      *
      * @param Request $request
      * @param Event   $event
      *
-     * @return Response
-     */
+     * @return Response */
     #[Route('/event/{id}/delete', name: 'event_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted(EventVoter::DELETE, subject: 'event')]
     public function delete(Request $request, Event $event): Response
@@ -188,8 +175,7 @@ class EventController extends AbstractController
 
         return $this->render(
             'event/delete.html.twig',
-            [
-                'form' => $form->createView(),
+            ['form' => $form->createView(),
                 'event' => $event,
             ]
         );

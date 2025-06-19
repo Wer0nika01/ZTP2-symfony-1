@@ -1,8 +1,7 @@
 <?php
 
-/**
- * Contact fixtures.
- */
+/** * Contact fixtures. */
+
 namespace App\DataFixtures;
 
 use App\Entity\Contact;
@@ -12,16 +11,12 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 
-/**
- * Class ContactFixtures.
+/** * Class ContactFixtures.
  *
- * @psalm-suppress MissingConstructor
- */
+ * @psalm-suppress MissingConstructor */
 class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureInterface
 {
-    /**
-     * Load data.
-     */
+    /** * Load data. */
     public function loadData(): void
     {
         if (!$this->manager instanceof ObjectManager || !$this->faker instanceof Generator) {
@@ -74,12 +69,10 @@ class ContactFixtures extends AbstractBaseFixtures implements DependentFixtureIn
         $this->manager->flush();
     }
 
-    /**
-     * This method must return an array of fixtures classes
+    /** * This method must return an array of fixtures classes
      * on which the implementing class depends on.
      *
-     * @return string[] of dependencies
-     */
+     * @return string[] of dependencies */
     public function getDependencies(): array
     {
         return [UserFixtures::class, TagFixtures::class];

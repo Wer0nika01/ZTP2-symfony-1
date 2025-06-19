@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Security controller.
- */
+/** * Security controller. */
 
 namespace App\Controller;
 
@@ -19,13 +17,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class SecurityController.
- */
+/** * Class SecurityController. */
 class SecurityController extends AbstractController
 {
-    /**
-     * Login action.
+    /** * Login action.
      *
      * @param AuthenticationUtils         $authenticationUtils Authentication utilities
      * @param UserPasswordHasherInterface $passwordHasher
@@ -33,8 +28,7 @@ class SecurityController extends AbstractController
      * @param EntityManagerInterface      $entityManager
      * @param TranslatorInterface         $translator
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils, UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
@@ -74,12 +68,10 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * Logout action.
-     */
+    /** * Logout action. */
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new LogicException();
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-/**
- * User type.
- */
+/** * User type. */
 
 namespace App\Form\Type;
 
@@ -15,26 +13,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
 
-/**
- * Class User type.
- */
+/** * Class User type. */
 class UserType extends AbstractType
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
-     * @param Security $security
-     */
+     * @param Security $security */
     public function __construct(private readonly Security $security)
     {
     }
 
-    /**
-     * Builds the form.
+    /** * Builds the form.
      *
      * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
+     * @param array                $options */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var User|null $user */
@@ -67,11 +59,9 @@ class UserType extends AbstractType
         ;
     }
 
-    /**
-     * Configures the options for this type.
+    /** * Configures the options for this type.
      *
-     * @param OptionsResolver $resolver
-     */
+     * @param OptionsResolver $resolver */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

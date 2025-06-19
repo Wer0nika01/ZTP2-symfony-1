@@ -1,8 +1,6 @@
 <?php
 
-/**
- * User fixtures.
- */
+/** * User fixtures. */
 
 namespace App\DataFixtures;
 
@@ -12,29 +10,23 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-/**
- * Class UserFixtures.
+/** * Class UserFixtures.
  *
- * @psalm-suppress MissingConstructor
- */
+ * @psalm-suppress MissingConstructor */
 class UserFixtures extends AbstractBaseFixtures
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
-     * @param UserPasswordHasherInterface $passwordHasher Password hasher
-     */
+     * @param UserPasswordHasherInterface $passwordHasher Password hasher */
     public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
     {
     }
 
-    /**
-     * Load data.
+    /** * Load data.
      *
      * @psalm-suppress PossiblyNullPropertyFetch
      * @psalm-suppress PossiblyNullReference
-     * @psalm-suppress UnusedClosureParam
-     */
+     * @psalm-suppress UnusedClosureParam */
     protected function loadData(): void
     {
         if (!$this->manager instanceof ObjectManager || !$this->faker instanceof Generator) {

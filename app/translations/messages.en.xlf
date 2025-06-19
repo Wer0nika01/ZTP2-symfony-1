@@ -558,6 +558,14 @@
         <source>title.profile</source>
         <target>Profile</target>
       </trans-unit>
+      <trans-unit id="message.error_counting_admins">
+        <source>message.error_counting_admins</source>
+        <target>There've been error while counting admins.</target>
+      </trans-unit>
+      <trans-unit id="message.password_changed_successfully">
+        <source>message.password_changed_successfully</source>
+        <target>Password has been changed successfully</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

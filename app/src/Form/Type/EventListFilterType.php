@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Event list filter type.
- */
+/** * Event list filter type. */
 
 namespace App\Form\Type;
 
@@ -18,17 +16,13 @@ use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class Event list filter type.
- */
+/** * Class Event list filter type. */
 class EventListFilterType extends AbstractType
 {
-    /**
-     * Builds the form.
+    /** * Builds the form.
      *
      * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
+     * @param array                $options */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -61,11 +55,9 @@ class EventListFilterType extends AbstractType
             ]);
     }
 
-    /**
-     * Configures the options for this type.
+    /** * Configures the options for this type.
      *
-     * @param OptionsResolver $resolver
-     */
+     * @param OptionsResolver $resolver */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
@@ -75,11 +67,9 @@ class EventListFilterType extends AbstractType
         ]);
     }
 
-    /**
-     * This method specifies the block prefix for the form.
+    /** * This method specifies the block prefix for the form.
      *
-     * @return string
-     */
+     * @return string */
     public function getBlockPrefix(): string
     {
         return 'event_filter';

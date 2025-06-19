@@ -1,7 +1,7 @@
-   1) src/Form/Type/TagType.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-   2) src/Form/Type/EventListFilterType.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+   1) src/Form/Type/TagType.php (no_superfluous_phpdoc_tags)
+   2) src/Form/Type/EventListFilterType.php (no_superfluous_phpdoc_tags)
    3) src/Form/Type/ContactListFilterType.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-   4) src/Form/Type/UserType.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+   4) src/Form/Type/UserType.php (no_superfluous_phpdoc_tags)
    5) src/Form/Type/ContactType.php (no_superfluous_phpdoc_tags, phpdoc_trim)
    6) src/Form/Type/ChangePasswordType.php (no_superfluous_phpdoc_tags, phpdoc_trim)
    7) src/Form/Type/ProfileEditType.php (no_superfluous_phpdoc_tags, phpdoc_trim)
@@ -20,40 +20,38 @@
   20) src/Security/Voter/CategoryVoter.php (no_superfluous_phpdoc_tags, phpdoc_trim)
   21) src/Security/Voter/ContactVoter.php (no_superfluous_phpdoc_tags, phpdoc_trim, no_blank_lines_after_phpdoc, blank_lines_before_namespace)
   22) src/DataFixtures/CategoryFixtures.php (global_namespace_import, no_unused_imports)
-  23) src/DataFixtures/TagFixtures.php (no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_trim, no_unused_imports, blank_lines_before_namespace)
-  24) src/DataFixtures/ContactFixtures.php (blank_lines_before_namespace)
-  25) src/DataFixtures/EventFixtures.php (global_namespace_import, no_unused_imports)
-  26) src/Dto/EventListFiltersDto.php (no_superfluous_phpdoc_tags, phpdoc_trim, phpdoc_trim_consecutive_blank_line_separation)
-  27) src/Dto/ContactListFiltersDto.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim, blank_lines_before_namespace, phpdoc_trim_consecutive_blank_line_separation)
-  28) src/Service/UserServiceInterface.php (no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_trim, no_unused_imports, blank_lines_before_namespace, phpdoc_trim_consecutive_blank_line_separation, phpdoc_align)
-  29) src/Service/TagServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim, blank_lines_before_namespace, phpdoc_trim_consecutive_blank_line_separation)
-  30) src/Service/EventService.php (no_superfluous_phpdoc_tags, phpdoc_summary, trim_array_spaces, phpdoc_trim, blank_lines_before_namespace)
-  31) src/Service/CategoryService.php (class_attributes_separation)
-  32) src/Service/RegistrationServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  33) src/Service/UserService.php (no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_summary, yoda_style, phpdoc_trim, no_unused_imports)
-  34) src/Service/EventServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-  35) src/Service/TagService.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  36) src/Service/ContactServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-  37) src/Service/AvatarServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  38) src/Service/RegistrationService.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  39) src/Service/ContactService.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-  40) src/Controller/ProfileController.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  41) src/Controller/RegistrationController.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-  42) src/Controller/AvatarController.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
-  43) src/Controller/TagController.php (class_attributes_separation, no_superfluous_phpdoc_tags, no_trailing_comma_in_singleline, phpdoc_summary, phpdoc_trim)
-  44) src/Controller/SecurityController.php (no_superfluous_phpdoc_tags, global_namespace_import, no_unused_imports, phpdoc_align)
-  45) src/Controller/CategoryController.php (class_attributes_separation)
-  46) src/Controller/EventController.php (class_attributes_separation, array_indentation, no_superfluous_phpdoc_tags, phpdoc_trim)
-  47) src/Controller/Admin/UserController.php (no_superfluous_phpdoc_tags, global_namespace_import, types_spaces, phpdoc_trim, no_unused_imports, phpdoc_trim_consecutive_blank_line_separation)
-  48) src/Controller/DashboardController.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  49) src/Controller/ContactController.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-  50) src/Repository/AvatarRepository.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  51) src/Repository/EventRepository.php (phpdoc_annotation_without_dot, no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_trim, no_unused_imports)
-  52) src/Repository/TagRepository.php (no_superfluous_phpdoc_tags, phpdoc_trim)
-  53) src/Repository/ContactRepository.php (phpdoc_annotation_without_dot, no_superfluous_phpdoc_tags, phpdoc_trim)
-  54) src/Repository/UserRepository.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
+  23) src/DataFixtures/TagFixtures.php (no_superfluous_phpdoc_tags, global_namespace_import, no_unused_imports)
+  24) src/DataFixtures/EventFixtures.php (global_namespace_import, no_unused_imports)
+  25) src/Dto/EventListFiltersDto.php (no_superfluous_phpdoc_tags, phpdoc_trim, phpdoc_trim_consecutive_blank_line_separation)
+  26) src/Dto/ContactListFiltersDto.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim, blank_lines_before_namespace, phpdoc_trim_consecutive_blank_line_separation)
+  27) src/Service/UserServiceInterface.php (no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_trim, no_unused_imports, blank_lines_before_namespace, phpdoc_trim_consecutive_blank_line_separation, phpdoc_align)
+  28) src/Service/TagServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim, blank_lines_before_namespace, phpdoc_trim_consecutive_blank_line_separation)
+  29) src/Service/EventService.php (no_superfluous_phpdoc_tags, phpdoc_summary, trim_array_spaces, phpdoc_trim, blank_lines_before_namespace)
+  30) src/Service/CategoryService.php (class_attributes_separation)
+  31) src/Service/RegistrationServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  32) src/Service/UserService.php (no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_summary, yoda_style, phpdoc_trim, no_unused_imports)
+  33) src/Service/EventServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
+  34) src/Service/TagService.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  35) src/Service/ContactServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
+  36) src/Service/AvatarServiceInterface.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  37) src/Service/RegistrationService.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  38) src/Service/ContactService.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
+  39) src/Controller/ProfileController.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  40) src/Controller/RegistrationController.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  41) src/Controller/AvatarController.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  42) src/Controller/TagController.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  43) src/Controller/SecurityController.php (no_superfluous_phpdoc_tags, global_namespace_import, no_unused_imports, phpdoc_align)
+  44) src/Controller/EventController.php (phpdoc_to_comment, no_superfluous_phpdoc_tags, phpdoc_trim)
+  45) src/Controller/Admin/UserController.php (no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_trim, no_unused_imports, phpdoc_trim_consecutive_blank_line_separation)
+  46) src/Controller/DashboardController.php (no_superfluous_phpdoc_tags)
+  47) src/Controller/ContactController.php (no_superfluous_phpdoc_tags)
+  48) src/Repository/AvatarRepository.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  49) src/Repository/EventRepository.php (phpdoc_annotation_without_dot, no_superfluous_phpdoc_tags, global_namespace_import, phpdoc_trim, no_unused_imports)
+  50) src/Repository/TagRepository.php (no_superfluous_phpdoc_tags, phpdoc_trim)
+  51) src/Repository/ContactRepository.php (phpdoc_annotation_without_dot, no_superfluous_phpdoc_tags, phpdoc_trim)
+  52) src/Repository/UserRepository.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
 
-Found 54 of 69 files that can be fixed in 0.934 seconds, 18.00 MB memory used
+Found 52 of 69 files that can be fixed in 0.920 seconds, 18.00 MB memory used
    1) tests/Unit/Form/Type/RegistrationTypeTest.php (yoda_style)
    2) tests/Unit/Form/Type/UserTypeTest.php (lambda_not_used_import, no_superfluous_phpdoc_tags, global_namespace_import, yoda_style, phpdoc_trim, no_unused_imports)
    3) tests/Unit/Entity/EventTest.php (global_namespace_import, no_unused_imports)
@@ -72,25 +70,32 @@ Found 54 of 69 files that can be fixed in 0.934 seconds, 18.00 MB memory used
   16) tests/Unit/Service/CategoryServiceTest.php (no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_separation, phpdoc_trim)
   17) tests/Unit/Service/UserServiceTest.php (global_namespace_import)
   18) tests/Unit/Controller/CategoryControllerTest.php (yoda_style)
-  19) tests/Unit/Controller/ProfileControllerTest.php (class_attributes_separation, class_definition, phpdoc_annotation_without_dot, no_superfluous_phpdoc_tags, phpdoc_summary, phpdoc_trim)
-  20) tests/Unit/Controller/TagControllerTest.php (global_namespace_import, no_trailing_comma_in_singleline, no_unused_imports)
-  21) tests/Unit/Controller/AvatarControllerTest.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
-  22) tests/Unit/Controller/SecurityControllerTest.php (class_attributes_separation, lambda_not_used_import, no_superfluous_phpdoc_tags, spaces_inside_parentheses, global_namespace_import, phpdoc_trim, no_unused_imports)
-  23) tests/Unit/Controller/Admin/UserControllerTest.php (class_attributes_separation, nullable_type_declaration, phpdoc_summary)
-  24) tests/Unit/Controller/RegistrationControllerTest.php (class_attributes_separation, lambda_not_used_import, no_superfluous_phpdoc_tags, spaces_inside_parentheses, phpdoc_trim)
-  25) tests/Unit/Controller/DashboardControllerTest.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
-  26) tests/Unit/Controller/ContactControllerTest.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
-  27) tests/Unit/Repository/UserRepositoryTest.php (class_attributes_separation, global_namespace_import, no_unused_imports)
-  28) tests/Unit/Repository/ContactRepositoryTest.php (align_multiline_comment, phpdoc_indent)
-  29) tests/Unit/Repository/EventRepositoryTest.php (global_namespace_import, no_unused_imports)
+  19) tests/Unit/Controller/TagControllerTest.php (global_namespace_import, no_trailing_comma_in_singleline, no_unused_imports)
+  20) tests/Unit/Controller/AvatarControllerTest.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
+  21) tests/Unit/Controller/Admin/UserControllerTest.php (class_attributes_separation, nullable_type_declaration, phpdoc_summary)
+  22) tests/Unit/Controller/DashboardControllerTest.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
+  23) tests/Unit/Controller/ContactControllerTest.php (class_attributes_separation, no_superfluous_phpdoc_tags, phpdoc_trim)
+  24) tests/Unit/Repository/UserRepositoryTest.php (class_attributes_separation, global_namespace_import, no_unused_imports)
+  25) tests/Unit/Repository/ContactRepositoryTest.php (align_multiline_comment, phpdoc_indent)
+  26) tests/Unit/Repository/EventRepositoryTest.php (global_namespace_import, no_unused_imports)
 
-Found 29 of 54 files that can be fixed in 1.636 seconds, 20.00 MB memory used
+Found 26 of 51 files that can be fixed in 1.446 seconds, 20.00 MB memory used
 WARNING: The Symfony standard uses 1 deprecated sniff
 -------------------------------------------------------------------------------
 -  Generic.Functions.CallTimePassByReference
    This sniff has been deprecated since v3.12.1 and will be removed in v4.0.0.
 
 Deprecated sniffs are still run, but will stop working at some point in the future.
+
+
+FILE: /home/wwwroot/app/src/Form/Type/TagType.php
+----------------------------------------------------------------------
+FOUND 1 ERROR AFFECTING 1 LINE
+----------------------------------------------------------------------
+ 19 | ERROR | [x] Expected 16 spaces after parameter type; 1 found
+----------------------------------------------------------------------
+PHPCBF CAN FIX THE 1 MARKED SNIFF VIOLATIONS AUTOMATICALLY
+----------------------------------------------------------------------
 
 
 FILE: /home/wwwroot/app/src/Security/Voter/UserVoter.php
@@ -155,7 +160,7 @@ FOUND 1 ERROR AFFECTING 1 LINE
  138 | ERROR | Use Yoda conditions when checking a variable against an expression to avoid an accidental assignment inside the condition statement.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-Time: 2.12 secs; Memory: 12MB
+Time: 1.95 secs; Memory: 12MB
 
  ------- -------- ---- ---------------------- 
   State   Domain   Id   Message Preview (en)  
@@ -166,7 +171,7 @@ Time: 2.12 secs; Memory: 12MB
  ------- -------- ---- ---------------------- ------------------------------- 
 
 [notice] Migrating up to DoctrineMigrations\Version20250618225349
-[notice] finished in 1985.3ms, used 24M memory, 20 migrations executed, 54 sql queries
+[notice] finished in 1811.7ms, used 24M memory, 20 migrations executed, 54 sql queries
 
  [OK] Successfully migrated to version: DoctrineMigrations\Version20250618225349                                        
 

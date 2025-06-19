@@ -1,8 +1,7 @@
 <?php
 
-/**
- * Tag fixtures.
- */
+/** * Tag fixtures. */
+
 namespace App\DataFixtures;
 
 use App\Entity\Tag;
@@ -11,23 +10,17 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-/**
- * Class TagFixtures.
- */
+/** * Class TagFixtures. */
 class TagFixtures extends AbstractBaseFixtures
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
-     * @param SluggerInterface $slugger
-     */
+     * @param SluggerInterface $slugger */
     public function __construct(private readonly SluggerInterface $slugger)
     {
     }
 
-    /**
-     * Load data.
-     */
+    /** * Load data. */
     public function loadData(): void
     {
         if (!$this->manager instanceof ObjectManager || !$this->faker instanceof Generator) {

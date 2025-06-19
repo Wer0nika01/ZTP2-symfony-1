@@ -2,9 +2,7 @@
 
 /** @noinspection PhpInconsistentReturnPointsInspection */
 
-/**
- * Category controller.
- */
+/** * Category controller.*/
 
 namespace App\Controller;
 
@@ -20,27 +18,22 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class CategoryController.
- */
+/** * Class CategoryController. */
 class CategoryController extends AbstractController
 {
-    /**
-     * Constructor.
+    /** * Constructor.
      *
      * @param CategoryServiceInterface $categoryService Category service
-     * @param TranslatorInterface      $translator      Translator
-     */
+     * @param TranslatorInterface      $translator      Translator */
     public function __construct(private readonly CategoryServiceInterface $categoryService, private readonly TranslatorInterface $translator)
     {
     }
-    /**
-     * Index action.
+
+    /** * Index action.
      *
      * @param int $page Page number
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/category', name: 'category_index', methods: 'GET')]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
@@ -48,13 +41,12 @@ class CategoryController extends AbstractController
 
         return $this->render('category/index.html.twig', ['pagination' => $pagination]);
     }
-    /**
-     * View action.
+
+    /** * View action.
      *
      * @param Category $category Category entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/category/{id}', name: 'category_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     public function view(Category $category): Response
     {
@@ -63,13 +55,12 @@ class CategoryController extends AbstractController
             ['category' => $category]
         );
     }
-    /**
-     * Create action.
+
+    /** * Create action.
      *
      * @param Request $request HTTP request
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/category/create', name: 'category_create', methods: 'GET|POST')]
     #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
@@ -94,14 +85,13 @@ class CategoryController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-    /**
-     * Edit action.
+
+    /** * Edit action.
      *
      * @param Request  $request  HTTP request
      * @param Category $category Category entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/category/{id}/edit', name: 'category_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Category $category): Response
@@ -135,14 +125,13 @@ class CategoryController extends AbstractController
             ]
         );
     }
-    /**
-     * Delete action.
+
+    /** * Delete action.
      *
      * @param Request  $request  HTTP request
      * @param Category $category Category entity
      *
-     * @return Response HTTP response
-     */
+     * @return Response HTTP response */
     #[Route('/category/{id}/delete', name: 'category_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Category $category): Response

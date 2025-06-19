@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Category fixtures.
- */
+/** * Category fixtures. */
 
 namespace App\DataFixtures;
 
@@ -11,20 +9,16 @@ use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 
-/**
- * Class CategoryFixtures.
+/** * Class CategoryFixtures.
  *
- * @psalm-suppress MissingConstructor
- */
+ * @psalm-suppress MissingConstructor */
 class CategoryFixtures extends AbstractBaseFixtures
 {
-    /**
-     * Load data.
+    /** * Load data.
      *
      * @psalm-suppress PossiblyNullPropertyFetch
      * @psalm-suppress PossiblyNullReference
-     * @psalm-suppress UnusedClosureParam
-     */
+     * @psalm-suppress UnusedClosureParam */
     public function loadData(): void
     {
         if (!$this->manager instanceof ObjectManager || !$this->faker instanceof Generator) {
