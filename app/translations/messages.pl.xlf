@@ -40,27 +40,27 @@
       </trans-unit>
       <trans-unit id="action.view">
         <source>action.view</source>
-        <target>Pokaż rekord</target>
+        <target>Podgląd</target>
       </trans-unit>
       <trans-unit id="action.back_to_list">
         <source>action.back_to_list</source>
         <target>Wróć do listy</target>
       </trans-unit>
-      <trans-unit id="title.task_details">
-        <source>title.task_details</source>
-        <target>Szczegóły tasku #%id%</target>
+      <trans-unit id="title.event_details">
+        <source>title.event_details</source>
+        <target>Szczegóły zdarzenia #%id%</target>
       </trans-unit>
-      <trans-unit id="title.task_list">
-        <source>title.task_list</source>
-        <target>Lista tasków</target>
+      <trans-unit id="title.event_list">
+        <source>title.event_list</source>
+        <target>Lista zdarzeń</target>
       </trans-unit>
-      <trans-unit id="label.created_at">
-        <source>label.created_at</source>
-        <target>Utworzono</target>
+      <trans-unit id="label.startTime">
+        <source>label.startTime</source>
+        <target>Początek</target>
       </trans-unit>
-      <trans-unit id="label.updated_at">
-        <source>label.updated_at</source>
-        <target>Zmodyfikowano</target>
+      <trans-unit id="label.endTime">
+        <source>label.endTime</source>
+        <target>Zakończenie</target>
       </trans-unit>
       <trans-unit id="label.category">
         <source>label.category</source>
@@ -106,25 +106,25 @@
         <source>title.category_create</source>
         <target>Stwórz kategorię</target>
       </trans-unit>
-      <trans-unit id="message.category_has_tasks">
-        <source>message.category_has_tasks</source>
-        <target>Ta kategoria ma zadania. Nie można jej usunąć.</target>
+      <trans-unit id="message.category_has_events">
+        <source>message.category_has_events</source>
+        <target>Ta kategoria ma wydarzenia. Nie można jej usunąć.</target>
       </trans-unit>
       <trans-unit id="title.category_delete_blocked">
         <source>title.category_delete_blocked</source>
-        <target>Nie możesz usunąc tej kategorii, ponieważ ma ona przypisane do niej zadania. Najpierw musisz usunąć te zadania.</target>
+        <target>Nie możesz usunąc tej kategorii, ponieważ ma ona przypisane do niej wydarzenia. Najpierw musisz usunąć te wydarzenia.</target>
       </trans-unit>
       <trans-unit id="title.category_view">
         <source>title.category_view</source>
         <target>Podgląd kategorii</target>
       </trans-unit>
-      <trans-unit id="message.category_contains_tasks">
-        <source>message.category_contains_tasks</source>
-        <target>Nie można jej usunąć, kategoria zawiera zadania.</target>
+      <trans-unit id="message.category_contains_events">
+        <source>message.category_contains_events</source>
+        <target>Nie można jej usunąć, kategoria zawiera wydarzenia.</target>
       </trans-unit>
-      <trans-unit id="title.task_delete">
-        <source>title.task_delete</source>
-        <target>Usuń zadanie</target>
+      <trans-unit id="title.event_delete">
+        <source>title.event_delete</source>
+        <target>Usuń wydarzenie</target>
       </trans-unit>
       <trans-unit id="message.deleted_successfully">
         <source>message.deleted_successfully</source>
@@ -154,9 +154,9 @@
         <source>title.tag_delete</source>
         <target>Usuń tag</target>
       </trans-unit>
-      <trans-unit id="title.task_edit">
-        <source>title.task_edit</source>
-        <target>Edytuj zadanie</target>
+      <trans-unit id="title.event_edit">
+        <source>title.event_edit</source>
+        <target>Edytuj wydarzenie</target>
       </trans-unit>
       <trans-unit id="label.no_tags">
         <source>label.no_tags</source>
@@ -230,17 +230,13 @@
         <source>label.new_password</source>
         <target>Nowe hasło</target>
       </trans-unit>
-      <trans-unit id="message.registration_successful">
-        <source>message.registration_successful</source>
-        <target>Rejestracja udana</target>
+      <trans-unit id="label.description">
+        <source>label.description</source>
+        <target>Opis</target>
       </trans-unit>
-      <trans-unit id="label.comment">
-        <source>label.comment</source>
-        <target>Komentarz</target>
-      </trans-unit>
-      <trans-unit id="label.no_comment">
-        <source>label.no_comment</source>
-        <target>Brak komentarza</target>
+      <trans-unit id="label.no_description">
+        <source>label.no_description</source>
+        <target>Brak opisu</target>
       </trans-unit>
       <trans-unit id="action.change_avatar">
         <source>action.change_avatar</source>
@@ -262,33 +258,305 @@
         <source>label.status</source>
         <target>Status</target>
       </trans-unit>
-      <trans-unit id="task.comment.length_max">
-        <source>task.comment.length_max</source>
+      <trans-unit id="event.comment.length_max">
+        <source>event.comment.length_max</source>
         <target>Komentarz jest za długi.</target>
       </trans-unit>
       <trans-unit id="label.none">
         <source>label.none</source>
         <target>Brak</target>
       </trans-unit>
-      <trans-unit id="title.task_create">
-        <source>title.task_create</source>
-        <target>Stwórz zadanie</target>
+      <trans-unit id="title.event_create">
+        <source>title.event_create</source>
+        <target>Stwórz wydarzenie</target>
       </trans-unit>
-      <trans-unit id="label.new">
-        <source>label.new</source>
-        <target>Nowe</target>
+      <trans-unit id="label.personal">
+        <source>label.personal</source>
+        <target>Osobiste</target>
       </trans-unit>
-      <trans-unit id="label.active">
-        <source>label.active</source>
-        <target>Aktywne</target>
+      <trans-unit id="label.important">
+        <source>label.important</source>
+        <target>Ważne</target>
       </trans-unit>
-      <trans-unit id="label.done">
-        <source>label.done</source>
-        <target>Zakończone</target>
+      <trans-unit id="label.work">
+        <source>label.work</source>
+        <target>Praca</target>
       </trans-unit>
-      <trans-unit id="label.canceled">
-        <source>label.canceled</source>
-        <target>Przerwane</target>
+      <trans-unit id="label.location">
+        <source>label.location</source>
+        <target>Lokalizacja</target>
+      </trans-unit>
+      <trans-unit id="label.isAllDay">
+        <source>label.isAllDay</source>
+        <target>Czy cały dzień?</target>
+      </trans-unit>
+      <trans-unit id="label.no">
+        <source>label.no</source>
+        <target>Nie</target>
+      </trans-unit>
+      <trans-unit id="label.yes">
+        <source>label.yes</source>
+        <target>Tak</target>
+      </trans-unit>
+      <trans-unit id="title.contact_list">
+        <source>title.contact_list</source>
+        <target>Lista kontaktów</target>
+      </trans-unit>
+      <trans-unit id="label.firstName">
+        <source>label.firstName</source>
+        <target>Imię</target>
+      </trans-unit>
+      <trans-unit id="label.lastName">
+        <source>label.lastName</source>
+        <target>Nazwisko</target>
+      </trans-unit>
+      <trans-unit id="label.company">
+        <source>label.company</source>
+        <target>Firma</target>
+      </trans-unit>
+      <trans-unit id="label.jobTitle">
+        <source>label.jobTitle</source>
+        <target>Zawód</target>
+      </trans-unit>
+      <trans-unit id="title.contact_details">
+        <source>title.contact_details</source>
+        <target>Szczegóły kontaktu</target>
+      </trans-unit>
+      <trans-unit id="label.phone">
+        <source>label.phone</source>
+        <target>Telefon</target>
+      </trans-unit>
+      <trans-unit id="label.address">
+        <source>label.address</source>
+        <target>Adres</target>
+      </trans-unit>
+      <trans-unit id="label.notes">
+        <source>label.notes</source>
+        <target>Notatka</target>
+      </trans-unit>
+      <trans-unit id="label.author">
+        <source>label.author</source>
+        <target>Autor</target>
+      </trans-unit>
+      <trans-unit id="title.contact_edit">
+        <source>title.contact_edit</source>
+        <target>Edycja kontaktu</target>
+      </trans-unit>
+      <trans-unit id="title.contact_create">
+        <source>title.contact_create</source>
+        <target>Stwórz kontakt</target>
+      </trans-unit>
+      <trans-unit id="action.reset_filters">
+        <source>action.reset_filters</source>
+        <target>Resetuj filtry</target>
+      </trans-unit>
+      <trans-unit id="title.dashboard">
+        <source>title.dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="title.active_events">
+        <source>title.active_events</source>
+        <target>Aktywne zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="message.no_active_events">
+        <source>message.no_active_events</source>
+        <target>Brak aktywnych zdarzeń</target>
+      </trans-unit>
+      <trans-unit id="action.view_all_events">
+        <source>action.view_all_events</source>
+        <target>Zobacz wszytskie zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="title.upcoming_events">
+        <source>title.upcoming_events</source>
+        <target>Nadchodzące zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="action.edit_profile">
+        <source>action.edit_profile</source>
+        <target>Edytuj profil</target>
+      </trans-unit>
+      <trans-unit id="title.edit_profile">
+        <source>title.edit_profile</source>
+        <target>Edytuj profil</target>
+      </trans-unit>
+      <trans-unit id="message.profile_updated_successfully">
+        <source>message.profile_updated_successfully</source>
+        <target>Udalo się zedytować profil</target>
+      </trans-unit>
+      <trans-unit id="message.registration_successful">
+        <source>message.registration_successful</source>
+        <target>Udana rejestracja. Zaloguj się!</target>
+      </trans-unit>
+      <trans-unit id="label.filter_events">
+        <source>label.filter_events</source>
+        <target>Filtr zdarzeń</target>
+      </trans-unit>
+      <trans-unit id="label.filter_by_category">
+        <source>label.filter_by_category</source>
+        <target>Filtruj po kategorii</target>
+      </trans-unit>
+      <trans-unit id="label.filter_by_status">
+        <source>label.filter_by_status</source>
+        <target>Filtruj po statusie</target>
+      </trans-unit>
+      <trans-unit id="action.filter">
+        <source>action.filter</source>
+        <target>Filtruj</target>
+      </trans-unit>
+      <trans-unit id="label.created_at">
+        <source>label.created_at</source>
+        <target>Stworzono</target>
+      </trans-unit>
+      <trans-unit id="label.updated_at">
+        <source>label.updated_at</source>
+        <target>Zaktualizowano</target>
+      </trans-unit>
+      <trans-unit id="title.avatar_create">
+        <source>title.avatar_create</source>
+        <target>Stwórz avatar</target>
+      </trans-unit>
+      <trans-unit id="message.no_upcoming_events">
+        <source>message.no_upcoming_events</source>
+        <target>Brak nadchodzących zdarzeń</target>
+      </trans-unit>
+      <trans-unit id="title.tag_details">
+        <source>title.tag_details</source>
+        <target>Szczegoły tagu</target>
+      </trans-unit>
+      <trans-unit id="label.filter_contacts">
+        <source>label.filter_contacts</source>
+        <target>Filtr kontaktów</target>
+      </trans-unit>
+      <trans-unit id="nav.dashboard">
+        <source>nav.dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="nav.events">
+        <source>nav.events</source>
+        <target>Zdarzenia</target>
+      </trans-unit>
+      <trans-unit id="nav.contacts">
+        <source>nav.contacts</source>
+        <target>Kontakty</target>
+      </trans-unit>
+      <trans-unit id="nav.categories">
+        <source>nav.categories</source>
+        <target>Kategorie</target>
+      </trans-unit>
+      <trans-unit id="nav.tags">
+        <source>nav.tags</source>
+        <target>Tagi</target>
+      </trans-unit>
+      <trans-unit id="nav.admin">
+        <source>nav.admin</source>
+        <target>Admin</target>
+      </trans-unit>
+      <trans-unit id="nav.manage_users">
+        <source>nav.manage_users</source>
+        <target>Zarządzaj użytkownikami</target>
+      </trans-unit>
+      <trans-unit id="nav.profile">
+        <source>nav.profile</source>
+        <target>Profil</target>
+      </trans-unit>
+      <trans-unit id="nav.change_password">
+        <source>nav.change_password</source>
+        <target>Zmień hasło</target>
+      </trans-unit>
+      <trans-unit id="title.user">
+        <source>title.user</source>
+        <target>Użytkownicy</target>
+      </trans-unit>
+      <trans-unit id="label.roles">
+        <source>label.roles</source>
+        <target>Role</target>
+      </trans-unit>
+      <trans-unit id="title.user_details">
+        <source>title.user_details</source>
+        <target>Szczegóły użytkownika</target>
+      </trans-unit>
+      <trans-unit id="title.edit_user">
+        <source>title.edit_user</source>
+        <target>Edytuj użytkownika</target>
+      </trans-unit>
+      <trans-unit id="role.user">
+        <source>role.user</source>
+        <target>Użytkownik</target>
+      </trans-unit>
+      <trans-unit id="role.admin">
+        <source>role.admin</source>
+        <target>Admin</target>
+      </trans-unit>
+      <trans-unit id="title.delete_user">
+        <source>title.delete_user</source>
+        <target>Usuń użytkownika</target>
+      </trans-unit>
+      <trans-unit id="message.cannot_delete_last_admin">
+        <source>message.cannot_delete_last_admin</source>
+        <target>Nie można usunąć ostatniego admina.</target>
+      </trans-unit>
+      <trans-unit id="security.account_blocked_message">
+        <source>security.account_blocked_message</source>
+        <target>Twoje konto zostało zablokowane. Skontaktuj się z administratorem.</target>
+      </trans-unit>
+      <trans-unit id="action.block">
+        <source>action.block</source>
+        <target>Zablokuj</target>
+      </trans-unit>
+      <trans-unit id="action.unblock">
+        <source>action.unblock</source>
+        <target>Odblokuj</target>
+      </trans-unit>
+      <trans-unit id="title.contact_delete">
+        <source>title.contact_delete</source>
+        <target>Usuń kontakt</target>
+      </trans-unit>
+      <trans-unit id="title.delete_avatar">
+        <source>title.delete_avatar</source>
+        <target>Usuń avatar</target>
+      </trans-unit>
+      <trans-unit id="message.category_contains_event">
+        <source>message.category_contains_event</source>
+        <target>Kategoria zawiera zdarzenia, nie może zostać usunięta</target>
+      </trans-unit>
+      <trans-unit id="message.category_delete_blocked">
+        <source>message.category_delete_blocked</source>
+        <target>Usunięcie kategorii zablokowane</target>
+      </trans-unit>
+      <trans-unit id="message.form_error">
+        <source>message.form_error</source>
+        <target>Błąd formularza</target>
+      </trans-unit>
+      <trans-unit id="message.already_logged_in_as">
+        <source>message.already_logged_in_as</source>
+        <target>Już zalogowany</target>
+      </trans-unit>
+      <trans-unit id="error.email_exists">
+        <source>error.email_exists</source>
+        <target>Email już istnieje</target>
+      </trans-unit>
+      <trans-unit id="flash.user_saved">
+        <source>flash.user_saved</source>
+        <target>Użytkownik zapisany</target>
+      </trans-unit>
+      <trans-unit id="flash.user_blocked">
+        <source>flash.user_blocked</source>
+        <target>Użytkownik zablokowany</target>
+      </trans-unit>
+      <trans-unit id="flash.user_unblocked">
+        <source>flash.user_unblocked</source>
+        <target>Użytkownik odblokowany</target>
+      </trans-unit>
+      <trans-unit id="label.user_avatar">
+        <source>label.user_avatar</source>
+        <target>Avatar użytkownika</target>
+      </trans-unit>
+      <trans-unit id="label.no_category">
+        <source>label.no_category</source>
+        <target>Brak kategorii</target>
+      </trans-unit>
+      <trans-unit id="title.category_delete">
+        <source>title.category_delete</source>
+        <target>Usuń kategorię</target>
       </trans-unit>
     </body>
   </file>

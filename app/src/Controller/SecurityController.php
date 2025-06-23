@@ -9,6 +9,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\Type\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +19,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 /**
  * Class SecurityController.
  */
@@ -27,17 +27,19 @@ class SecurityController extends AbstractController
     /**
      * Login action.
      *
-     * @param AuthenticationUtils $authenticationUtils Authentication utilities
-     * @param $passwordHasher
-     * @param $request
-     * @param $entityManager
+     * @param AuthenticationUtils         $authenticationUtils Authentication utilities
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @param Request                     $request
+     * @param EntityManagerInterface      $entityManager
+     * @param TranslatorInterface         $translator
+     *
      * @return Response HTTP response
      */
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils, UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         if ($this->getUser() instanceof UserInterface) {
-            return $this->redirectToRoute('task_index');
+            return $this->redirectToRoute('dashboard_index');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -78,6 +80,6 @@ class SecurityController extends AbstractController
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

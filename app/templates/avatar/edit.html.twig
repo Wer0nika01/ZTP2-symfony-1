@@ -10,8 +10,17 @@
 
     <button class="btn btn-primary" type="submit">{{ 'action.save'|trans }}</button>
     <a href="{{ path('app_profile') }}" class="btn btn-secondary">{{ 'action.cancel'|trans }}</a>
-    <button class="btn btn-danger">{{ 'action.delete'|trans }}</button>
 
     {{ form_end(form) }}
+
+    <hr>
+
+    <form method="post" action="{{ path('avatar_delete', {'id': avatar.id}) }}">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ avatar.id) }}"> {# Ważne: użyj unikalnego ID dla tokena, np. 'delete'~avatar.id #}
+        <button class="btn btn-danger">{{ 'action.delete'|trans }}</button>
+    </form>
+
+
 
 {% endblock %}

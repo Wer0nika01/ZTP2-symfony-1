@@ -11,6 +11,8 @@ use App\Entity\Enum\EventStatus;
 use App\Entity\Tag;
 use App\Entity\Event;
 use App\Entity\User;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
@@ -35,20 +37,27 @@ class EventFixtures extends AbstractBaseFixtures implements DependentFixtureInte
             return;
         }
 
-        $this->createMany(100, 'event', function (int $i) {
+        $this->createMany(100, 'event', function () {
             $event = new Event();
-            $event->setTitle($this->faker->sentence);
-            $event->setCreatedAt(
-                \DateTimeImmutable::createFromMutable(
-                    $this->faker->dateTimeBetween('-100 days', '-1 days')
-                )
-            );
-            $event->setUpdatedAt(
-                \DateTimeImmutable::createFromMutable(
-                    $this->faker->dateTimeBetween('-100 days', '-1 days')
-                )
-            );
-            $event->setComment($this->faker->realText(1024));
+            $event->setTitle($this->faker->sentence(mt_rand(2, 5)));
+
+            $event->setDescription($this->faker->realText(mt_rand(200, 1000)));
+
+            $startDateTimeString = $this->faker->dateTimeBetween('now', '+90 days')->format('Y-m-d H:i:s');
+            $event->setStartTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $startDateTimeString));
+
+            if ($this->faker->boolean(70)) {
+                $tempStart = DateTime::createFromFormat('Y-m-d H:i:s', $startDateTimeString);
+                $endDateTimeString = $this->faker->dateTimeBetween($tempStart, $tempStart->modify('+1 day'))->format('Y-m-d H:i:s');
+                $event->setEndTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $endDateTimeString));
+            }
+
+            if ($this->faker->boolean(60)) {
+                $event->setLocation($this->faker->address);
+            }
+
+            $event->setIsAllDay($this->faker->boolean(20));
+
             $category = $this->getRandomReference('category', Category::class);
             $event->setCategory($category);
 
@@ -66,12 +75,13 @@ class EventFixtures extends AbstractBaseFixtures implements DependentFixtureInte
             $author = $this->getRandomReference('user', User::class);
             $event->setAuthor($author);
 
-            /** @var int $statusValue */
-            $statusValue = $this->faker->numberBetween(1, 4); // Assuming your enum values are 1, 2, 3, 4
+            $statusValue = $this->faker->numberBetween(1, 3);
             $event->setStatus(EventStatus::from($statusValue));
 
             return $event;
         });
+
+        $this->manager->flush();
     }
 
     /**
@@ -80,7 +90,7 @@ class EventFixtures extends AbstractBaseFixtures implements DependentFixtureInte
      *
      * @return string[] of dependencies
      *
-     * @psalm-return array{0: CategoryFixtures::class}
+     * @psalm-return array{0: CategoryFixtures::class, 1: TagFixtures::class, 2: UserFixtures::class}
      */
     public function getDependencies(): array
     {

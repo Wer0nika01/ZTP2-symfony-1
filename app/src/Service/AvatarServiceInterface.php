@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Avatar service interface.
  */
@@ -22,5 +23,20 @@ interface AvatarServiceInterface
      * @param User         $user         User entity
      */
     public function create(UploadedFile $uploadedFile, Avatar $avatar, User $user): void;
-}
 
+    /**
+     * Update.
+     *
+     * @param UploadedFile $uploadedFile
+     * @param Avatar       $avatar
+     * @param User         $user
+     */
+    public function update(UploadedFile $uploadedFile, Avatar $avatar, User $user): void;
+
+    /**
+     * Delete.
+     *
+     * @param Avatar $avatar
+     */
+    public function delete(Avatar $avatar): void;
+}

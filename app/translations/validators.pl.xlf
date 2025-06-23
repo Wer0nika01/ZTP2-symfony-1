@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="message.enter_password">
+        <source>message.enter_password</source>
+        <target>Wprowadź hasło</target>
+      </trans-unit>
+      <trans-unit id="message.password_too_short">
+        <source>message.password_too_short</source>
+        <target>Hasło zbyt krótkie</target>
+      </trans-unit>
+      <trans-unit id="message.email_not_blank">
+        <source>message.email_not_blank</source>
+        <target>Email nie może być pusty</target>
+      </trans-unit>
+      <trans-unit id="message.invalid_email">
+        <source>message.invalid_email</source>
+        <target>Niepoprawny email</target>
+      </trans-unit>
+      <trans-unit id="event.description.length_max">
+        <source>event.description.length_max</source>
+        <target>Osiągnąłeś maksymalna długość dla opisu</target>
+      </trans-unit>
+      <trans-unit id="event.location.length_max">
+        <source>event.location.length_max</source>
+        <target>Osiągnąłeś maksymalna długość dla lokalizacji</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

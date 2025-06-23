@@ -1,70 +1,73 @@
 <?php
 
 /**
- * Task controller.
- */
+ * Event Controller.
+ * */
 
 namespace App\Controller;
 
-use App\Dto\EventListInputFiltersDto;
+use App\Dto\EventListFiltersDto;
 use App\Entity\Event;
 use App\Entity\User;
 use App\Form\Type\EventType;
-use App\Resolver\EventListInputFiltersDtoResolver;
 use App\Security\Voter\EventVoter;
-use App\Service\EventService;
 use App\Service\EventServiceInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
-use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Form\Type\EventListFilterType;
 
 /**
- * Class EventController.
+ * Class Event controller.
  */
-#[Route('/event')]
 class EventController extends AbstractController
 {
     /**
      * Constructor.
      *
-     * @param EventService $eventService Event service
+     * @param EventServiceInterface $eventService
+     * @param TranslatorInterface   $translator
      */
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
     }
 
     /**
-     * Index action.
+     * Index.
      *
-     * @param EventListInputFiltersDto $filters Input filters
-     * @param int                     $page    Page number
+     * @param Request $request
+     * @param int     $page
      *
-     * @return Response HTTP response
+     * @return Response
      */
-    #[Route(
-        name: 'event_index',
-        methods: 'GET'
-    )]
-    public function index(#[MapQueryString(resolver: EventListInputFiltersDtoResolver::class)] EventListInputFiltersDto $filters, #[MapQueryParameter] int $page = 1): Response
+    #[Route('/event', name: 'event_index', methods: 'GET')]
+    public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
     {
+        $filtersDto = new EventListFiltersDto(new ArrayCollection(), null, null);
+
+        $form = $this->createForm(EventListFilterType::class, $filtersDto, ['method' => 'GET']);
+        $form->handleRequest($request);
+
         /** @var User $user */
         $user = $this->getUser();
+
         $pagination = $this->eventService->getPaginatedList(
             $page,
             $user,
-            $filters
+            $filtersDto
         );
 
-        return $this->render('event/index.html.twig', ['pagination' => $pagination]);
+        return $this->render('event/index.html.twig', [
+            'pagination' => $pagination,
+            'form' => $form->createView(),
+        ]);
     }
-
     /**
      * View action.
      *
@@ -72,12 +75,7 @@ class EventController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}',
-        name: 'event_view',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    #[Route('/event/{id}', name: 'event_view', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted(EventVoter::VIEW, subject: 'event')]
     public function view(Event $event): Response
     {
@@ -86,7 +84,6 @@ class EventController extends AbstractController
             ['event' => $event]
         );
     }
-
     /**
      * Create action.
      *
@@ -94,11 +91,7 @@ class EventController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/create',
-        name: 'event_create',
-        methods: 'GET|POST'
-    )]
+    #[Route('/event/create', name: 'event_create', methods: 'GET|POST')]
     public function create(Request $request): Response
     {
 
@@ -125,27 +118,21 @@ class EventController extends AbstractController
             ['form' => $form->createView()]
         );
     }
-
     /**
      * Edit action.
      *
      * @param Request $request HTTP request
-     * @param Event $event Category entity
+     * @param Event   $event   Category entity
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}/edit',
-        name: 'event_edit',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET|PUT'
-    )]
-    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    #[Route('/event/{id}/edit', name: 'event_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
+    #[IsGranted(EventVoter::EDIT, subject: 'event')]
     public function edit(Request $request, Event $event): Response
     {
         $form = $this->createForm(EventType::class, $event, [
             'method' => 'PUT',
-            'action' => $this->generateUrl('task_edit', ['id' => $event->getId()]),
+            'action' => $this->generateUrl('event_edit', ['id' => $event->getId()]),
         ]);
 
         $form->handleRequest($request);
@@ -169,23 +156,16 @@ class EventController extends AbstractController
             ]
         );
     }
-
     /**
      * Delete action.
      *
      * @param Request $request
-     * @param Event $event
+     * @param Event   $event
      *
      * @return Response
      */
-    #[Route(
-        '/{id}/delete',
-        name: 'event_delete',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET|DELETE'
-    )]
-
-    #[IsGranted(EventVoter::VIEW, subject: 'event')]
+    #[Route('/event/{id}/delete', name: 'event_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
+    #[IsGranted(EventVoter::DELETE, subject: 'event')]
     public function delete(Request $request, Event $event): Response
     {
 
@@ -210,7 +190,7 @@ class EventController extends AbstractController
             'event/delete.html.twig',
             [
                 'form' => $form->createView(),
-                'category' => $event,
+                'event' => $event,
             ]
         );
     }

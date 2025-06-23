@@ -6,8 +6,8 @@
 
 {% block body %}
     {% set showActions = false %}
-    {% for event in pagination %}
-        {% if is_granted('event_VIEW', event) %}
+    {% for event in pagination.items %}
+        {% if is_granted('EVENT_VIEW', event) %}
             {% set showActions = true %}
         {% endif %}
     {% endfor %}
@@ -15,14 +15,40 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>{{ 'title.event_list'|trans }}</h1>
-            {% if app.request.query.get('categoryId') or app.request.query.get('tagId') or app.request.query.get('statusId') %}
-                <a href="{{ path('event_index') }}" class="btn btn-warning me-2">
-                    {{ 'action.reset_filters'|trans }}
+            <div>
+                {% if form.vars.value.category or form.vars.value.status or not form.vars.value.tags.empty %}
+                    <a href="{{ path('event_index') }}" class="btn btn-warning me-2">
+                        {{ 'action.reset_filters'|trans }}
+                    </a>
+                {% endif %}
+                <a href="{{ path('event_create') }}" class="btn btn-primary">
+                    {{ 'action.create'|trans }}
                 </a>
-            {% endif %}
-            <a href="{{ path('event_create') }}" class="btn btn-primary">
-                {{ 'action.create'|trans }}
-            </a>
+            </div>
+        </div>
+
+        <div class="mb-4 p-3 border rounded bg-light">
+            <h4>{{ 'label.filter_events'|trans }}</h4>
+            {{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
+            <div class="row g-3">
+                <div class="col-md-8 col-lg-6">
+                    <div class="mb-3">
+                        {{ form_row(form.category, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.status, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-select'}}) }}
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-6">
+                    {{ form_row(form.tags, {'label_attr': {'class': 'form-label'}, 'attr': {'class': 'form-check-inline'}}) }}
+                </div>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-info">
+                        {{ 'action.filter'|trans }}
+                    </button>
+                </div>
+            </div>
+            {{ form_end(form) }}
         </div>
 
         {% if pagination.items is empty %}
@@ -32,16 +58,17 @@
             } %}
         {% else %}
 
-        <div class="text-center mb-3">
-            {{ knp_pagination_render(pagination) }}
-        </div>
+            <div class="text-center mb-3">
+                {{ knp_pagination_render(pagination) }}
+            </div>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>{{ 'label.id'|trans }}</th>
-                    <th>{{ 'label.name'|trans }}</th>
-                    <th>{{ 'label.created_at'|trans }}</th>
-                    <th>{{ 'label.updated_at'|trans }}</th>
+                    <th>{{ 'label.title'|trans }}</th>
+                    <th>{{ 'label.description'|trans }}</th>
+                    <th>{{ 'label.startTime'|trans }}</th>
+                    <th>{{ 'label.endTime'|trans }}</th>
+                    <th>{{ 'label.location'|trans }}</th>
                     <th>{{ 'label.category'|trans }}</th>
                     <th>{{ 'label.tags'|trans }}</th>
                     <th>{{ 'label.status'|trans }}</th>
@@ -54,14 +81,18 @@
                 <tbody>
                 {% for event in pagination.items %}
                     <tr>
-                        <td>{{ event.id }}</td>
                         <td>{{ event.title }}</td>
-                        <td>{{ event.createdAt|format_date('long') }}</td>
-                        <td>{{ event.updatedAt|format_date('long') }}</td>
+                        <td>
+                            {{ event.description|length > 100 ? event.description|slice(0, 100) ~ '...' : event.description }}
+                        </td>
+                        <td>{{ event.startTime|format_datetime('medium', 'short', locale='pl') }}</td>
+                        <td>{{ event.endTime ? event.endTime|format_datetime('medium', 'short', locale='pl') : 'label.missing'|trans }}</td>
+                        <td>{{ event.location ?? 'label.missing'|trans }}</td>
                         <td>
                             {% if event.category is not null %}
                                 <a class="btn btn-sm btn-outline-primary"
-                                   href="{{ url('event_index', {'categoryId' : event.category.id, 'statusId' : event.status.value}) }}">
+                                   href="{{ path('event_index', {'event_filter[category]' : event.category.id}) }}"
+                                   title="Filtruj po kategorii: {{ event.category.title }}">
                                     {{ event.category.title }}
                                 </a>
                             {% else %}
@@ -72,8 +103,9 @@
                             {% if event.tags is not empty %}
                                 {% for tag in event.tags %}
                                     <a class="btn btn-sm btn-outline-secondary"
-                                       href="{{ url('event_index', {'tagId' : tag.id, 'statusId' : event.status.value}) }}">
-                                        {{ tag.title }}
+                                       href="{{ path('event_index', {'event_filter[tags][]' : tag.id}) }}"
+                                       title="Filtruj po tagu: {{ tag.name }}">
+                                        {{ tag.name }}
                                     </a>
                                 {% endfor %}
                             {% else %}
@@ -81,8 +113,9 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a class="btn btn-sm {{ event.status.getBadgeClass() }}"
-                               href="{{ url('event_index', {'statusId' : event.status.value, 'categoryId' : app.request.query.get('categoryId'), 'tagId' : app.request.query.get('tagId')}) }}">
+                            <a class=" btn {{ event.status.getButtonClass() }}"
+                               href="{{ path('event_index', {'event_filter[status]' : event.status.value}) }}"
+                               title="Filtruj po statusie: {{ event.status.getLabel()|trans }}">
                                 {{ event.status.getLabel()|trans }}
                             </a>
                         </td>
@@ -109,6 +142,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-    {% endif %}
+        {% endif %}
     </div>
 {% endblock %}

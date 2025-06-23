@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Event type.
  */
@@ -8,9 +9,11 @@ namespace App\Form\Type;
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
 use App\Entity\Event;
-use App\Form\DataTransformer\TagsDataTransformer;
+use App\Entity\Tag;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,15 +25,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EventType extends AbstractType
 {
-    /**
-     * Constructor.
-     *
-     * @param TagsDataTransformer $tagsDataTransformer Tags data transformer
-     */
-    public function __construct(private readonly TagsDataTransformer $tagsDataTransformer)
-    {
-    }
-
     /**
      * Builds the form.
      *
@@ -51,24 +45,67 @@ class EventType extends AbstractType
                 'label' => 'label.title',
                 'required' => true,
                 'attr' => ['max_length' => 255],
-            ]);
+            ]
+        );
+
         $builder->add(
-            'comment',
+            'description',
             TextareaType::class,
             [
                 'required' => false,
-                'label' => 'label.comment',
-                'attr' => ['rows' => 5,],
-            ]);
+                'label' => 'label.description',
+                'attr' => ['rows' => 7],
+            ]
+        );
+
+        $builder->add(
+            'startTime',
+            DateTimeType::class,
+            [
+                'label' => 'label.startTime',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'required' => true,
+            ]
+        );
+
+        $builder->add(
+            'endTime',
+            DateTimeType::class,
+            [
+                'label' => 'label.endTime',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'required' => false,
+            ]
+        );
+
+        $builder->add(
+            'location',
+            TextType::class,
+            [
+                'label' => 'label.location',
+                'required' => false,
+                'attr' => ['max_length' => 255],
+            ]
+        );
+
+        $builder->add(
+            'isAllDay',
+            CheckboxType::class,
+            [
+                'label' => 'label.isAllDay',
+                'required' => false,
+            ]
+        );
+
 
         $builder->add(
             'category',
             EntityType::class,
             [
                 'class' => Category::class,
-                'choice_label' => function ($category): string {
-                    return $category->getTitle();
-                },
+                'choice_label' => fn ($category): string => $category->getTitle(),
                 'label' => 'label.category',
                 'placeholder' => 'label.none',
                 'required' => true,
@@ -76,11 +113,15 @@ class EventType extends AbstractType
         );
         $builder->add(
             'tags',
-            TextType::class,
+            EntityType::class,
             [
+                'class' => Tag::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => true,
                 'label' => 'label.tags',
                 'required' => false,
-                'attr' => ['max_length' => 128],
+                'by_reference' => false,
             ]
         )
             ->add('status', EnumType::class, [
@@ -89,10 +130,6 @@ class EventType extends AbstractType
                 'label' => 'label.status',
                 'required' => true,
             ]);
-
-        $builder->get('tags')->addModelTransformer(
-            $this->tagsDataTransformer
-        );
     }
 
     /**

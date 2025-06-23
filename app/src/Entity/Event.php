@@ -8,11 +8,11 @@ namespace App\Entity;
 
 use App\Entity\Enum\EventStatus;
 use App\Repository\EventRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,85 +23,91 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Event
 {
     /**
-     * Category.
-     */
-    #[ORM\ManyToOne(targetEntity: Category::class, fetch: 'EXTRA_LAZY')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull]
-    private ?Category $category = null;
-
-    /**
      * Primary key.
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
     /**
      * Title.
      */
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 255)]
     private ?string $title = null;
 
     /**
-     * Created at.
-     *
-     * @var \DateTimeImmutable|null
+     * Description of the event.
      */
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Gedmo\Timestampable(on: 'create')]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 2000,
+        maxMessage: 'event.description.length_max'
+    )]
+    private ?string $description = null;
 
     /**
-     * Updated at.
-     *
-     * @var \DateTimeImmutable|null
+     * Start time of the event.
      */
-    #[ORM\Column(type: 'datetime_immutable')]
-    #[Gedmo\Timestampable(on: 'update')]
-    private ?\DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $startTime = null;
+
+    /**
+     * End time of the event.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $endTime = null;
+
+    /**
+     * Location of the event.
+     */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'event.location.length_max'
+    )]
+    private ?string $location = null;
+
+    /**
+     * Is this an all-day event?
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isAllDay = false;
+
+    /**
+     * Category.
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
 
     /**
      * Tags.
      *
      * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY', orphanRemoval: true)]
+    #[ORM\ManyToMany(targetEntity: Tag::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\InverseJoinColumn(nullable: true)]
     #[ORM\JoinTable(name: 'events_tags')]
     private Collection $tags;
 
     /**
      * Author.
      */
-    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EXTRA_LAZY')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank]
-    #[Assert\Type(User::class)]
-    private ?User $author;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $author = null;
 
     /**
-     * Comment
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\Length(
-        max: 1000,
-        maxMessage: 'event.comment.length_max'
-    )]
-    private ?string $comment = null;
-
-    /**
-     * Status
+     * Status.
      */
     #[ORM\Column(type: Types::INTEGER, enumType: EventStatus::class)]
-    private EventStatus $status = EventStatus::NEW;
-
+    private EventStatus $status;
 
     /**
-     * Constructor
-     *
+     * Constructor.
      */
     public function __construct()
     {
@@ -109,9 +115,9 @@ class Event
     }
 
     /**
-     * Getter for Id.
+     * Getter for id.
      *
-     * @return int|null Id
+     * @return int|null
      */
     public function getId(): ?int
     {
@@ -121,7 +127,7 @@ class Event
     /**
      * Getter for title.
      *
-     * @return string|null Title
+     * @return string|null
      */
     public function getTitle(): ?string
     {
@@ -132,54 +138,138 @@ class Event
      * Setter for title.
      *
      * @param string|null $title Title
+     *
+     * @return static
      */
-    public function setTitle(?string $title): void
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
+
+        return $this;
     }
 
     /**
-     * Getter for created at.
+     * Getter for description.
      *
-     * @return \DateTimeImmutable|null Created at
+     * @return string|null
      */
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getDescription(): ?string
     {
-        return $this->createdAt;
+        return $this->description;
     }
 
     /**
-     * Setter for created at.
+     * Setter for description.
      *
-     * @param \DateTimeImmutable|null $createdAt Created at
-     */
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Getter for updated at.
+     * @param string|null $description Description of the event
      *
-     * @return \DateTimeImmutable|null Updated at
+     * @return static
      */
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function setDescription(?string $description): static
     {
-        return $this->updatedAt;
+        $this->description = $description;
+
+        return $this;
     }
 
     /**
-     * Setter for updated at.
+     * Getter for start time.
      *
-     * @param \DateTimeImmutable|null $updatedAt Updated at
+     * @return DateTimeImmutable|null
      */
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
+    public function getStartTime(): ?DateTimeImmutable
     {
-        $this->updatedAt = $updatedAt;
+        return $this->startTime;
     }
 
     /**
-     * Getter for Category
+     * Setter for start time.
+     *
+     * @param DateTimeImmutable|null $startTime Start time of the event
+     *
+     * @return static
+     */
+    public function setStartTime(?DateTimeImmutable $startTime): static
+    {
+        $this->startTime = $startTime;
+
+        return $this;
+    }
+
+    /**
+     * Getter for end time.
+     *
+     * @return DateTimeImmutable|null
+     */
+    public function getEndTime(): ?DateTimeImmutable
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * Setter for end time.
+     *
+     * @param DateTimeImmutable|null $endTime End time of the event
+     *
+     * @return static
+     */
+    public function setEndTime(?DateTimeImmutable $endTime): static
+    {
+        $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    /**
+     * Getter for location.
+     *
+     * @return string|null Location
+     */
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    /**
+     * Setter for location.
+     *
+     * @param string|null $location Location
+     *
+     * @return static
+     */
+    public function setLocation(?string $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Getter for isAllDay.
+     *
+     * @return bool Is all day
+     */
+    public function isAllDay(): bool
+    {
+        return $this->isAllDay;
+    }
+
+    /**
+     * Setter for isAllDay.
+     *
+     * @param bool $isAllDay Is all day
+     *
+     * @return static
+     */
+    public function setIsAllDay(bool $isAllDay): static
+    {
+        $this->isAllDay = $isAllDay;
+
+        return $this;
+    }
+
+    /**
+     * Getter for category.
      *
      * @return Category|null
      */
@@ -187,31 +277,13 @@ class Event
     {
         return $this->category;
     }
-    /**
-     * Getter for comment.
-     *
-     * @return string|null Comment
-     */
-    public function getComment(): ?string
-    {
-        return $this->comment;
-    }
 
     /**
-     * Setter for comment.
+     * Setter for category.
      *
-     * @param string|null $comment Comment
-     */
-    public function setComment(?string $comment): void
-    {
-        $this->comment = $comment;
-    }
-
-    /**
-     * Setter for Category.
+     * @param Category|null $category Category
      *
-     * @param Category|null $category
-     * @return $this
+     * @return static
      */
     public function setCategory(?Category $category): static
     {
@@ -233,8 +305,9 @@ class Event
     /**
      * Add tag.
      *
-     * @param Tag $tag
-     * @return $this
+     * @param Tag $tag Tag to add
+     *
+     * @return static
      */
     public function addTag(Tag $tag): static
     {
@@ -246,10 +319,11 @@ class Event
     }
 
     /**
-     * Remove tags.
+     * Remove tag.
      *
-     * @param Tag $tag
-     * @return $this
+     * @param Tag $tag Tag to remove
+     *
+     * @return static
      */
     public function removeTag(Tag $tag): static
     {
@@ -258,11 +332,23 @@ class Event
         return $this;
     }
 
+    /**
+     * Getter for author.
+     *
+     * @return User|null
+     */
     public function getAuthor(): ?User
     {
         return $this->author;
     }
 
+    /**
+     * Setter for author.
+     *
+     * @param User|null $author Author
+     *
+     * @return static
+     */
     public function setAuthor(?User $author): static
     {
         $this->author = $author;
@@ -272,6 +358,8 @@ class Event
 
     /**
      * Getter for status.
+     *
+     * @return EventStatus
      */
     public function getStatus(): EventStatus
     {
@@ -280,6 +368,10 @@ class Event
 
     /**
      * Setter for status.
+     *
+     * @param EventStatus $status Status
+     *
+     * @return static
      */
     public function setStatus(EventStatus $status): static
     {

@@ -1,31 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'title.category_view'|trans }}{% endblock %}
+{% block title %}
+    {{ 'title.category_view'|trans({'%id%': category.id|default('')}) }}
+{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1>{{ 'title.category_view'|trans }}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>{{ 'title.category_view'|trans({'%id%': category.id|default('')}) }}</h1>
+            <div>
+                <a class="btn btn-outline-primary" href="{{ url('category_index') }}" title="{{ 'action.back_to_list'|trans }}">
+                    {{ 'action.back_to_list'|trans }}
+                </a>
+                {% if is_granted('CATEGORY_EDIT', category) %}
+                    <a class="btn btn-outline-success" href="{{ path('category_edit', { id: category.id }) }}" title="{{ 'action.edit'|trans }}">
+                        {{ 'action.edit'|trans }}
+                    </a>
+                {% endif %}
+                {% if is_granted('CATEGORY_DELETE', category) %}
+                    <a class="btn btn-outline-danger" href="{{ path('category_delete', { id: category.id }) }}" title="{{ 'action.delete'|trans }}">
+                        {{ 'action.delete'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
 
-        {% if not category.title %}
+        {% if category is defined and category is not null %}
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr>
+                    <th>{{ 'label.id'|trans }}</th>
+                    <td>{{ category.id }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.name'|trans }}</th>
+                    <td>{{ category.title }}</td>
+                </tr>
+                {% if category.createdAt is defined %}
+                    <tr>
+                        <th>{{ 'label.created_at'|trans }}</th>
+                        <td>{{ category.createdAt|format_datetime('medium', 'short', locale='pl') }}</td>
+                    </tr>
+                {% endif %}
+                {% if category.updatedAt is defined %}
+                    <tr>
+                        <th>{{ 'label.updated_at'|trans }}</th>
+                        <td>{{ category.updatedAt|format_datetime('medium', 'short', locale='pl') }}</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        {% else %}
             {% include 'default/_single_alert_message.html.twig' with {
                 type: 'warning',
-                message: 'message.missing_data'|trans
+                message: 'message.record_not_found'|trans
             } %}
-        {% else %}
-            <dl class="row">
-                <dt class="col-sm-2">{{ 'label.id'|trans }}</dt>
-                <dd class="col-sm-10">{{ category.id }}</dd>
-
-                <dt class="col-sm-2">{{ 'label.name'|trans }}</dt>
-                <dd class="col-sm-10">{{ category.title }}</dd>
-            </dl>
-
-            <a href="{{ path('category_edit', { id: category.id }) }}" class="btn btn-secondary">
-                {{ 'action.edit'|trans }}
-            </a>
-            <a href="{{ path('category_delete', { id: category.id }) }}" class="btn btn-danger">
-                {{ 'action.delete'|trans }}
-            </a>
         {% endif %}
     </div>
 {% endblock %}

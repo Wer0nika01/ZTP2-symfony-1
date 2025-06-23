@@ -1,27 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'title.user_details'|trans }}{% endblock %}
+{% block title %}
+    {{ 'title.user_details'|trans({'%id%': user.id|default('')}) }}
+{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1>{{ 'title.user_details'|trans }}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>{{ 'title.user_details'|trans({'%id%': user.id|default('')}) }}</h1>
+            <div>
+                <a class="btn btn-outline-primary" href="{{ path('admin_user_index') }}" title="{{ 'action.back_to_list'|trans }}">
+                    {{ 'action.back_to_list'|trans }}
+                </a>
+                {% if is_granted('USER_EDIT', user) %}
+                    <a class="btn btn-outline-success" href="{{ path('admin_user_edit', {id: user.id}) }}" title="{{ 'action.edit'|trans }}">
+                        {{ 'action.edit'|trans }}
+                    </a>
+                {% endif %}
+                {% if is_granted('USER_DELETE', user) %}
+                    <a class="btn btn-outline-danger" href="{{ path('admin_user_delete', {id: user.id}) }}" title="{{ 'action.delete'|trans }}">
+                        {{ 'action.delete'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
 
-        <dl class="row">
-            <dt class="col-sm-3">{{ 'label.id'|trans }}</dt>
-            <dd class="col-sm-9">{{ user.id }}</dd>
-
-            <dt class="col-sm-3">{{ 'label.email'|trans }}</dt>
-            <dd class="col-sm-9">{{ user.email }}</dd>
-
-            <dt class="col-sm-3">{{ 'label.roles'|trans }}</dt>
-            <dd class="col-sm-9">{{ user.roles|join(', ') }}</dd>
-        </dl>
-
-        <a href="{{ path('admin_user_index') }}" class="btn btn-secondary">
-            {{ 'action.back_to_list'|trans }}
-        </a>
-        <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary">
-            {{ 'action.edit'|trans }}
-        </a>
+        {% if user is defined and user is not null %}
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr>
+                    <th>{{ 'label.id'|trans }}</th>
+                    <td>{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.email'|trans }}</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.roles'|trans }}</th>
+                    <td>{{ user.roles|join(', ') }}</td>
+                </tr>
+                {% if user.firstName is defined and user.firstName is not empty %}
+                    <tr>
+                        <th>{{ 'label.first_name'|trans }}</th>
+                        <td>{{ user.firstName }}</td>
+                    </tr>
+                {% endif %}
+                {% if user.lastName is defined and user.lastName is not empty %}
+                    <tr>
+                        <th>{{ 'label.last_name'|trans }}</th>
+                        <td>{{ user.lastName }}</td>
+                    </tr>
+                {% endif %}
+                {% if user.avatar is defined and user.avatar is not null and user.avatar.filename is defined and user.avatar.filename|length %}
+                    <tr>
+                        <th>{{ 'label.avatar'|trans }}</th>
+                        <td>
+                            <img src="{{ asset(avatars_directory ~ user.avatar.filename) }}"
+                                 alt="Avatar użytkownika"
+                                 class="img-thumbnail" style="max-width: 150px; height: auto;">
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        {% else %}
+            {% include 'default/_single_alert_message.html.twig' with {
+                type: 'warning',
+                message: 'message.record_not_found'|trans
+            } %}
+        {% endif %}
     </div>
 {% endblock %}

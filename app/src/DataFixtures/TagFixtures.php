@@ -1,37 +1,32 @@
 <?php
 
 /**
- * Tag fixtures
+ * Tag fixtures.
  */
-
 namespace App\DataFixtures;
 
 use App\Entity\Tag;
+use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
- * Class EventFixtures.
- *
- * @psalm-suppress MissingConstructor
+ * Class TagFixtures.
  */
-
 class TagFixtures extends AbstractBaseFixtures
 {
     /**
-     * Constructor
+     * Constructor.
      *
      * @param SluggerInterface $slugger
      */
-    public function __construct(private readonly SluggerInterface $slugger) {}
+    public function __construct(private readonly SluggerInterface $slugger)
+    {
+    }
 
     /**
-     * Load data
-     *
-     * @psalm-suppress PossiblyNullPropertyFetch
-     * @psalm-suppress PossiblyNullReference
-     * @psalm-suppress UnusedClosureParam
+     * Load data.
      */
     public function loadData(): void
     {
@@ -39,22 +34,23 @@ class TagFixtures extends AbstractBaseFixtures
             return;
         }
 
-        $this->createMany(20, 'tag', function (int $i) {
+        $this->createMany(20, 'tag', function () {
             $tag = new Tag();
-            $tag->setTitle($this->faker->unique()->word);
-            $tag->setSlug($this->slugger->slug($tag->getTitle())->lower());
+            $tag->setName($this->faker->unique()->word);
+            $tag->setSlug($this->slugger->slug($tag->getName())->lower());
             $tag->setCreatedAt(
-                \DateTimeImmutable::createFromMutable(
+                DateTimeImmutable::createFromMutable(
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );
             $tag->setUpdatedAt(
-                \DateTimeImmutable::createFromMutable(
+                DateTimeImmutable::createFromMutable(
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );
 
             return $tag;
         });
+        $this->manager->flush();
     }
 }

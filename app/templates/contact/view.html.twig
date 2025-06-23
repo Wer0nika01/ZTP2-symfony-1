@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.contact_details'|trans({'%id%': contact.id|default('')}) }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{ 'title.contact_details'|trans({'%id%': contact.id|default('')}) }}</h1>
+
+        {% if contact is defined and contact is not null %}
+            <dl class="dl-horizontal">
+                <dt>{{ 'label.id'|trans }}</dt>
+                <dd>{{ contact.id }}</dd>
+
+                <dt>{{ 'label.firstName'|trans }}</dt>
+                <dd>{{ contact.firstName }}</dd>
+
+                <dt>{{ 'label.lastName'|trans }}</dt>
+                <dd>{{ contact.lastName }}</dd>
+
+                <dt>{{ 'label.email'|trans }}</dt>
+                <dd>{{ contact.email ?? 'label.missing'|trans }}</dd>
+
+                <dt>{{ 'label.phone'|trans }}</dt>
+                <dd>{{ contact.phone ?? 'label.missing'|trans }}</dd>
+
+                <dt>{{ 'label.address'|trans }}</dt>
+                <dd>{{ contact.address ?? 'label.missing'|trans }}</dd>
+
+                <dt>{{ 'label.company'|trans }}</dt>
+                <dd>{{ contact.company ?? 'label.missing'|trans }}</dd>
+
+                <dt>{{ 'label.jobTitle'|trans }}</dt>
+                <dd>{{ contact.jobTitle ?? 'label.missing'|trans }}</dd>
+
+                <dt>{{ 'label.notes'|trans }}</dt>
+                <dd>
+                    {% if contact.notes is not empty %}
+                        {{ contact.notes|markdown_to_html|raw }}
+                    {% else %}
+                        <em>{{ 'label.missing'|trans }}</em>
+                    {% endif %}
+                </dd>
+
+                <dt>{{ 'label.author'|trans }}</dt>
+                <dd>{{ contact.author.email ?? 'label.missing'|trans }}</dd>
+            </dl>
+
+            <p>
+                <a class="btn btn-secondary" href="{{ url('contact_index') }}" title="{{ 'action.back_to_list'|trans }}">
+                    {{ 'action.back_to_list'|trans }}
+                </a>
+                {% if is_granted('CONTACT_EDIT', contact) %}
+                    <a class="btn btn-success" href="{{ url('contact_edit', {id: contact.id}) }}" title="{{ 'action.edit'|trans }}">
+                        {{ 'action.edit'|trans }}
+                    </a>
+                {% endif %}
+                {% if is_granted('CONTACT_DELETE', contact) %}
+                    <a class="btn btn-danger" href="{{ url('contact_delete', {id: contact.id}) }}" title="{{ 'action.delete'|trans }}">
+                        {{ 'action.delete'|trans }}
+                    </a>
+                {% endif %}
+            </p>
+        {% else %}
+            <p>
+                {{ 'message.record_not_found'|trans }}
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -3,43 +3,48 @@
 {% block title %}{{ 'title.profile'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'title.profile'|trans }}</h1>
+    <div class="container mt-4">
+        <h1>{{ 'title.profile'|trans }}</h1>
 
-    <div class="row">
-        <!-- Kolumna z awatarem -->
-        <div class="col-md-3 text-center me-4" style="width: 150px;">
-            {% if user.avatar is defined and user.avatar.filename is defined and user.avatar.filename|length %}
-                <img src="{{ asset(avatars_directory ~ '/' ~ user.avatar.filename) }}"
-                     alt="avatar"
-                     class="img rounded-circle mb-2"
-                     style="width: 135px; height: 135px; object-fit: cover;">
+        <div class="row">
+            <div class="col-md-3 text-center me-4" style="width: 150px;">
+                {% if user.avatar is defined and user.avatar.filename is defined and user.avatar.filename|length %}
+                    <img src="{{ asset(avatars_directory ~ '/' ~ user.avatar.filename) }}"
+                         alt="avatar"
+                         class="img rounded-circle mb-2"
+                         style="width: 135px; height: 135px; object-fit: cover;">
 
-                <a href="{{ path('avatar_edit', {'id': user.avatar.id}) }}" class="btn btn-primary btn-sm">
-                    {{ 'action.change_avatar'|trans }}
-                </a>
-            {% else %}
-                <div class="d-flex justify-content-center align-items-center bg-light text-secondary rounded-circle mb-2"
-                     style="width: 150px; height: 150px; font-size: 4rem;">
-                    <i class="bi bi-person-circle fs-1"></i>
+                    <a href="{{ path('avatar_edit', {'id': user.avatar.id}) }}" class="btn btn-primary btn-sm">
+                        {{ 'action.change_avatar'|trans }}
+                    </a>
+                {% else %}
+                    <div class="d-flex justify-content-center align-items-center bg-light text-secondary rounded-circle mb-2"
+                         style="width: 150px; height: 150px; font-size: 4rem;">
+                        <img src="{{ asset('profile.png') }}" alt="Profil użytkownika" class="profile-icon">
+                    </div>
+
+                    <a href="{{ path('avatar_create') }}" class="btn btn-primary btn-sm">
+                        {{ 'action.change_avatar'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="col-md-9">
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><strong>{{ 'label.first_name'|trans }}:</strong> {{ user.firstName is defined and user.firstName ? user.firstName : 'label.missing'|trans }} </li>
+                    <li class="list-group-item"><strong>{{ 'label.last_name'|trans }}:</strong> {{ user.lastName is defined and user.lastName ? user.lastName : 'label.missing'|trans }} </li>
+                    <li class="list-group-item"><strong>{{ 'label.email'|trans }}:</strong> {{ user.email }}</li>
+                </ul>
+
+                <div class="mt-4">
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary me-2">
+                        {{ 'action.edit_profile'|trans }}
+                    </a>
+                    <a href="{{ path('app_change_password') }}" class="btn btn-secondary">
+                        {{ 'action.change_password'|trans }}
+                    </a>
                 </div>
-
-                <a href="{{ path('avatar_create') }}" class="btn btn-primary btn-sm">
-                    {{ 'action.change_avatar'|trans }}
-                </a>
-            {% endif %}
-        </div>
-
-        <!-- Kolumna z danymi użytkownika -->
-        <div class="col-md-9">
-            <ul class="list-group mb-3">
-                <li class="list-group-item"><strong>{{ 'label.first_name'|trans }}:</strong> {{ user.firstName is defined and user.firstName ? user.firstName : 'label.missing'|trans }} </li>
-                <li class="list-group-item"><strong>{{ 'label.last_name'|trans }}:</strong> {{ user.lastName is defined and user.lastName ? user.lastName : 'label.missing'|trans }} </li>
-                <li class="list-group-item"><strong>{{ 'label.email'|trans }}:</strong> {{ user.email }}</li>
-            </ul>
-
-            <a href="{{ path('app_change_password') }}" class="btn btn-warning">
-                {{ 'action.change_password'|trans }}
-            </a>
+            </div>
         </div>
     </div>
 {% endblock %}

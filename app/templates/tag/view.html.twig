@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title.tag_details'|trans({'%id%': tag.id}) }}
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>{{ 'title.tag_details'|trans({'%id%': tag.id}) }}</h1>
+            <div>
+                {% if is_granted('TAG_EDIT', tag) %}
+                    <a href="{{ url('tag_edit', {id: tag.id}) }}" class="btn btn-outline-success">
+                        {{ 'action.edit'|trans }}
+                    </a>
+                {% endif %}
+                {% if is_granted('TAG_DELETE', tag) %}
+                    <a href="{{ url('tag_delete', {id: tag.id}) }}" class="btn btn-outline-danger">
+                        {{ 'action.delete'|trans }}
+                    </a>
+                {% endif %}
+                <a href="{{ url('tag_index') }}" class="btn btn-outline-primary">
+                    {{ 'action.back_to_list'|trans }}
+                </a>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <tbody>
+            <tr>
+                <th>{{ 'label.id'|trans }}</th>
+                <td>{{ tag.id }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'label.title'|trans }}</th>
+                <td>{{ tag.title ?? tag.name }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'label.created_at'|trans }}</th>
+                <td>{{ tag.createdAt|date('Y-m-d H:i') }}</td>
+            </tr>
+            <tr>
+                <th>{{ 'label.updated_at'|trans }}</th>
+                <td>{{ tag.updatedAt|date('Y-m-d H:i') }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

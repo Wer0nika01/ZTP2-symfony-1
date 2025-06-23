@@ -1,29 +1,41 @@
 <?php
 
-// src/Service/UserService.php
+/**
+ * User Service
+ */
+
 namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use RuntimeException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-
+/**
+ * Class User service.
+ */
 class UserService implements UserServiceInterface
 {
-    private UserRepository $userRepository;
-    private EntityManagerInterface $em;
-    private PaginatorInterface $paginator;
-
-
-    public function __construct(UserRepository $userRepository, EntityManagerInterface $em, PaginatorInterface $paginator)
+    /**
+     * Constructor.
+     *
+     * @param UserRepository      $userRepository
+     * @param TranslatorInterface $translator
+     * @param PaginatorInterface  $paginator
+     */
+    public function __construct(private readonly UserRepository $userRepository, private readonly TranslatorInterface $translator, private readonly PaginatorInterface $paginator)
     {
-        $this->userRepository = $userRepository;
-        $this->em = $em;
-        $this->paginator = $paginator;
-
     }
+
+    /**
+     * Get paginated list.
+     *
+     * @param int $page
+     *
+     * @return PaginationInterface
+     */
     public function getPaginatedList(int $page): PaginationInterface
     {
         $queryBuilder = $this->userRepository->createQueryBuilder('u')
@@ -36,26 +48,52 @@ class UserService implements UserServiceInterface
         );
     }
 
+    /**
+     * Get all users.
+     *
+     * @return array|User[]
+     */
     public function getAllUsers(): array
     {
         return $this->userRepository->findAll();
     }
 
-    public function updateUser(User $user): void
-    {
-        $this->em->flush();
-    }
-
+    /**
+     * Delete.
+     *
+     * @param User $user
+     */
     public function delete(User $user): void
     {
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            $adminCount = $this->userRepository->countAdmins();
+
+            if ($adminCount <= 1) {
+                throw new RuntimeException($this->translator->trans('message.cannot_delete_last_admin'));
+            }
+        }
+
         $this->userRepository->delete($user);
     }
 
+    /**
+     * Save.
+     *
+     * @param User $user
+     */
     public function save(User $user): void
     {
         $this->userRepository->save($user);
     }
 
+    /**
+     * Is email unique?
+     *
+     * @param string   $email
+     * @param int|null $excludeUserId
+     *
+     * @return bool
+     */
     public function isEmailUnique(string $email, ?int $excludeUserId = null): bool
     {
         $qb = $this->userRepository->createQueryBuilder('u')
@@ -67,5 +105,27 @@ class UserService implements UserServiceInterface
         }
 
         return count($qb->getQuery()->getResult()) === 0;
+    }
+
+    /**
+     * Find a user by their ID.
+     *
+     * @param int $id User ID
+     *
+     * @return User|null User entity or null if not found
+     */
+    public function findOneById(int $id): ?User
+    {
+        return $this->userRepository->find($id);
+    }
+
+    /**
+     * toggle to block users
+     *
+     * @param User $user
+     */
+    public function toggleBlock(User $user): void
+    {
+        $this->userRepository->toggleBlock($user);
     }
 }

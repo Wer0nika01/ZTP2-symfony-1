@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Avatar service.
  */
@@ -73,8 +74,8 @@ class AvatarService implements AvatarServiceInterface
     {
         $filename = $avatar->getFilename();
 
-        if ($filename && $this->filesystem->exists($this->targetDirectory . '/' . $filename)) {
-            $this->filesystem->remove($this->targetDirectory . '/' . $filename);
+        if ($filename && $this->filesystem->exists($this->targetDirectory.'/'.$filename)) {
+            $this->filesystem->remove($this->targetDirectory.'/'.$filename);
         }
 
         $this->avatarRepository->delete($avatar);

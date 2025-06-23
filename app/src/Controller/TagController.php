@@ -1,7 +1,9 @@
 <?php
+
 /**
- * Tag controller
+ * Tag controller.
  */
+
 namespace App\Controller;
 
 use App\Entity\Tag;
@@ -9,18 +11,16 @@ use App\Form\Type\TagType;
 use App\Service\TagServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class TagController
+ * Class TagController.
  */
-#[Route('/tag')]
 class TagController extends AbstractController
 {
     /**
@@ -29,56 +29,45 @@ class TagController extends AbstractController
      * @param TagServiceInterface $tagService
      * @param TranslatorInterface $translator
      */
-    public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator) {
+    public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator)
+    {
     }
-
     /**
-     * Index action
+     * Index action.
      *
      * @param int $page Page number
+     *
      * @return Response HTTP response
      */
-    #[Route(
-        name: 'tag_index',
-        methods: ['GET']
-    )]
+    #[Route('/tag', name: 'tag_index', methods: ['GET'])]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
         $pagination = $this->tagService->getPaginatedList($page);
 
-        return $this->render('tag/index.html.twig', ['pagination' => $pagination,]);
+        return $this->render('tag/index.html.twig', ['pagination' => $pagination, ]);
     }
-
     /**
-     * View action
+     * View action.
      *
      * @param Tag $tag Tag entity
+     *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}',
-        name: 'tag_view',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET']
-    )]
+    #[Route('/tag/{id}', name: 'tag_view', requirements: ['id' => '[1-9]\d*'], methods: ['GET'])]
     public function view(Tag $tag): Response
     {
         return $this->render('tag/view.html.twig', [
             'tag' => $tag,
         ]);
     }
-
     /**
      * Create action.
      *
      * @param Request $request
+     *
      * @return Response
      */
-    #[Route(
-        '/create',
-        name: 'tag_create',
-        methods: ['GET', 'POST']
-    )]
+    #[Route('/tag/create', name: 'tag_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): Response
     {
@@ -101,20 +90,15 @@ class TagController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * Edit action.
      *
      * @param Request $request HTTP request
-     * @param Tag $tag Tag entity
+     * @param Tag     $tag     Tag entity
+     *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}/edit',
-        name: 'tag_edit',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET', 'PUT']
-    )]
+    #[Route('/tag/{id}/edit', name: 'tag_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, Tag $tag): Response
     {
@@ -134,20 +118,15 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
-
     /**
-     * Delete action
+     * Delete action.
      *
      * @param Request $request
-     * @param Tag $tag
+     * @param Tag     $tag
+     *
      * @return Response
      */
-    #[Route(
-        '/{id}/delete',
-        name: 'tag_delete',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET', 'DELETE']
-    )]
+    #[Route('/tag/{id}/delete', name: 'tag_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Tag $tag): Response
     {

@@ -1,19 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ 'title.dashboard'|trans }}{% endblock %}
 
 {% block body %}
-    <h1>{{ 'dashboard.title'|trans }}</h1>
+    <div class="container mt-4">
+        <h1>{{ 'title.dashboard'|trans }}</h1>
 
-    {% if events is empty %}
-        <p>{{ 'dashboard.no_upcoming_events'|trans }}</p>
-    {% else %}
-        <ul>
-            {% for event in events %}
-                <li>
-                    {{ event.title }} – {{ event.start|date('Y-m-d H:i') }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>{{ 'title.active_events'|trans }}</h2>
+                {% if activeEvents is empty %}
+                    <p>{{ 'message.no_active_events'|trans }}</p>
+                {% else %}
+                    <ul class="list-group">
+                        {% for event in activeEvents %}
+                            <li class="list-group-item">
+                                <a href="{{ path('event_view', {id: event.id}) }}">
+                                    <strong>{{ event.title }}</strong>
+                                </a>
+                                <br>
+                                {% if event.startTime %}{{ event.startTime|format_datetime('medium', 'short', locale='pl') }}{% endif %}
+                                {% if event.endTime %} - {{ event.endTime|format_datetime('medium', 'short', locale='pl') }}{% endif %}
+                                <br>
+                                <small class="text-muted">{{ event.category.title }}</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>{{ 'title.upcoming_events'|trans }}</h2>
+                {% if upcomingEvents is empty %}
+                    <p>{{ 'message.no_upcoming_events'|trans }}</p>
+                {% else %}
+                    <ul class="list-group">
+                        {% for event in upcomingEvents %}
+                            <li class="list-group-item">
+                                <a href="{{ path('event_view', {id: event.id}) }}">
+                                    <strong>{{ event.title }}</strong>
+                                </a>
+                                <br>
+                                {% if event.startTime %}{{ event.startTime|format_datetime('medium', 'short', locale='pl') }}{% endif %}
+                                <br>
+                                <small class="text-muted">{{ event.category.title }}</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="mt-2">
+                <a href="{{ path('event_index') }}" class="btn btn-sm btn-outline-primary">{{ 'action.view_all_events'|trans }}</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

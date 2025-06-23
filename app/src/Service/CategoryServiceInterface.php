@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Category service interface.
  */
@@ -44,13 +45,4 @@ interface CategoryServiceInterface
      * @return bool Result
      */
     public function canBeDeleted(Category $category): bool;
-
-    /**
-     * Find by Id
-     *
-     * @param int $id
-     * @return Category|null
-     */
-    public function findOneById(int $id): ?Category;
 }
-

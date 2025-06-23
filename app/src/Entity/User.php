@@ -13,7 +13,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
  * Class User.
  */
@@ -32,8 +31,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Email.
-     *
-     * @var string|null
      */
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank]
@@ -42,16 +39,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Roles.
-     *
-     * @var list<int, string>
      */
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
      * Hashed password.
-     *
-     * @var string|null
      */
     #[ORM\Column(type: 'string')]
     #[Assert\NotBlank]
@@ -61,9 +54,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Avatar $avatar = null;
 
     /**
+     * First name.
+     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $firstName = null;
+
+    /**
+     * Last name.
+     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $lastName = null;
+
+    /**
+     * Is blocked?
+     */
+    #[ORM\Column(type: 'boolean')]
+    private bool $isBlocked = false;
+
+    /**
      * Getter for id.
      *
-     * @return int|null Id
+     * @return int|null
      */
     public function getId(): ?int
     {
@@ -73,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for email.
      *
-     * @return string|null Email
+     * @return string|null
      */
     public function getEmail(): ?string
     {
@@ -112,7 +125,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = UserRole::ROLE_USER->value;
 
         return array_unique($roles);
@@ -133,7 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see PasswordAuthenticatedUserInterface
      *
-     * @return string|null Password
+     * @return string|null
      */
     public function getPassword(): ?string
     {
@@ -157,23 +169,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
+    /**
+     * Getter for avatar
+     *
+     * @return Avatar|null
+     */
     public function getAvatar(): ?Avatar
     {
         return $this->avatar;
     }
 
+    /**
+     * Setter for avatar.
+     *
+     * @param Avatar $avatar
+     *
+     * @return $this
+     */
     public function setAvatar(Avatar $avatar): static
     {
-        // set the owning side of the relation if necessary
         if ($avatar->getUser() !== $this) {
             $avatar->setUser($this);
         }
 
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * Getter for firstName.
+     *
+     * @return string|null
+     */
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * Setter for firstName.
+     *
+     * @param string|null $firstName First name
+     */
+    public function setFirstName(?string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * Getter for lastName.
+     *
+     * @return string|null
+     */
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Setter for lastName.
+     *
+     * @param string|null $lastName Last name
+     */
+    public function setLastName(?string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * Getter for is blocked?
+     *
+     * @return bool
+     */
+    public function getIsBlocked(): bool
+    {
+        return $this->isBlocked;
+    }
+
+    /**
+     * Setter for Is blocked?
+     *
+     * @param bool $isBlocked
+     *
+     * @return $this
+     */
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }

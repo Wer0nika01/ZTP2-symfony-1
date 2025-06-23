@@ -1,16 +1,19 @@
 <?php
 
+/**
+ * Tag Service.
+ */
+
 namespace App\Service;
 
 use App\Entity\Tag;
 use App\Repository\TagRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
 /**
- * Class TagService
+ * Class TagService.
  */
 class TagService implements TagServiceInterface
 {
@@ -18,11 +21,20 @@ class TagService implements TagServiceInterface
 
     /**
      * Constructor.
+     *
+     * @param TagRepository      $tagRepository
+     * @param PaginatorInterface $paginator
      */
-    public function __construct(private readonly TagRepository $tagRepository, private readonly PaginatorInterface $paginator) {}
+    public function __construct(private readonly TagRepository $tagRepository, private readonly PaginatorInterface $paginator)
+    {
+    }
 
     /**
      * Get paginated list.
+     *
+     * @param int $page
+     *
+     * @return PaginationInterface
      */
     public function getPaginatedList(int $page): PaginationInterface
     {
@@ -31,7 +43,7 @@ class TagService implements TagServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => ['tag.id', 'tag.createdAt', 'tag.updatedAt', 'tag.title'],
+                'sortFieldAllowList' => ['tag.id', 'tag.createdAt', 'tag.updatedAt', 'tag.name'],
                 'defaultSortFieldName' => 'tag.id',
                 'defaultSortDirection' => 'asc',
             ]
@@ -40,6 +52,8 @@ class TagService implements TagServiceInterface
 
     /**
      * Save entity.
+     *
+     * @param Tag $tag
      */
     public function save(Tag $tag): void
     {
@@ -48,6 +62,8 @@ class TagService implements TagServiceInterface
 
     /**
      * Delete entity.
+     *
+     * @param Tag $tag
      */
     public function delete(Tag $tag): void
     {
@@ -55,11 +71,15 @@ class TagService implements TagServiceInterface
     }
 
     /**
-     * Find by title.
+     * Find by name.
+     *
+     * @param string $name
+     *
+     * @return Tag|null
      */
-    public function findOneByTitle(string $title): ?Tag
+    public function findOneByName(string $name): ?Tag
     {
-        return $this->tagRepository->findOneByTitle($title);
+        return $this->tagRepository->findOneByName($name);
     }
 
     /**

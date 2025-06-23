@@ -5,48 +5,118 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{ 'title.event_details'|trans({'%id%': event.id|default('')}) }}</h1>
-    {% if event is defined and event|length %}
-        <dl class="dl-horizontal">
-            <dt>{{ 'label.id'|trans }}</dt>
-            <dd>{{ event.id }}</dd>
-            <dt>{{ 'label.created_at'|trans }}</dt>
-            <dd>{{ event.createdAt|format_date('long') }}</dd>
-            <dt>{{ 'label.updated_at'|trans }}</dt>
-            <dd>{{ event.updatedAt|format_date('long') }}</dd>
-            <dt>{{ 'label.title'|trans }}</dt>
-            <dd>{{  event.title }}</dd>
-            <dt>{{ 'label.comment'|trans }}</dt>
-            <dd>
-                {% if event.comment is not empty %}
-                    {{ event.comment|markdown_to_html }}
-                {% else %}
-                    <em>{{ 'label.no_comment'|trans }}</em>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1>{{ 'title.event_details'|trans({'%id%': event.id|default('')}) }}</h1>
+            <div>
+                <a class="btn btn-outline-primary" href="{{ url('event_index') }}" title="{{ 'action.back_to_list'|trans }}">
+                    {{ 'action.back_to_list'|trans }}
+                </a>
+                {% if is_granted('EVENT_EDIT', event) %}
+                    <a class="btn btn-outline-success" href="{{ url('event_edit', {id: event.id}) }}" title="{{ 'action.edit'|trans }}">
+                        {{ 'action.edit'|trans }}
+                    </a>
                 {% endif %}
-            </dd>
-            <dt>{{ 'label.category'|trans }}</dt>
-            <dd>{{  event.category.title }}</dd>
-            <dt>{{ 'label.tags'|trans }}</dt>
-            <dd>
-                {% if event.tags is not empty %}
-                    {% for tag in event.tags %}
-                        <span class="badge bg-secondary">{{ tag.title }}</span>{% if not loop.last %} {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <em>{{ 'label.no_tags'|trans }}</em>
+                {% if is_granted('EVENT_DELETE', event) %}
+                    <a class="btn btn-outline-danger" href="{{ url('event_delete', {id: event.id}) }}" title="{{ 'action.delete'|trans }}">
+                        {{ 'action.delete'|trans }}
+                    </a>
                 {% endif %}
-            </dd>
-            <dt>{{ 'label.status'|trans }}</dt>
-            <dd>{{ event.status.getLabel()|trans }}</dd>
-        </dl>
-        <p>
-            <a href="{{ url('event_index') }}" title="{{ 'action.back_to_list'|trans }}">
-                {{ 'action.back_to_list'|trans }}
-            </a>
-        </p>
-    {% else %}
-        <p>
-            {{ 'message.record_not_found'|trans }}
-        </p>
-    {% endif %}
+            </div>
+        </div>
+
+        {% if event is defined and event is not null %}
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr>
+                    <th>{{ 'label.id'|trans }}</th>
+                    <td>{{ event.id }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.title'|trans }}</th>
+                    <td>{{ event.title }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.description'|trans }}</th>
+                    <td>
+                        {% if event.description is not empty %}
+                            {{ event.description|markdown_to_html|raw }}
+                        {% else %}
+                            <em>{{ 'label.no_description'|trans }}</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.startTime'|trans }}</th>
+                    <td>{{ event.startTime|format_datetime('medium', 'short', locale='pl') }}</td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.endTime'|trans }}</th>
+                    <td>
+                        {% if event.endTime is not null %}
+                            {{ event.endTime|format_datetime('medium', 'short', locale='pl') }}
+                        {% else %}
+                            <em>{{ 'label.missing'|trans }}</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.location'|trans }}</th>
+                    <td>
+                        {% if event.location is not empty %}
+                            {{ event.location }}
+                        {% else %}
+                            <em>{{ 'label.missing'|trans }}</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.isAllDay'|trans }}</th>
+                    <td>
+                        {% if event.isAllDay %}
+                            {{ 'label.yes'|trans }}
+                        {% else %}
+                            {{ 'label.no'|trans }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.category'|trans }}</th>
+                    <td>
+                        {% if event.category is not null %}
+                            {{ event.category.title }}
+                        {% else %}
+                            <em>{{ 'label.no_category'|trans }}</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.tags'|trans }}</th>
+                    <td>
+                        {% if event.tags is not empty %}
+                            {% for tag in event.tags %}
+                                <span class="badge bg-secondary">{{ tag.name }}</span>{% if not loop.last %}, {% endif %}
+                            {% else %}
+                                <em>{{ 'label.no_tags'|trans }}</em>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ 'label.status'|trans }}</th>
+                    <td>
+                        <span class="btn {{ event.status.getButtonClass() }}">
+                            {{ event.status.getLabel()|trans }}
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        {% else %}
+            {% include 'default/_single_alert_message.html.twig' with {
+                type: 'warning',
+                message: 'message.record_not_found'|trans
+            } %}
+        {% endif %}
+    </div>
 {% endblock %}

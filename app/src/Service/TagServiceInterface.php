@@ -1,8 +1,8 @@
 <?php
+
 /**
  * Tag service interface.
  */
-
 namespace App\Service;
 
 use App\Entity\Tag;
@@ -14,42 +14,42 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 interface TagServiceInterface
 {
     /**
-     * Get paginated list.
+     * Get paginated list
      *
-     * @param int $page Page number
+     * @param int $page
+     *
      * @return PaginationInterface Paginated list
      */
     public function getPaginatedList(int $page): PaginationInterface;
 
     /**
-     * Save tag
+     * Save tag.
      *
      * @param Tag $tag
-     * @return void
      */
     public function save(Tag $tag): void;
 
     /**
-     * Delete tag
+     * Delete tag.
      *
      * @param Tag $tag
-     * @return void
      */
     public function delete(Tag $tag): void;
 
     /**
-     * Find by title.
+     * Find by Name.
      *
-     * @param string $title Tag title
+     * @param string $name
      *
      * @return Tag|null Tag entity
      */
-    public function findOneByTitle(string $title): ?Tag;
+    public function findOneByName(string $name): ?Tag;
 
     /**
-     * Find by Id
+     * Find by ID.
      *
-     * @param string $slug
+     * @param int $id
+     *
      * @return Tag|null
      */
     public function findOneById(int $id): ?Tag;

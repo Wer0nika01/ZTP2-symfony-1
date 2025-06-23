@@ -1,9 +1,19 @@
 <?php
+
+/**
+ * User Controller.
+ */
+
 namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\Type\UserType;
 use App\Service\UserServiceInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormError;
@@ -13,19 +23,32 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Bundle\SecurityBundle\Security as SecurityBundle;
 
-#[Route('/admin/user')]
+/**
+ * Class User controller.
+ */
 class UserController extends AbstractController
 {
-    private UserServiceInterface $userService;
-
-    public function __construct(UserServiceInterface $userService, TranslatorInterface $translator)
+    /**
+     * Construct.
+     *
+     * @param UserServiceInterface $userService
+     * @param TranslatorInterface  $translator
+     * @param SecurityBundle       $security
+     */
+    public function __construct(private readonly UserServiceInterface $userService, TranslatorInterface $translator, private readonly SecurityBundle $security)
     {
-        $this->userService = $userService;
-        $this->translator = $translator;
     }
 
-    #[Route('/', name: 'admin_user_index', methods: 'GET')]
+    /**
+     * Index.
+     *
+     * @param int $page
+     *
+     * @return Response
+     */
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/', name: 'admin_user_index', methods: 'GET')]
     #[IsGranted('ROLE_ADMIN')]
     public function index(#[MapQueryParameter] int $page = 1): Response
     {
@@ -36,7 +59,14 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'admin_user_view')]
+    /**
+     * Show.
+     *
+     * @param User $user
+     *
+     * @return Response
+     */
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}', name: 'admin_user_view')]
     #[IsGranted('ROLE_ADMIN')]
     public function show(User $user): Response
     {
@@ -45,13 +75,16 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(
-        '/{id}/edit',
-        name: 'admin_user_edit',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET', 'POST']
-    )]
-
+    /**
+     * Edit.
+     *
+     * @param Request             $request
+     * @param User                $user
+     * @param TranslatorInterface $translator
+     *
+     * @return Response
+     */
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/edit', name: 'admin_user_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, User $user, TranslatorInterface $translator): Response
     {
@@ -63,8 +96,9 @@ class UserController extends AbstractController
             if (!$this->userService->isEmailUnique($email, $user->getId())) {
                 $form->get('email')->addError(new FormError($translator->trans('error.email_exists')));
             } else {
-                $this->userService->updateUser($user);
-                $this->addFlash('success', $this->translator->trans('flash.user_saved'));
+                $this->userService->save($user);
+                $this->addFlash('success', $translator->trans('flash.user_saved'));
+
                 return $this->redirectToRoute('admin_user_index');
             }
         }
@@ -75,12 +109,18 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(
-        '/{id}/delete',
-        name: 'admin_user_delete',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: ['GET', 'DELETE']
-    )]
+    /**
+     * Delete.
+     *
+     * @param Request $request
+     * @param User    $user
+     *
+     * @return Response
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/delete', name: 'admin_user_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, User $user): Response
     {
@@ -92,14 +132,41 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->userService->delete($user);
+            try {
+                $currentUser = $this->security->getUser();
+                $isSelfDeletion = ($currentUser instanceof User && $currentUser->getId() === $user->getId());
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('flash.user_deleted')
-            );
+                $this->userService->delete($user);
 
-            return $this->redirectToRoute('admin_user_index');
+                $this->addFlash(
+                    'success',
+                    'flash.user_deleted'
+                );
+
+                if ($isSelfDeletion) {
+                    $this->container->get('security.token_storage')->setToken(null);
+                    $request->getSession()->invalidate();
+
+                    $this->userService->delete($user);
+
+                    return $this->redirectToRoute('app_logout');
+                }
+
+                return $this->redirectToRoute('admin_user_index');
+            } catch (NoResultException | NonUniqueResultException $e) {
+                $this->addFlash('danger', 'message.error_counting_admins');
+                error_log($e->getMessage());
+
+                return $this->redirectToRoute('admin_user_index');
+            } catch (RuntimeException $e) {
+                $this->addFlash(
+                    'danger',
+                    $e->getMessage()
+                );
+                error_log($e->getMessage());
+
+                return $this->redirectToRoute('admin_user_index');
+            }
         }
 
         return $this->render('admin/user/delete.html.twig', [
@@ -108,4 +175,27 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * Toggle block.
+     *
+     * @param User                $user
+     * @param TranslatorInterface $translator
+     *
+     * @return Response
+     */
+    #[Route('/admin/user/{id}/toggle-block', name: 'admin_user_toggle_block', requirements: ['id' => '[1-9]\d*'], methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function toggleBlock(User $user, TranslatorInterface $translator): Response
+    {
+        $this->userService->toggleBlock($user);
+
+        $this->addFlash(
+            'success',
+            $user->getIsBlocked()
+                ? $translator->trans('flash.user_blocked')
+                : $translator->trans('flash.user_unblocked')
+        );
+
+        return $this->redirectToRoute('admin_user_index', ['id' => $user->getId()]);
+    }
 }

@@ -15,12 +15,24 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+        <!-- Możesz dodać zmienną środowiskową dla bazy danych testowej, jeśli kiedyś wrócisz do testów funkcjonalnych/integracyjnych z SQLite w /tmp -->
+        <!-- <env name="DATABASE_URL" value="sqlite:////tmp/data.test.db"/> -->
     </php>
 
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
         </testsuite>
+        <!-- Dodana grupa testowa dla testów jednostkowych -->
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <!-- Możesz również dodać grupę dla testów funkcjonalnych, jeśli masz takie pliki w tests/Functional -->
+        <!--
+        <testsuite name="Functional">
+            <directory>tests/Functional</directory>
+        </testsuite>
+        -->
     </testsuites>
 
     <coverage processUncoveredFiles="true">
@@ -34,8 +46,15 @@
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <!-- Jeśli wcześniej miałeś DAMA Listener, usuń go lub upewnij się, że jest włączony tylko dla testów funkcjonalnych -->
+        <!-- <listener class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/> -->
     </listeners>
 
     <extensions>
+        <!-- Jeśli używasz DAMA Doctrine Test Bundle, możesz go włączyć jako rozszerzenie tutaj. -->
+        <!-- Jednak dla testów JEDNOSTKOWYCH DAMA nie jest potrzebna, ponieważ nie ma interakcji z bazą danych. -->
+        <!--
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
+        -->
     </extensions>
 </phpunit>

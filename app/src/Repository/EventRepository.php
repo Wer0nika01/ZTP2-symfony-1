@@ -1,47 +1,32 @@
 <?php
 
 /**
- * Event  repository.
+ * Event repository.
  */
 
 namespace App\Repository;
 
-use App\Dto\EventListFiltersDto;
-use App\Dto\EventListInputFiltersDto;
 use App\Entity\Category;
 use App\Entity\Enum\EventStatus;
-use App\Entity\Tag;
 use App\Entity\Event;
 use App\Entity\User;
+use App\Dto\EventListFiltersDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
+use DateTimeImmutable;
 
 /**
- * Class EventRepository.
- *
- * @extends ServiceEntityRepository<Event>
+ * Class Event repository.
  */
 class EventRepository extends ServiceEntityRepository
 {
     /**
-     * Items per page.
-     *
-     * Use constants to define configuration options that rarely change instead
-     * of specifying them in configuration files.
-     * See https://symfony.com/doc/current/best_practices.html#configuration
-     *
-     * @constant int
-     */
-    public const PAGINATOR_ITEMS_PER_PAGE = 10;
-
-    /**
      * Constructor.
      *
-     * @param ManagerRegistry $registry Manager registry
+     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -51,7 +36,7 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Query all records.
      *
-     * @param User               $author  User entity
+     * @param User                $author  User entity
      * @param EventListFiltersDto $filters Filters
      *
      * @return QueryBuilder Query builder
@@ -60,9 +45,9 @@ class EventRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('event')
             ->select(
-                'partial event.{id, createdAt, updatedAt, title, status}',
+                'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
                 'partial category.{id, title}',
-                'partial tags.{id, title}'
+                'partial tags.{id, name}'
             )
             ->join('event.category', 'category')
             ->leftJoin('event.tags', 'tags')
@@ -73,75 +58,117 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count events by category.
+     * Finds active events for a specific user.
+     * An event is considered active if its start time is in the past or now, and its end time is in the future or null.
      *
-     * @param Category $category Category
+     * @param User $author User entity
+     * @param int  $limit  Max number of results
      *
-     * @return int Number of events in category
+     * @return Event[]
+     */
+    public function findActiveEvents(User $author, int $limit = 5): array
+    {
+        $now = new DateTimeImmutable();
+
+        return $this->createBaseQueryBuilder($author)
+            ->andWhere('event.startTime <= :now')
+            ->andWhere('event.endTime IS NULL OR event.endTime >= :now')
+            ->setParameter('now', $now)
+            ->orderBy('event.startTime', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Finds upcoming events for a specific user.
+     * An event is considered upcoming if its start time is in the future.
+     *
+     * @param User $author User entity
+     * @param int  $limit  Max number of results
+     *
+     * @return Event[]
+     */
+    public function findUpcomingEvents(User $author, int $limit = 5): array
+    {
+        $now = new DateTimeImmutable();
+
+        return $this->createBaseQueryBuilder($author)
+            ->andWhere('event.startTime > :now')
+            ->setParameter('now', $now)
+            ->orderBy('event.startTime', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Counts the number of events associated with a given category.
+     *
+     * @param Category $category The category entity to count events for.
+     *
+     * @return int The number of events.
      *
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
     public function countByCategory(Category $category): int
     {
-        $qb = $this->createQueryBuilder('event');
+        $qb = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)')
+            ->andWhere('e.category = :category')
+            ->setParameter('category', $category);
 
-        return $qb->select($qb->expr()->countDistinct('event.id'))
-            ->where('event.category = :category')
-            ->setParameter('category', $category)
-            ->getQuery()
-            ->getSingleScalarResult();
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * Save entity.
+     * Create base query builder.
      *
-     * @param Event $event Event entity
-     * @return void
+     * @param User $author
+     *
+     * @return QueryBuilder
      */
-    public function save(Event $event): void
+    private function createBaseQueryBuilder(User $author): QueryBuilder
     {
-        $this->getEntityManager()->persist($event);
-        $this->getEntityManager()->flush();
+        return $this->createQueryBuilder('event')
+            ->select(
+                'partial event.{id, title, description, startTime, endTime, location, isAllDay, status}',
+                'partial category.{id, title}',
+                'partial tags.{id, name}'
+            )
+            ->join('event.category', 'category')
+            ->leftJoin('event.tags', 'tags')
+            ->andWhere('event.author = :author')
+            ->setParameter('author', $author);
     }
 
     /**
-     * Delete entity.
+     * Applies filters to the query builder for the list.
      *
-     * @param Event $event Event entity
-     */
-    public function delete(Event $event): void
-    {
-        $this->getEntityManager()->remove($event);
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Apply filters to paginated list.
-     *
-     * @param QueryBuilder       $queryBuilder Query builder
+     * @param QueryBuilder        $queryBuilder Query builder
      * @param EventListFiltersDto $filters      Filters
      *
      * @return QueryBuilder Query builder
      */
     private function applyFiltersToList(QueryBuilder $queryBuilder, EventListFiltersDto $filters): QueryBuilder
     {
-        if ($filters->category instanceof Category) {
-            $queryBuilder->andWhere('category = :category')
-                ->setParameter('category', $filters->category);
+        if ($filters->getCategory() instanceof Category) {
+            $queryBuilder->andWhere('category.id = :categoryId')
+                ->setParameter('categoryId', $filters->getCategory()->getId());
         }
 
-        if ($filters->tag instanceof Tag) {
-            $queryBuilder->andWhere('tags IN (:tag)')
-                ->setParameter('tag', $filters->tag);
-        }
-
-        if ($filters->eventStatus instanceof EventStatus) {
+        if ($filters->getStatus() instanceof EventStatus) {
             $queryBuilder->andWhere('event.status = :status')
-                ->setParameter('status', $filters->eventStatus->value, Types::INTEGER);
+                ->setParameter('status', $filters->getStatus());
+        }
+
+        if (!$filters->getTags()->isEmpty()) {
+            $queryBuilder->leftJoin('event.tags', 'filterTags')
+                ->andWhere($queryBuilder->expr()->in('filterTags.id', ':tag_ids'))
+                ->setParameter('tag_ids', $filters->getTags()->map(fn ($tag) => $tag->getId())->toArray());
         }
 
         return $queryBuilder;
     }
-
 }

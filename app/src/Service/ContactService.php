@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * Contact service
+ */
+
+namespace App\Service;
+
+use App\Entity\Contact;
+use App\Entity\User;
+use App\Repository\ContactRepository;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use App\Dto\ContactListFiltersDto;
+
+/**
+ * Class ContactService.
+ */
+class ContactService implements ContactServiceInterface
+{
+    public const PAGINATOR_ITEMS_PER_PAGE = 10;
+
+    /**
+     * Construct.
+     *
+     * @param ContactRepository  $contactRepository
+     * @param PaginatorInterface $paginator
+     */
+    public function __construct(private readonly ContactRepository $contactRepository, private readonly PaginatorInterface $paginator)
+    {
+    }
+
+    /**
+     * Get paginated list.
+     *
+     * @param int                   $page    Page number
+     * @param User                  $author  Current user
+     * @param ContactListFiltersDto $filters Filters DTO
+     *
+     * @return PaginationInterface PaginationInterface
+     */
+    public function getPaginatedList(int $page, User $author, ContactListFiltersDto $filters): PaginationInterface
+    {
+        return $this->paginator->paginate(
+            $this->contactRepository->queryAll($author, $filters),
+            $page,
+            self::PAGINATOR_ITEMS_PER_PAGE,
+            [
+                'sortFieldAllowList' => ['contact.id', 'contact.firstName', 'contact.lastName', 'contact.email', 'contact.company', 'contact.updatedAt', 'contact.tags'],
+                'defaultSortFieldName' => 'contact.id',
+                'defaultSortDirection' => 'asc',
+            ]
+        );
+    }
+
+    /**
+     * Save entity.
+     *
+     * @param Contact $contact Contact entity
+     */
+    public function save(Contact $contact): void
+    {
+        $this->contactRepository->save($contact, true);
+    }
+
+    /**
+     * Delete entity.
+     *
+     * @param Contact $contact Contact entity
+     */
+    public function remove(Contact $contact): void
+    {
+        $this->contactRepository->remove($contact, true);
+    }
+}

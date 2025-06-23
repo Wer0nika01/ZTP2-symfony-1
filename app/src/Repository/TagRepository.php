@@ -1,23 +1,22 @@
 <?php
 
 /**
- * Tag repository
+ * Tag repository.
  */
+
 namespace App\Repository;
 
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * Class TagRepository
+ * Class TagRepository.
  *
  * @extends ServiceEntityRepository<Tag>
  *
- * @method findOneByTitle(string $title)
+ * @method findOneByName(string $name)
  */
 class TagRepository extends ServiceEntityRepository
 {
@@ -30,7 +29,6 @@ class TagRepository extends ServiceEntityRepository
      *
      * @constant int
      */
-    public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
     /**
      * Constructor.
@@ -52,8 +50,11 @@ class TagRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('tag')
             ->orderBy('tag.updatedAt', 'DESC');
     }
+
     /**
      * Save entity.
+     *
+     * @param Tag $tag
      */
     public function save(Tag $tag): void
     {
@@ -63,11 +64,12 @@ class TagRepository extends ServiceEntityRepository
 
     /**
      * Delete entity.
+     *
+     * @param Tag $tag
      */
     public function delete(Tag $tag): void
     {
         $this->getEntityManager()->remove($tag);
         $this->getEntityManager()->flush();
     }
-
 }

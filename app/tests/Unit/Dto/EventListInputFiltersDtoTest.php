@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * Event list input filters dto Test.
+ */
+
+namespace App\Tests\Unit\Dto;
+
+use App\Dto\EventListInputFiltersDto;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class Event list input filters dto Test.
+ */
+class EventListInputFiltersDtoTest extends TestCase
+{
+    /**
+     * Test the constructor and ensure properties are correctly assigned.
+     *
+     * @dataProvider provideConstructorData
+     *
+     * @param int|null $categoryId
+     * @param int|null $tagId
+     * @param int|null $statusId
+     */
+    public function testConstructor(?int $categoryId, ?int $tagId, ?int $statusId): void
+    {
+        $dto = new EventListInputFiltersDto($categoryId, $tagId, $statusId);
+
+        $this->assertEquals($categoryId, $dto->categoryId);
+        $this->assertEquals($tagId, $dto->tagId);
+        $this->assertEquals($statusId, $dto->statusId);
+    }
+
+    /**
+     * Data provider for testConstructor.
+     * [categoryId, tagId, statusId]
+     *
+     * @return array
+     */
+    public function provideConstructorData(): array
+    {
+        return [
+            'all_null' => [null, null, null],
+            'all_provided' => [1, 2, 3],
+            'only_category_id' => [10, null, null],
+            'only_tag_id' => [null, 20, null],
+            'only_status_id' => [null, null, 30],
+            'category_and_tag' => [100, 200, null],
+            'category_and_status' => [100, null, 300],
+            'tag_and_status' => [null, 200, 300],
+            'zero_values' => [0, 0, 0],
+            'negative_values' => [-1, -2, -3],
+        ];
+    }
+}

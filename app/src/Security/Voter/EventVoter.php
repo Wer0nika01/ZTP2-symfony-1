@@ -67,9 +67,6 @@ final class EventVoter extends Voter
         if (!$user instanceof UserInterface) {
             return false;
         }
-        if (!$subject instanceof Event) {
-            return false;
-        }
 
         return match ($attribute) {
             self::EDIT => $this->canEdit($subject, $user),
@@ -82,8 +79,8 @@ final class EventVoter extends Voter
     /**
      * Checks if user can delete event.
      *
-     * @param Event          $event Event entity
-     * @param UserInterface $user User
+     * @param Event         $event Event entity
+     * @param UserInterface $user  User
      *
      * @return bool Result
      */
@@ -95,8 +92,8 @@ final class EventVoter extends Voter
     /**
      * Checks if user can edit event.
      *
-     * @param Event          $event Event entity
-     * @param UserInterface $user User
+     * @param Event         $event Event entity
+     * @param UserInterface $user  User
      *
      * @return bool Result
      */
@@ -108,8 +105,8 @@ final class EventVoter extends Voter
     /**
      * Checks if user can view event.
      *
-     * @param Event          $event Event entity
-     * @param UserInterface $user User
+     * @param Event         $event Event entity
+     * @param UserInterface $user  User
      *
      * @return bool Result
      */

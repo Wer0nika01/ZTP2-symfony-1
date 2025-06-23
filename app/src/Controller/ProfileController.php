@@ -1,35 +1,36 @@
 <?php
 
 /**
- * Profile Controller
+ * Profile Controller.
  */
 
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\Type\ChangePasswordType;
+use App\Form\Type\ProfileEditType;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Entity\User;
 
 /**
- * Class Profilecontroller
+ * Class ProfileController.
  */
-
 class ProfileController extends AbstractController
 {
     /**
-     * Profile
+     * Profile dashboard.
      *
      * @return Response
      */
-    #[Route('/profile', name: 'app_profile')]
+    #[Route('/profile', name: 'app_profile', methods: 'GET')]
     public function profile(): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
 
         return $this->render('profile/index.html.twig', [
@@ -38,16 +39,49 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * Change password
+     * Edit user profile data.
      *
-     * @param Request $request
-     * @param UserPasswordHasherInterface $passwordHasher
-     * @param EntityManagerInterface $entityManager
+     * @param Request                $request       HTTP Request
+     * @param EntityManagerInterface $entityManager Entity Manager
+     *
      * @return Response
      */
-    #[Route('/profile/change-password', name: 'app_change_password')]
-    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager
-    ): Response {
+    #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
+    public function editProfile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(ProfileEditType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'message.profile_updated_successfully');
+
+            return $this->redirectToRoute('app_profile');
+        }
+
+        return $this->render('profile/edit.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Change password.
+     *
+     * @param Request                     $request        HTTP Request
+     * @param UserPasswordHasherInterface $passwordHasher Password Hasher
+     * @param EntityManagerInterface      $entityManager  Entity Manager
+     *
+     * @return Response
+     */
+    #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
+    public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
         $user = $this->getUser();
 
         if (!$user instanceof PasswordAuthenticatedUserInterface) {

@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Entity\Enum;
+/**
+ * Event status.
+ */
 
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+namespace App\Entity\Enum;
 
 /**
  * Enum EventStatus.
- *
- * Represents the possible statuses for a event.
- * This is a Backed Enum with integer values.
  */
 enum EventStatus: int
 {
-    case NEW = 1;
-    case ACTIVE = 2;
-    case DONE = 3;
-    case CANCELED = 4;
+    case PERSONAL = 1;
+
+    case IMPORTANT = 2;
+
+    case WORK = 3;
 
     /**
      * Get the human-readable label for the enum case.
@@ -25,11 +24,10 @@ enum EventStatus: int
      */
     public function getLabel(): string
     {
-        return match($this) {
-            self::NEW => 'label.new',
-            self::ACTIVE => 'label.active',
-            self::DONE => 'label.done',
-            self::CANCELED => 'label.canceled',
+        return match ($this) {
+            self::PERSONAL => 'label.personal',
+            self::IMPORTANT => 'label.important',
+            self::WORK => 'label.work',
         };
     }
 
@@ -38,29 +36,27 @@ enum EventStatus: int
      *
      * @return string
      */
-    public function getBadgeClass(): string
+    public function getButtonClass(): string
     {
         return match ($this) {
-            self::NEW => 'btn-secondary',
-            self::ACTIVE => 'btn-primary',
-            self::DONE => 'btn-success',
-            self::CANCELED => 'btn-danger',
+            self::PERSONAL => 'btn-success',
+            self::IMPORTANT => 'btn-danger',
+            self::WORK => 'btn-primary',
         };
     }
-
 
     /**
      * Get a map of all enum cases to their human-readable labels.
      * Useful for dropdowns, forms, etc.
      *
-     * @return array<int, string>
+     * @return array[]
      */
     public static function getLabels(): array
     {
         return array_reduce(self::cases(), function (array $carry, self $item) {
             $carry[$item->value] = $item->getLabel();
+
             return $carry;
         }, []);
     }
-
 }
