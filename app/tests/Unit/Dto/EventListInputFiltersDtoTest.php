@@ -20,6 +20,8 @@ class EventListInputFiltersDtoTest extends TestCase
      * @param int|null $categoryId Category id
      * @param int|null $tagId      Tag id
      * @param int|null $statusId   Status id
+     *
+     * @dataProvider provideConstructorData
      */
     public function testConstructor(?int $categoryId, ?int $tagId, ?int $statusId): void
     {

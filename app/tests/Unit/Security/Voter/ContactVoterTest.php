@@ -64,6 +64,8 @@ class ContactVoterTest extends TestCase
      * @param bool   $expectedResult Expected result
      *
      * @throws \ReflectionException
+     *
+     * @dataProvider provideSupportsData
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
@@ -129,6 +131,8 @@ class ContactVoterTest extends TestCase
      * @param bool       $expectedVoteResult Expected result
      *
      * @throws \ReflectionException
+     *
+     * @dataProvider provideVoteOnAttributeData
      */
     public function testVoteOnAttribute(?array $loggedInUserRoles, bool $isOwner, string $attribute, bool $expectedVoteResult): void
     {

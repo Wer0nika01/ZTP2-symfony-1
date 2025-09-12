@@ -33,6 +33,8 @@ class UserRoleTest extends TestCase
      *
      * @param UserRole $enumCase      Enum case
      * @param string   $expectedLabel Expected label
+     *
+     * @dataProvider provideLabels
      */
     public function testLabel(UserRole $enumCase, string $expectedLabel): void
     {

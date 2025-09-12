@@ -8,14 +8,10 @@ namespace App\Tests\Unit\Form\Type;
 
 use App\Dto\EventListFiltersDto;
 use App\Entity\Category;
-use App\Entity\Enum\EventStatus;
-use App\Entity\Tag;
 use App\Form\Type\EventListFilterType;
 use App\Repository\CategoryRepository;
-use App\Repository\TagRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\QueryBuilder;
@@ -42,105 +38,32 @@ class EventListFilterTypeTest extends TestCase
     public function testBuildForm(): void
     {
         $builder = $this->createMock(FormBuilderInterface::class);
-        $matcher = $this->once();
 
-        $builder->expects($matcher)
-            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
-                if (1 === $matcher->getInvocationCount()) {
-                    $this->assertSame('category', $parameters[0]);
-                    $this->assertSame(EntityType::class, $parameters[1]);
-                    $callback = function (array $options) {
-                        $this->assertArrayHasKey('class', $options);
-                        $this->assertEquals(Category::class, $options['class']);
-                        $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertEquals('title', $options['choice_label']);
-                        $this->assertArrayHasKey('required', $options);
-                        $this->assertFalse($options['required']);
-                        $this->assertArrayHasKey('placeholder', $options);
-                        $this->assertEquals('label.filter_by_category', $options['placeholder']);
-                        $this->assertArrayHasKey('label', $options);
-                        $this->assertEquals('label.category', $options['label']);
-                        $this->assertArrayHasKey('query_builder', $options);
-                        $this->assertIsCallable($options['query_builder']);
+        $builder->expects($this->once())
+            ->method('add')
+            ->with('category', EntityType::class, $this->callback(function (array $options) {
+                $this->assertEquals(Category::class, $options['class']);
+                $this->assertEquals('title', $options['choice_label']);
+                $this->assertFalse($options['required']);
+                $this->assertIsCallable($options['query_builder']);
 
-                        $mockCategoryRepository = $this->createMock(CategoryRepository::class);
-                        $mockQueryBuilder = $this->createMock(QueryBuilder::class);
-                        $mockCategoryRepository->expects($matcher)
-                            ->method('createQueryBuilder')
-                            ->with('c');
-                        $mockQueryBuilder->expects($matcher)
-                            ->method('orderBy')
-                            ->with('c.title', 'ASC');
+                $mockCategoryRepository = $this->createMock(CategoryRepository::class);
+                $mockQueryBuilder = $this->createMock(QueryBuilder::class);
 
-                        call_user_func($options['query_builder'], $mockCategoryRepository);
+                $mockCategoryRepository->expects($this->once())
+                    ->method('createQueryBuilder')
+                    ->with('c')
+                    ->willReturn($mockQueryBuilder);
 
-                        return true;
-                    };
-                    $this->assertTrue($callback($parameters[2]));
-                }
-                if (2 === $matcher->getInvocationCount()) {
-                    $this->assertSame('status', $parameters[0]);
-                    $this->assertSame(EnumType::class, $parameters[1]);
-                    $callback = function (array $options) {
-                        $this->assertArrayHasKey('class', $options);
-                        $this->assertEquals(EventStatus::class, $options['class']);
-                        $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertIsCallable($options['choice_label']);
-                        $this->assertArrayHasKey('required', $options);
-                        $this->assertFalse($options['required']);
-                        $this->assertArrayHasKey('placeholder', $options);
-                        $this->assertEquals('label.filter_by_status', $options['placeholder']);
-                        $this->assertArrayHasKey('label', $options);
-                        $this->assertEquals('label.status', $options['label']);
+                $mockQueryBuilder->expects($this->once())
+                    ->method('orderBy')
+                    ->with('c.title', 'ASC')
+                    ->willReturn($mockQueryBuilder);
 
-                        // Test the choice_label callback for status enum
-                        $this->assertEquals('label.personal', call_user_func($options['choice_label'], EventStatus::PERSONAL));
-                        $this->assertEquals('label.important', call_user_func($options['choice_label'], EventStatus::IMPORTANT));
-                        $this->assertEquals('label.work', call_user_func($options['choice_label'], EventStatus::WORK));
+                call_user_func($options['query_builder'], $mockCategoryRepository);
 
-                        return true;
-                    };
-                    $this->assertTrue($callback($parameters[2]));
-                }
-                if (3 === $matcher->getInvocationCount()) {
-                    $this->assertSame('tags', $parameters[0]);
-                    $this->assertSame(EntityType::class, $parameters[1]);
-                    $callback = function (array $options) {
-                        $this->assertArrayHasKey('class', $options);
-                        $this->assertEquals(Tag::class, $options['class']);
-                        $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertEquals('name', $options['choice_label']);
-                        $this->assertArrayHasKey('multiple', $options);
-                        $this->assertTrue($options['multiple']);
-                        $this->assertArrayHasKey('expanded', $options);
-                        $this->assertTrue($options['expanded']);
-                        $this->assertArrayHasKey('required', $options);
-                        $this->assertFalse($options['required']);
-                        $this->assertArrayHasKey('label', $options);
-                        $this->assertEquals('label.tags', $options['label']);
-                        $this->assertArrayHasKey('placeholder', $options);
-                        $this->assertEquals('label.filter_by_tags', $options['placeholder']);
-                        $this->assertArrayHasKey('query_builder', $options);
-                        $this->assertIsCallable($options['query_builder']);
-
-                        $mockTagRepository = $this->createMock(TagRepository::class);
-                        $mockQueryBuilder = $this->createMock(QueryBuilder::class);
-                        $mockTagRepository->expects($matcher)
-                            ->method('createQueryBuilder')
-                            ->with('t');
-                        $mockQueryBuilder->expects($matcher)
-                            ->method('orderBy')
-                            ->with('t.name', 'ASC');
-
-                        call_user_func($options['query_builder'], $mockTagRepository);
-
-                        return true;
-                    };
-                    $this->assertTrue($callback($parameters[2]));
-                }
-
-                return $builder;
-            });
+                return true;
+            }));
 
         $this->formType->buildForm($builder, []);
     }

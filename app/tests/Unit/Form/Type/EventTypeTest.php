@@ -118,7 +118,7 @@ class EventTypeTest extends TestCase
                         $this->assertTrue($options['required']);
 
                         $mockCategory = $this->createMock(Category::class);
-                        $mockCategory->method('getTitle');
+                        $mockCategory->method('getTitle')->willReturn('Test Category Title');
                         $this->assertEquals('Test Category Title', call_user_func($options['choice_label'], $mockCategory));
 
                         return true;

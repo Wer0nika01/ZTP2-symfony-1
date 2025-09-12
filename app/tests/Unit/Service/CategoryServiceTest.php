@@ -119,6 +119,8 @@ class CategoryServiceTest extends TestCase
      *
      * @param int  $eventCount     Int event counter
      * @param bool $expectedResult Bool Expected result
+     *
+     * @dataProvider provideCanBeDeletedData
      */
     public function testCanBeDeleted(int $eventCount, bool $expectedResult): void
     {

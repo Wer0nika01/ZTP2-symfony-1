@@ -69,6 +69,8 @@ class UserVoterTest extends TestCase
      * @param mixed  $subject        Subject
      * @param bool   $expectedResult Expected result
      *
+     * @dataProvider provideSupportsData
+     *
      * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
@@ -129,6 +131,8 @@ class UserVoterTest extends TestCase
      * @param string      $attribute                          Attribute
      * @param int         $expectedVote                       Expected vote
      * @param int|null    $initialAdminCountForCanChangeRoles How many admins left
+     *
+     * @dataProvider provideVoteOnAttributeData
      */
     public function testVoteOnAttribute(?string $loggedInUserRole, bool $targetUserIsLoggedInUser, string $attribute, int $expectedVote, ?int $initialAdminCountForCanChangeRoles): void
     {
