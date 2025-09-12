@@ -157,18 +157,19 @@ class ContactRepositoryTest extends TestCase
         $matcher = $this->exactly(3);
         $queryBuilder->expects($matcher)
         ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame('contact.tags', $parameters[0]);
                 $this->assertSame('t', $parameters[1]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame('contact.author', $parameters[0]);
                 $this->assertSame('a', $parameters[1]);
             }
-            if ($matcher->getInvocationCount() === 3) {
+            if (3 === $matcher->getInvocationCount()) {
                 $this->assertSame('contact.tags', $parameters[0]);
                 $this->assertSame('filterTags', $parameters[1]);
             }
+
             return $queryBuilder;
         });
         $queryBuilder->expects($this->once())
@@ -185,18 +186,19 @@ class ContactRepositoryTest extends TestCase
 
         $queryBuilder->expects($matcher)
             ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $queryBuilder) {
-            if ($matcher->getInvocationCount() === 1) {
-                $this->assertSame('author', $parameters[0]);
-                $this->assertSame($author, $parameters[1]);
-                $this->assertSame(null, $parameters[2]);
-            }
-            if ($matcher->getInvocationCount() === 2) {
-                $this->assertSame('tag_ids', $parameters[0]);
-                $this->assertSame([1, 2], $parameters[1]);
-                $this->assertSame(null, $parameters[2]);
-            }
-            return $queryBuilder;
-        });
+                if (1 === $matcher->getInvocationCount()) {
+                    $this->assertSame('author', $parameters[0]);
+                    $this->assertSame($author, $parameters[1]);
+                    $this->assertSame(null, $parameters[2]);
+                }
+                if (2 === $matcher->getInvocationCount()) {
+                    $this->assertSame('tag_ids', $parameters[0]);
+                    $this->assertSame([1, 2], $parameters[1]);
+                    $this->assertSame(null, $parameters[2]);
+                }
+
+                return $queryBuilder;
+            });
 
 
         $result = $this->contactRepository->queryAll($author, $filters);

@@ -360,6 +360,6 @@ class UserControllerTest extends TestCase
 
         $controller->setContainer($containerMock);
 
-        $this->urlGenerator->method('generate')->willReturnCallback(fn($route, $params) => '/'.$route.'/'.implode('/', $params));
+        $this->urlGenerator->method('generate')->willReturnCallback(fn ($route, $params) => '/'.$route.'/'.implode('/', $params));
     }
 }

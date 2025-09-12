@@ -57,7 +57,7 @@ class UserTypeTest extends TypeTestCase
         $editedUser->setEmail('user@example.com');
         $this->setUserId($editedUser, 2);
 
-        $this->securityMock->method('isGranted')->willReturnCallback(fn() => true);
+        $this->securityMock->method('isGranted')->willReturnCallback(fn () => true);
 
         $tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $tokenMock = $this->createMock(TokenInterface::class);
@@ -102,6 +102,7 @@ class UserTypeTest extends TypeTestCase
             if ('ROLE_ADMIN' === $attribute) {
                 return true;
             }
+
             return !(UserVoter::CAN_CHANGE_ROLES === $attribute && $subject === $adminSelf);
         });
 
@@ -159,6 +160,9 @@ class UserTypeTest extends TypeTestCase
 
     /**
      * Set user Id.
+     *
+     * @param User $user User entity
+     * @param int  $id   Id
      */
     private function setUserId(User $user, int $id): void
     {

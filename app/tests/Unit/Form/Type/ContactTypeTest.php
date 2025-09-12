@@ -51,7 +51,7 @@ class ContactTypeTest extends TestCase
 
         $builder->expects($matcher)
         ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame('firstName', $parameters[0]);
                 $this->assertSame(TextType::class, $parameters[1]);
                 $this->assertSame([
@@ -60,7 +60,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 255],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame('lastName', $parameters[0]);
                 $this->assertSame(TextType::class, $parameters[1]);
                 $this->assertSame([
@@ -69,7 +69,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 255],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 3) {
+            if (3 === $matcher->getInvocationCount()) {
                 $this->assertSame('email', $parameters[0]);
                 $this->assertSame(EmailType::class, $parameters[1]);
                 $this->assertSame([
@@ -78,7 +78,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 255],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 4) {
+            if (4 === $matcher->getInvocationCount()) {
                 $this->assertSame('phone', $parameters[0]);
                 $this->assertSame(TelType::class, $parameters[1]);
                 $this->assertSame([
@@ -87,7 +87,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 50],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 5) {
+            if (5 === $matcher->getInvocationCount()) {
                 $this->assertSame('address', $parameters[0]);
                 $this->assertSame(TextareaType::class, $parameters[1]);
                 $this->assertSame([
@@ -96,7 +96,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 1000],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 6) {
+            if (6 === $matcher->getInvocationCount()) {
                 $this->assertSame('company', $parameters[0]);
                 $this->assertSame(TextType::class, $parameters[1]);
                 $this->assertSame([
@@ -105,7 +105,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 255],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 7) {
+            if (7 === $matcher->getInvocationCount()) {
                 $this->assertSame('jobTitle', $parameters[0]);
                 $this->assertSame(TextType::class, $parameters[1]);
                 $this->assertSame([
@@ -114,7 +114,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 255],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 8) {
+            if (8 === $matcher->getInvocationCount()) {
                 $this->assertSame('notes', $parameters[0]);
                 $this->assertSame(TextareaType::class, $parameters[1]);
                 $this->assertSame([
@@ -123,7 +123,7 @@ class ContactTypeTest extends TestCase
                     'attr' => ['maxlength' => 2000],
                 ], $parameters[2]);
             }
-            if ($matcher->getInvocationCount() === 9) {
+            if (9 === $matcher->getInvocationCount()) {
                 $this->assertSame('tags', $parameters[0]);
                 $this->assertSame(TextType::class, $parameters[1]);
                 $this->assertSame([
@@ -131,6 +131,7 @@ class ContactTypeTest extends TestCase
                     'required' => false,
                 ], $parameters[2]);
             }
+
             return $builder;
         });
 

@@ -56,7 +56,9 @@ class AvatarVoterTest extends TestCase
     /**
      * Test the supports' method.
      *
-     * @dataProvider provideSupportsData
+     * @param string $attribute      Attribute
+     * @param mixed  $subject        Subject
+     * @param bool   $expectedResult Expected result
      *
      * @throws \ReflectionException
      */
@@ -101,7 +103,9 @@ class AvatarVoterTest extends TestCase
     /**
      * Test the voteOnAttribute method.
      *
-     * @dataProvider provideVoteOnAttributeData
+     * @param UserInterface|null $loggedInUser Logged-in user
+     * @param User               $avatarOwner  Avatar owner
+     * @param bool               $expectedVote Expected vote
      *
      * @throws \ReflectionException
      */
