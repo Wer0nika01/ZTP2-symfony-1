@@ -19,20 +19,14 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class EventService implements EventServiceInterface
 {
-    /**
-     * Items per page.
-     * Use constants to define configuration values that rarely change.
-     *
-     * @constant int
-     */
     private const PAGINATOR_ITEMS_PER_PAGE = 10;
 
     /**
      * Constructor.
      *
-     * @param EventRepository        $eventRepository Event repository
-     * @param PaginatorInterface     $paginator       Paginator
-     * @param EntityManagerInterface $entityManager   Entity Manager
+     * @param EventRepository        $eventRepository
+     * @param PaginatorInterface     $paginator
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(private readonly EventRepository $eventRepository, private readonly PaginatorInterface $paginator, private readonly EntityManagerInterface $entityManager)
     {
@@ -62,9 +56,9 @@ class EventService implements EventServiceInterface
     }
 
     /**
-     * Save event.
+     * Save entity.
      *
-     * @param Event $event Event entity
+     * @param Event $event
      */
     public function save(Event $event): void
     {
@@ -75,9 +69,9 @@ class EventService implements EventServiceInterface
     }
 
     /**
-     * Delete event.
+     * Delete entity.
      *
-     * @param Event $event Event entity
+     * @param Event $event
      */
     public function delete(Event $event): void
     {
