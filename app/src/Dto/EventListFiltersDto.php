@@ -16,12 +16,21 @@ use Doctrine\Common\Collections\Collection;
  */
 class EventListFiltersDto
 {
+    /**
+     * Constructor.
+     *
+     * @param Collection       $tags     Tags collection
+     * @param Category|null    $category Category entity
+     * @param EventStatus|null $status   Status entity
+     */
     public function __construct(private Collection $tags, private ?Category $category = null, private ?EventStatus $status = null)
     {
     }
 
     /**
      * Setter for Category.
+     *
+     * @param Category|null $category Category entity
      *
      * @return $this
      */
@@ -32,13 +41,20 @@ class EventListFiltersDto
         return $this;
     }
 
+    /**
+     * Getter for Category.
+     *
+     * @return Category|null Category entity
+     */
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
     /**
-     * Setter for Status.
+     * Setter for status.
+     *
+     * @param EventStatus|null $status status entity
      *
      * @return $this
      */
@@ -49,13 +65,18 @@ class EventListFiltersDto
         return $this;
     }
 
+    /**
+     * Getter for Event Status.
+     *
+     * @return EventStatus|null Event status
+     */
     public function getStatus(): ?EventStatus
     {
         return $this->status;
     }
 
     /**
-     * Getter for Tags.
+     * Getter for tags.
      *
      * @return Collection<int, Tag>
      */
@@ -65,7 +86,7 @@ class EventListFiltersDto
     }
 
     /**
-     * Setter for Tags.
+     * Setter for tags.
      *
      * @param Collection<int, Tag> $tags
      *
@@ -79,7 +100,9 @@ class EventListFiltersDto
     }
 
     /**
-     * Add tags.
+     * Add tag to collection.
+     *
+     * @param Tag $tag Tag entity
      *
      * @return $this
      */
@@ -93,7 +116,9 @@ class EventListFiltersDto
     }
 
     /**
-     * Delete tags.
+     * Remove tag from collection.
+     *
+     * @param Tag $tag Tag entity
      *
      * @return $this
      */

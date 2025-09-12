@@ -30,6 +30,9 @@ class EventController extends AbstractController
 {
     /**
      * Constructor.
+     *
+     * @param EventServiceInterface $eventService Event service
+     * @param TranslatorInterface   $translator   Translator
      */
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
@@ -37,6 +40,11 @@ class EventController extends AbstractController
 
     /**
      * Index.
+     *
+     * @param Request $request HTTP Request
+     * @param int     $page    Page number
+     *
+     * @return Response HTTP response
      */
     #[Route('/event', name: 'event_index', methods: 'GET')]
     public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
@@ -154,6 +162,11 @@ class EventController extends AbstractController
 
     /**
      * Delete action.
+     *
+     * @param Request $request HTTP Request
+     * @param Event   $event   Event entity
+     *
+     * @return Response HTTP response
      */
     #[Route('/event/{id}/delete', name: 'event_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted(EventVoter::DELETE, subject: 'event')]

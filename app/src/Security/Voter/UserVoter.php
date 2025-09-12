@@ -94,10 +94,12 @@ class UserVoter extends Voter
     }
 
     /**
-     * Checks if the logged-in user can view the given user.
+     *  Checks if the logged-in user can view the given user.
      *
      * @param User          $userToOperateOn The user being viewed
      * @param UserInterface $loggedInUser    The currently logged-in user
+     *
+     * @return bool True or false
      */
     private function canView(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
@@ -109,6 +111,8 @@ class UserVoter extends Voter
      *
      * @param User          $userToOperateOn The user being edited
      * @param UserInterface $loggedInUser    The currently logged-in user
+     *
+     * @return bool True or false
      */
     private function canEdit(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
@@ -117,6 +121,8 @@ class UserVoter extends Voter
 
     /**
      * Checks if the logged-in user can delete the given user.
+     *
+     * @return bool True or false
      */
     private function canDelete(): bool
     {
@@ -129,8 +135,7 @@ class UserVoter extends Voter
      * @param User          $userToOperateOn The user whose roles are being changed
      * @param UserInterface $loggedInUser    The currently logged-in administrator
      *
-     * @throws NoResultException
-     * @throws NonUniqueResultException
+     * @return bool True or false
      */
     private function canAdminChangeRoles(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
@@ -147,6 +152,8 @@ class UserVoter extends Voter
      *
      * @param User          $userToOperateOn The user to block/unblock
      * @param UserInterface $loggedInUser    The currently logged-in user
+     *
+     * @return bool True or false
      */
     private function canBlock(User $userToOperateOn, UserInterface $loggedInUser): bool
     {

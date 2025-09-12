@@ -23,6 +23,12 @@ class RegistrationController extends AbstractController
 {
     /**
      * Register.
+     *
+     * @param Request                      $request             HTTP request
+     * @param RegistrationServiceInterface $registrationService Registration service
+     * @param AuthenticationUtils          $authenticationUtils Authentication
+     *
+     * @return Response HTTP response
      */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, RegistrationServiceInterface $registrationService, AuthenticationUtils $authenticationUtils): Response

@@ -18,7 +18,7 @@ class AvatarRepository extends ServiceEntityRepository
     /**
      * Constructor.
      *
-     * @param ManagerRegistry $registry
+     * @param ManagerRegistry $registry Registry manager
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -26,9 +26,9 @@ class AvatarRepository extends ServiceEntityRepository
     }
 
     /**
-     * Save avatars.
+     * Save avatar.
      *
-     * @param Avatar $avatar
+     * @param Avatar $avatar Avatar entity
      */
     public function save(Avatar $avatar): void
     {
@@ -37,9 +37,9 @@ class AvatarRepository extends ServiceEntityRepository
     }
 
     /**
-     * Delete avatars.
+     * Delete avatar.
      *
-     * @param Avatar $avatar
+     * @param Avatar $avatar Avatar entity
      */
     public function delete(Avatar $avatar): void
     {

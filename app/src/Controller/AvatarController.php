@@ -148,6 +148,11 @@ class AvatarController extends AbstractController
 
     /**
      * Delete action.
+     *
+     * @param Request $request HTTP Request
+     * @param Avatar  $avatar  Avatar entity
+     *
+     * @return Response HTTP response
      */
     #[IsGranted('DELETE', subject: 'avatar')]
     #[Route('/avatar/{id}/delete', name: 'avatar_delete', requirements: ['id' => '\d+'], methods: ['POST', 'DELETE'])]

@@ -18,6 +18,8 @@ class TagFixtures extends AbstractBaseFixtures
 {
     /**
      * Constructor.
+     *
+     * @param SluggerInterface $slugger Slugger
      */
     public function __construct(private readonly SluggerInterface $slugger)
     {

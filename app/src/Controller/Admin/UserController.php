@@ -31,6 +31,10 @@ class UserController extends AbstractController
 {
     /**
      * Construct.
+     *
+     * @param UserServiceInterface $userService User Service
+     * @param TranslatorInterface  $translator  Translator
+     * @param SecurityBundle       $security    Security bundle
      */
     public function __construct(private readonly UserServiceInterface $userService, TranslatorInterface $translator, private readonly SecurityBundle $security)
     {
@@ -38,6 +42,10 @@ class UserController extends AbstractController
 
     /**
      * Index.
+     *
+     * @param int $page Page number
+     *
+     * @return Response HTTP response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/', name: 'admin_user_index', methods: 'GET')]
     #[IsGranted('ROLE_ADMIN')]
@@ -52,6 +60,10 @@ class UserController extends AbstractController
 
     /**
      * Show.
+     *
+     * @param User $user User entity
+     *
+     * @return Response HTTP response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}', name: 'admin_user_view')]
     #[IsGranted('ROLE_ADMIN')]
@@ -64,6 +76,12 @@ class UserController extends AbstractController
 
     /**
      * Edit.
+     *
+     * @param Request             $request    HTTP Request
+     * @param User                $user       User entity
+     * @param TranslatorInterface $translator Translator
+     *
+     * @return Response HTTP response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/edit', name: 'admin_user_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -92,6 +110,11 @@ class UserController extends AbstractController
 
     /**
      * Delete.
+     *
+     * @param Request $request HTTP Request
+     * @param User    $user    User entity
+     *
+     * @return Response HTTP response
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -153,6 +176,11 @@ class UserController extends AbstractController
 
     /**
      * Toggle block.
+     *
+     * @param User                $user       User entity
+     * @param TranslatorInterface $translator Translator
+     *
+     * @return Response HTTP response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/toggle-block', name: 'admin_user_toggle_block', requirements: ['id' => '[1-9]\d*'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]

@@ -64,6 +64,8 @@ class Category
 
     /**
      * Getter for id.
+     *
+     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -72,6 +74,8 @@ class Category
 
     /**
      * Getter for title.
+     *
+     * @return string|null String title
      */
     public function getTitle(): ?string
     {
@@ -80,6 +84,8 @@ class Category
 
     /**
      * Setter for title.
+     *
+     * @param string|null $title Title
      */
     public function setTitle(?string $title): void
     {
@@ -88,6 +94,8 @@ class Category
 
     /**
      * Getter for created at.
+     *
+     * @return \DateTimeImmutable|null Date Time create at
      */
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -96,6 +104,8 @@ class Category
 
     /**
      * Setter for created at.
+     *
+     * @param \DateTimeImmutable|null $createdAt Create at
      */
     public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
@@ -104,6 +114,8 @@ class Category
 
     /**
      * Getter for updated at.
+     *
+     * @return \DateTimeImmutable|null Date Time updated at
      */
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
@@ -112,6 +124,8 @@ class Category
 
     /**
      * Setter for updated at.
+     *
+     * @param \DateTimeImmutable|null $updatedAt Updated at
      */
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
@@ -120,6 +134,8 @@ class Category
 
     /**
      * Getter for slug.
+     *
+     * @return string|null String slug
      */
     public function getSlug(): ?string
     {
@@ -128,6 +144,8 @@ class Category
 
     /**
      * Setter for slug.
+     *
+     * @param string $slug slug
      */
     public function setSlug(string $slug): void
     {
