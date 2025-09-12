@@ -8,7 +8,6 @@ namespace App\Service;
 
 use App\Entity\Tag;
 use App\Repository\TagRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 
@@ -22,8 +21,8 @@ class TagService implements TagServiceInterface
     /**
      * Constructor.
      *
-     * @param TagRepository      $tagRepository
-     * @param PaginatorInterface $paginator
+     * @param TagRepository      $tagRepository Tag repository
+     * @param PaginatorInterface $paginator     Paginator
      */
     public function __construct(private readonly TagRepository $tagRepository, private readonly PaginatorInterface $paginator)
     {
@@ -32,9 +31,9 @@ class TagService implements TagServiceInterface
     /**
      * Get paginated list.
      *
-     * @param int $page
+     * @param int $page Page number
      *
-     * @return PaginationInterface
+     * @return PaginationInterface Pagination interface
      */
     public function getPaginatedList(int $page): PaginationInterface
     {
@@ -51,9 +50,9 @@ class TagService implements TagServiceInterface
     }
 
     /**
-     * Save entity.
+     * Save tag.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      */
     public function save(Tag $tag): void
     {
@@ -61,9 +60,9 @@ class TagService implements TagServiceInterface
     }
 
     /**
-     * Delete entity.
+     * Delete tag.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      */
     public function delete(Tag $tag): void
     {
@@ -73,9 +72,9 @@ class TagService implements TagServiceInterface
     /**
      * Find by name.
      *
-     * @param string $name
+     * @param string $name String name
      *
-     * @return Tag|null
+     * @return Tag|null Tag
      */
     public function findOneByName(string $name): ?Tag
     {
@@ -88,8 +87,6 @@ class TagService implements TagServiceInterface
      * @param int $id Tag id
      *
      * @return Tag|null Tag entity
-     *
-     * @throws NonUniqueResultException
      */
     public function findOneById(int $id): ?Tag
     {

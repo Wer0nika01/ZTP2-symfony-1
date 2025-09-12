@@ -59,7 +59,9 @@ class CategoryVoterTest extends TestCase
     /**
      * Test the protected supports' method.
      *
-     * @dataProvider provideSupportsData
+     * @param string $attribute      Attribute
+     * @param mixed  $subject        Subject
+     * @param bool   $expectedResult Expected result
      *
      * @throws \ReflectionException
      */
@@ -108,7 +110,9 @@ class CategoryVoterTest extends TestCase
     /**
      * Test the protected voteOnAttribute method.
      *
-     * @dataProvider provideVoteOnAttributeData
+     * @param UserInterface|null $loggedInUser   Logged-in user
+     * @param string             $attribute      Attribute
+     * @param bool               $expectedResult Expected result
      *
      * @throws \ReflectionException
      */

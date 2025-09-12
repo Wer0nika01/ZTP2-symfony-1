@@ -18,7 +18,7 @@ class ContactListFiltersDto
     /**
      * Constructor.
      *
-     * @param Collection $tags
+     * @param Collection $tags Tag entity
      */
     public function __construct(private Collection $tags = new ArrayCollection())
     {
@@ -37,7 +37,7 @@ class ContactListFiltersDto
     /**
      * Setter for tags.
      *
-     * @param Collection $tags
+     * @param Collection $tags Tags collection
      *
      * @return ContactListFiltersDto
      */
@@ -51,7 +51,7 @@ class ContactListFiltersDto
     /**
      * Add tag.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      *
      * @return ContactListFiltersDto
      */
@@ -67,7 +67,7 @@ class ContactListFiltersDto
     /**
      * Delete tag.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      *
      * @return ContactListFiltersDto
      */

@@ -18,8 +18,8 @@ class RegistrationService implements RegistrationServiceInterface
     /**
      * Construct.
      *
-     * @param EntityManagerInterface      $entityManager
-     * @param UserPasswordHasherInterface $passwordHasher
+     * @param EntityManagerInterface      $entityManager  Entity manager
+     * @param UserPasswordHasherInterface $passwordHasher Password hasher
      */
     public function __construct(private readonly EntityManagerInterface $entityManager, private readonly UserPasswordHasherInterface $passwordHasher)
     {
@@ -28,8 +28,8 @@ class RegistrationService implements RegistrationServiceInterface
     /**
      * Register.
      *
-     * @param User   $user
-     * @param string $plainPassword
+     * @param User   $user          User entity
+     * @param string $plainPassword Plain password
      */
     public function register(User $user, string $plainPassword): void
     {

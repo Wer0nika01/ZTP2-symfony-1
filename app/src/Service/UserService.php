@@ -20,9 +20,9 @@ class UserService implements UserServiceInterface
     /**
      * Constructor.
      *
-     * @param UserRepository      $userRepository
-     * @param TranslatorInterface $translator
-     * @param PaginatorInterface  $paginator
+     * @param UserRepository      $userRepository User repository
+     * @param TranslatorInterface $translator     Translator
+     * @param PaginatorInterface  $paginator      Paginator
      */
     public function __construct(private readonly UserRepository $userRepository, private readonly TranslatorInterface $translator, private readonly PaginatorInterface $paginator)
     {
@@ -31,9 +31,9 @@ class UserService implements UserServiceInterface
     /**
      * Get paginated list.
      *
-     * @param int $page
+     * @param int $page Page number
      *
-     * @return PaginationInterface
+     * @return PaginationInterface Pagination
      */
     public function getPaginatedList(int $page): PaginationInterface
     {
@@ -58,9 +58,9 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * Delete.
+     * Delete user.
      *
-     * @param User $user
+     * @param User $user User entity
      */
     public function delete(User $user): void
     {
@@ -76,9 +76,9 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * Save.
+     * Save user.
      *
-     * @param User $user
+     * @param User $user User entity
      */
     public function save(User $user): void
     {
@@ -88,10 +88,10 @@ class UserService implements UserServiceInterface
     /**
      * Is email unique?
      *
-     * @param string   $email
-     * @param int|null $excludeUserId
+     * @param string   $email         String email
+     * @param int|null $excludeUserId Excluded ids
      *
-     * @return bool
+     * @return bool False or true
      */
     public function isEmailUnique(string $email, ?int $excludeUserId = null): bool
     {
@@ -121,7 +121,7 @@ class UserService implements UserServiceInterface
     /**
      * Toggle to block users.
      *
-     * @param User $user
+     * @param User $user User entity
      */
     public function toggleBlock(User $user): void
     {

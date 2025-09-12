@@ -54,7 +54,7 @@ class TagRepository extends ServiceEntityRepository
     /**
      * Save entity.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      */
     public function save(Tag $tag): void
     {
@@ -65,7 +65,7 @@ class TagRepository extends ServiceEntityRepository
     /**
      * Delete entity.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      */
     public function delete(Tag $tag): void
     {
