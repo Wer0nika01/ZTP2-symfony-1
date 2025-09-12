@@ -24,9 +24,9 @@ class EventService implements EventServiceInterface
     /**
      * Constructor.
      *
-     * @param EventRepository        $eventRepository
-     * @param PaginatorInterface     $paginator
-     * @param EntityManagerInterface $entityManager
+     * @param EventRepository        $eventRepository Event repository
+     * @param PaginatorInterface     $paginator       Paginator
+     * @param EntityManagerInterface $entityManager   Entity manager
      */
     public function __construct(private readonly EventRepository $eventRepository, private readonly PaginatorInterface $paginator, private readonly EntityManagerInterface $entityManager)
     {
@@ -58,7 +58,7 @@ class EventService implements EventServiceInterface
     /**
      * Save entity.
      *
-     * @param Event $event
+     * @param Event $event Event entity
      */
     public function save(Event $event): void
     {
@@ -71,7 +71,7 @@ class EventService implements EventServiceInterface
     /**
      * Delete entity.
      *
-     * @param Event $event
+     * @param Event $event Event entity
      */
     public function delete(Event $event): void
     {
