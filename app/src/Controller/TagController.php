@@ -25,9 +25,6 @@ class TagController extends AbstractController
 {
     /**
      * Constructor.
-     *
-     * @param TagServiceInterface $tagService Tag service
-     * @param TranslatorInterface $translator Translator
      */
     public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator)
     {
@@ -65,10 +62,6 @@ class TagController extends AbstractController
 
     /**
      * Create action.
-     *
-     * @param Request $request HTTP request
-     *
-     * @return Response HTTP response
      */
     #[Route('/tag/create', name: 'tag_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -125,11 +118,6 @@ class TagController extends AbstractController
 
     /**
      * Delete action.
-     *
-     * @param Request $request HTTP request
-     * @param Tag     $tag     Tag entity
-     *
-     * @return Response HTTP response
      */
     #[Route('/tag/{id}/delete', name: 'tag_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]

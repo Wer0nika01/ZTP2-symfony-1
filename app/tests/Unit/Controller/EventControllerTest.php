@@ -147,7 +147,7 @@ class EventControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/event', Request::METHOD_GET, ['title' => 'Test Event', 'status' => 1]);
+        $request = Request::create('/event', \Symfony\Component\HttpFoundation\Request::METHOD_GET, ['title' => 'Test Event', 'status' => 1]);
         $this->controller->index($request, $page);
     }
 
@@ -228,7 +228,7 @@ class EventControllerTest extends TestCase
 
         $this->controller->expects($this->never())->method('render');
 
-        $request = Request::create('/event/create', Request::METHOD_POST, ['title' => 'New Event']);
+        $request = Request::create('/event/create', \Symfony\Component\HttpFoundation\Request::METHOD_POST, ['title' => 'New Event']);
         $response = $this->controller->create($request);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -260,7 +260,7 @@ class EventControllerTest extends TestCase
             ->with('event/create.html.twig', ['form' => $this->mockFormView])
             ->willReturn(new Response());
 
-        $request = Request::create('/event/create', Request::METHOD_POST, ['title' => '']);
+        $request = Request::create('/event/create', \Symfony\Component\HttpFoundation\Request::METHOD_POST, ['title' => '']);
         $this->controller->create($request);
     }
 
@@ -295,7 +295,7 @@ class EventControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/event/1/edit', Request::METHOD_GET);
+        $request = Request::create('/event/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_GET);
         $this->controller->edit($request, $event);
     }
 
@@ -337,7 +337,7 @@ class EventControllerTest extends TestCase
 
         $this->controller->expects($this->never())->method('render');
 
-        $request = Request::create('/event/1/edit', Request::METHOD_PUT, ['title' => 'Updated Event']);
+        $request = Request::create('/event/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_PUT, ['title' => 'Updated Event']);
         $response = $this->controller->edit($request, $event);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -379,7 +379,7 @@ class EventControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/event/1/edit', Request::METHOD_PUT, ['title' => '']);
+        $request = Request::create('/event/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_PUT, ['title' => '']);
         $this->controller->edit($request, $event);
     }
 
@@ -414,7 +414,7 @@ class EventControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/event/1/delete', Request::METHOD_GET);
+        $request = Request::create('/event/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_GET);
         $this->controller->delete($request, $event);
     }
 
@@ -456,7 +456,7 @@ class EventControllerTest extends TestCase
 
         $this->controller->expects($this->never())->method('render');
 
-        $request = Request::create('/event/1/delete', Request::METHOD_DELETE);
+        $request = Request::create('/event/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_DELETE);
         $response = $this->controller->delete($request, $event);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -498,7 +498,7 @@ class EventControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/event/1/delete', Request::METHOD_DELETE);
+        $request = Request::create('/event/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_DELETE);
         $this->controller->delete($request, $event);
     }
 }

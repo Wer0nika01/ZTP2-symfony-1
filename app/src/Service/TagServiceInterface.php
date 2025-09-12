@@ -18,38 +18,34 @@ interface TagServiceInterface
      * Get paginated list.
      *
      * @param int $page Page number
-     *
-     * @return PaginationInterface Paginated list
      */
     public function getPaginatedList(int $page): PaginationInterface;
 
     /**
-     * Save tag.
+     * Save tags.
      *
      * @param Tag $tag Tag entity
      */
     public function save(Tag $tag): void;
 
     /**
-     * Delete tag.
+     * Delete tags.
      *
-     * @param Tag $tag tag entity
+     * @param Tag $tag Tag entity
      */
     public function delete(Tag $tag): void;
 
     /**
      * Find by Name.
      *
-     * @param string $name Name of entity
-     *
-     * @return Tag|null Tag entity
+     * @param string $name Name entity
      */
     public function findOneByName(string $name): ?Tag;
 
     /**
      * Find by ID.
      *
-     * @param int $id id of entity
+     * @param int $id Tag entity
      */
     public function findOneById(int $id): ?Tag;
 }

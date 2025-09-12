@@ -58,8 +58,6 @@ class Tag
 
     /**
      * Getter for id.
-     *
-     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -68,8 +66,6 @@ class Tag
 
     /**
      * Getter for name.
-     *
-     * @return string|null String name
      */
     public function getName(): ?string
     {
@@ -78,8 +74,6 @@ class Tag
 
     /**
      * Setter for name.
-     *
-     * @param string|null $name Name
      */
     public function setName(?string $name): void
     {
@@ -88,8 +82,6 @@ class Tag
 
     /**
      * Getter for created at.
-     *
-     * @return \DateTimeImmutable|null Date time Created at
      */
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -98,8 +90,6 @@ class Tag
 
     /**
      * Setter for created at.
-     *
-     * @param \DateTimeImmutable $createdAt Created at
      */
     public function setCreatedAt(\DateTimeImmutable $createdAt): void
     {
@@ -108,8 +98,6 @@ class Tag
 
     /**
      * Getter for updated at.
-     *
-     * @return \DateTimeImmutable|null Date time updated at
      */
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
@@ -118,8 +106,6 @@ class Tag
 
     /**
      * Setter for updated at.
-     *
-     * @param \DateTimeImmutable $updatedAt updated at
      */
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): void
     {
@@ -128,8 +114,6 @@ class Tag
 
     /**
      * Getter for Slug.
-     *
-     * @return string|null Slug
      */
     public function getSlug(): ?string
     {
@@ -138,8 +122,6 @@ class Tag
 
     /**
      * Setter for Slug.
-     *
-     * @param string $slug Slug
      */
     public function setSlug(string $slug): void
     {

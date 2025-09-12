@@ -65,9 +65,7 @@ class UserVoterTest extends TestCase
     /**
      * Test supports.
      *
-     * @param string $attribute      Attribute
-     * @param mixed  $subject        Subject
-     * @param bool   $expectedResult Expected result
+     * @dataProvider provideSupportsData
      *
      * @throws \ReflectionException
      */
@@ -124,11 +122,7 @@ class UserVoterTest extends TestCase
     /**
      * Test vote on attribute.
      *
-     * @param string|null $loggedInUserRole                   Logged-in user role
-     * @param bool        $targetUserIsLoggedInUser           True of false
-     * @param string      $attribute                          Attribute
-     * @param int         $expectedVote                       Expected vote
-     * @param int|null    $initialAdminCountForCanChangeRoles How many admins left
+     * @dataProvider provideVoteOnAttributeData
      */
     public function testVoteOnAttribute(?string $loggedInUserRole, bool $targetUserIsLoggedInUser, string $attribute, int $expectedVote, ?int $initialAdminCountForCanChangeRoles): void
     {
@@ -146,7 +140,7 @@ class UserVoterTest extends TestCase
         $this->security->expects($this->any())
             ->method('isGranted')
             ->willReturnCallback(function (string $role, $subject = null) use ($loggedInUserRole, $loggedInUser) {
-                if (UserRole::ROLE_ADMIN->value === $role) {
+                if ($role === UserRole::ROLE_ADMIN->value) {
                     return $loggedInUserRole === UserRole::ROLE_ADMIN->value;
                 }
 

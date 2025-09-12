@@ -25,7 +25,7 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Constructor.
      *
-     * @param ManagerRegistry $registry Registry manager
+     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -104,9 +104,9 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Counts the number of events associated with a given category.
      *
-     * @param Category $category the category entity to count events for
+     * @param Category $category The category entity to count events for
      *
-     * @return int the number of events
+     * @return int The number of events
      *
      * @throws NoResultException
      * @throws NonUniqueResultException
@@ -124,9 +124,9 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Create base query builder.
      *
-     * @param User $author User entity
+     * @param User $author
      *
-     * @return QueryBuilder Query builder
+     * @return QueryBuilder
      */
     private function createBaseQueryBuilder(User $author): QueryBuilder
     {

@@ -19,25 +19,23 @@ interface EventServiceInterface
     /**
      * Get paginated list.
      *
-     * @param int                 $page    Page number
-     * @param User                $author  Current user
-     * @param EventListFiltersDto $filters Create new scratch file from selection
-     *
-     * @return PaginationInterface PaginationInterface
+     * @param int                 $page
+     * @param User                $author
+     * @param EventListFiltersDto $filters
      */
     public function getPaginatedList(int $page, User $author, EventListFiltersDto $filters): PaginationInterface;
 
     /**
-     * Save event.
+     * Save events.
      *
-     * @param Event $event Event entity
+     * @param Event $event
      */
     public function save(Event $event): void;
 
     /**
-     * Delete event.
+     * Delete events.
      *
-     * @param Event $event Event entity
+     * @param Event $event
      */
     public function delete(Event $event): void;
 }

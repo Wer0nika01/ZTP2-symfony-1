@@ -26,11 +26,7 @@ class SecurityController extends AbstractController
     /**
      * Login action.
      *
-     * @param AuthenticationUtils         $authenticationUtils Authentication utils
-     * @param UserPasswordHasherInterface $passwordHasher      Password hasher
-     * @param Request                     $request             HTTP request
-     * @param EntityManagerInterface      $entityManager       Entity manager
-     * @param TranslatorInterface         $translator          Translator
+     * @param AuthenticationUtils $authenticationUtils Authentication utilities
      *
      * @return Response HTTP response
      */

@@ -23,12 +23,6 @@ class ProfileEditType extends AbstractType
 {
     /**
      * Builds the form.
-     *
-     * This method is called for each type in the hierarchy starting from the
-     * top most type. Type extensions can further modify the form.
-     *
-     * @param FormBuilderInterface $builder The form builder
-     * @param array<string, mixed> $options Form options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -61,8 +55,6 @@ class ProfileEditType extends AbstractType
 
     /**
      * Configures the options for this type.
-     *
-     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver): void
     {

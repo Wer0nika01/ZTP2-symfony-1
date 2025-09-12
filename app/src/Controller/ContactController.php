@@ -26,8 +26,6 @@ class ContactController extends AbstractController
 {
     /**
      * Constructor.
-     *
-     * @param ContactService $contactService Contact service
      */
     public function __construct(private readonly ContactService $contactService)
     {
