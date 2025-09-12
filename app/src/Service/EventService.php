@@ -3,6 +3,7 @@
 /**
  * Event service.
  */
+
 namespace App\Service;
 
 use App\Dto\EventListFiltersDto;
@@ -38,13 +39,13 @@ class EventService implements EventServiceInterface
     }
 
     /**
-     * Get paginated list
+     * Get paginated list.
      *
-     * @param int                 $page
-     * @param User                $author
-     * @param EventListFiltersDto $filters
+     * @param int                 $page    Page number
+     * @param User                $author  Current user
+     * @param EventListFiltersDto $filters Filters DTO
      *
-     * @return PaginationInterface
+     * @return PaginationInterface PaginationInterface
      */
     public function getPaginatedList(int $page, User $author, EventListFiltersDto $filters): PaginationInterface
     {
@@ -53,7 +54,7 @@ class EventService implements EventServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'],
+                'sortFieldAllowList' => ['event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'],
                 'defaultSortFieldName' => 'event.startTime',
                 'defaultSortDirection' => 'asc',
             ]

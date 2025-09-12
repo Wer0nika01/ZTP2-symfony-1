@@ -3,6 +3,7 @@
 /**
  * Contact list filters DTO.
  */
+
 namespace App\Dto;
 
 use App\Entity\Tag;
@@ -15,9 +16,9 @@ use Doctrine\Common\Collections\Collection;
 class ContactListFiltersDto
 {
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param Collection $tags
+     * @param Collection $tags Tag entity
      */
     public function __construct(private Collection $tags = new ArrayCollection())
     {
@@ -36,7 +37,7 @@ class ContactListFiltersDto
     /**
      * Setter for tags.
      *
-     * @param Collection $tags
+     * @param Collection $tags Tags collection
      *
      * @return $this
      */
@@ -50,7 +51,7 @@ class ContactListFiltersDto
     /**
      * Add tag to collection.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      *
      * @return $this
      */
@@ -66,7 +67,7 @@ class ContactListFiltersDto
     /**
      * Remove tag from collection.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      *
      * @return $this
      */

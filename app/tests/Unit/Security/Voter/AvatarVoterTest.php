@@ -10,11 +10,8 @@ use App\Entity\Avatar;
 use App\Entity\User;
 use App\Security\Voter\AvatarVoter;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
-use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ReflectionClass;
 
 /**
  * Class Avatar voter Test.
@@ -35,7 +32,7 @@ class AvatarVoterTest extends TestCase
 
     /**
      * Data provider for the supports method test.
-     * [attribute, subject, expectedResult]
+     * [attribute, subject, expectedResult].
      *
      * @return array[]
      */
@@ -51,7 +48,7 @@ class AvatarVoterTest extends TestCase
             ['SOME_OTHER_ATTRIBUTE', $avatar, false],
 
             [AvatarVoter::DELETE, new User(), false],
-            [AvatarVoter::DELETE, new stdClass(), false],
+            [AvatarVoter::DELETE, new \stdClass(), false],
             [AvatarVoter::DELETE, null, false],
         ];
     }
@@ -61,15 +58,11 @@ class AvatarVoterTest extends TestCase
      *
      * @dataProvider provideSupportsData
      *
-     * @param string $attribute
-     * @param mixed  $subject
-     * @param bool   $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
-        $reflection = new ReflectionClass(AvatarVoter::class);
+        $reflection = new \ReflectionClass(AvatarVoter::class);
         $method = $reflection->getMethod('supports');
 
         $this->assertEquals(
@@ -81,7 +74,7 @@ class AvatarVoterTest extends TestCase
 
     /**
      * Data provider for the voteOnAttribute method test.
-     * [loggedInUser, avatarOwner, expectedVote]
+     * [loggedInUser, avatarOwner, expectedVote].
      *
      * @return array[]
      */
@@ -110,11 +103,7 @@ class AvatarVoterTest extends TestCase
      *
      * @dataProvider provideVoteOnAttributeData
      *
-     * @param UserInterface|null $loggedInUser
-     * @param User               $avatarOwner
-     * @param bool               $expectedVote
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testVoteOnAttribute(?UserInterface $loggedInUser, User $avatarOwner, bool $expectedVote): void
     {
@@ -124,7 +113,7 @@ class AvatarVoterTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($loggedInUser);
 
-        $reflection = new ReflectionClass(AvatarVoter::class);
+        $reflection = new \ReflectionClass(AvatarVoter::class);
         $method = $reflection->getMethod('voteOnAttribute');
 
         $this->assertEquals(

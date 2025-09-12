@@ -24,7 +24,7 @@ class ContactType extends AbstractType
     /**
      * Constructor.
      *
-     * @param TagsDataTransformer $tagsDataTransformer
+     * @param TagsDataTransformer $tagsDataTransformer Tags data transformer
      */
     public function __construct(private readonly TagsDataTransformer $tagsDataTransformer)
     {
@@ -33,8 +33,11 @@ class ContactType extends AbstractType
     /**
      * Builds the form.
      *
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * This method is called for each type in the hierarchy starting from the
+     * top most type. Type extensions can further modify the form.
+     *
+     * @param FormBuilderInterface $builder The form builder
+     * @param array<string, mixed> $options Form options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -89,7 +92,7 @@ class ContactType extends AbstractType
     /**
      * Configures the options for this type.
      *
-     * @param OptionsResolver $resolver
+     * @param OptionsResolver $resolver The resolver for the options
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
@@ -101,7 +104,7 @@ class ContactType extends AbstractType
     /**
      * Gets the block prefix for this type.
      *
-     * @return string
+     * @return string String contact form
      */
     public function getBlockPrefix(): string
     {

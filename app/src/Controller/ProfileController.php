@@ -25,7 +25,7 @@ class ProfileController extends AbstractController
     /**
      * Profile dashboard.
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/profile', name: 'app_profile', methods: 'GET')]
     public function profile(): Response
@@ -44,7 +44,7 @@ class ProfileController extends AbstractController
      * @param Request                $request       HTTP Request
      * @param EntityManagerInterface $entityManager Entity Manager
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function editProfile(Request $request, EntityManagerInterface $entityManager): Response
@@ -76,7 +76,7 @@ class ProfileController extends AbstractController
      * @param UserPasswordHasherInterface $passwordHasher Password Hasher
      * @param EntityManagerInterface      $entityManager  Entity Manager
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/profile/change-password', name: 'app_change_password', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response

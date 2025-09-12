@@ -9,7 +9,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\Type\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,11 +26,11 @@ class SecurityController extends AbstractController
     /**
      * Login action.
      *
-     * @param AuthenticationUtils         $authenticationUtils Authentication utilities
-     * @param UserPasswordHasherInterface $passwordHasher
-     * @param Request                     $request
-     * @param EntityManagerInterface      $entityManager
-     * @param TranslatorInterface         $translator
+     * @param AuthenticationUtils         $authenticationUtils Authentication utils
+     * @param UserPasswordHasherInterface $passwordHasher      Password hasher
+     * @param Request                     $request             HTTP request
+     * @param EntityManagerInterface      $entityManager       Entity manager
+     * @param TranslatorInterface         $translator          Translator
      *
      * @return Response HTTP response
      */
@@ -80,6 +79,6 @@ class SecurityController extends AbstractController
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

@@ -20,7 +20,7 @@ enum EventStatus: int
     /**
      * Get the human-readable label for the enum case.
      *
-     * @return string
+     * @return string String
      */
     public function getLabel(): string
     {
@@ -34,7 +34,7 @@ enum EventStatus: int
     /**
      * Get the Bootstrap badge/button class for the enum case.
      *
-     * @return string
+     * @return string String
      */
     public function getButtonClass(): string
     {

@@ -16,7 +16,7 @@ class EventStatusTest extends TestCase
 {
     /**
      * Data provider for testing getLabel method.
-     * [enumCase, expectedLabel]
+     * [enumCase, expectedLabel].
      *
      * @return array[]
      */
@@ -33,9 +33,6 @@ class EventStatusTest extends TestCase
      * Test the getLabel method for each enum case.
      *
      * @dataProvider provideLabels
-     *
-     * @param EventStatus $enumCase
-     * @param string      $expectedLabel
      */
     public function testGetLabel(EventStatus $enumCase, string $expectedLabel): void
     {
@@ -44,7 +41,7 @@ class EventStatusTest extends TestCase
 
     /**
      * Data provider for testing getButtonClass method.
-     * [enumCase, expectedButtonClass]
+     * [enumCase, expectedButtonClass].
      *
      * @return array[]
      */
@@ -61,9 +58,6 @@ class EventStatusTest extends TestCase
      * Test the getButtonClass method for each enum case.
      *
      * @dataProvider provideButtonClasses
-     *
-     * @param EventStatus $enumCase
-     * @param string      $expectedButtonClass
      */
     public function testGetButtonClass(EventStatus $enumCase, string $expectedButtonClass): void
     {

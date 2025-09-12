@@ -16,8 +16,8 @@ interface RegistrationServiceInterface
     /**
      * Register.
      *
-     * @param User   $user
-     * @param string $plainPassword
+     * @param User   $user          User entity
+     * @param string $plainPassword Plain password
      */
     public function register(User $user, string $plainPassword): void;
 }

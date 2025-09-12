@@ -1,7 +1,7 @@
 <?php
 
 /**
- * User Service
+ * User Service.
  */
 
 namespace App\Service;
@@ -10,7 +10,6 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use RuntimeException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -21,9 +20,9 @@ class UserService implements UserServiceInterface
     /**
      * Constructor.
      *
-     * @param UserRepository      $userRepository
-     * @param TranslatorInterface $translator
-     * @param PaginatorInterface  $paginator
+     * @param UserRepository      $userRepository User repository
+     * @param TranslatorInterface $translator     Translator
+     * @param PaginatorInterface  $paginator      Paginator
      */
     public function __construct(private readonly UserRepository $userRepository, private readonly TranslatorInterface $translator, private readonly PaginatorInterface $paginator)
     {
@@ -32,9 +31,9 @@ class UserService implements UserServiceInterface
     /**
      * Get paginated list.
      *
-     * @param int $page
+     * @param int $page Page number
      *
-     * @return PaginationInterface
+     * @return PaginationInterface Pagination
      */
     public function getPaginatedList(int $page): PaginationInterface
     {
@@ -59,9 +58,9 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * Delete.
+     * Delete user.
      *
-     * @param User $user
+     * @param User $user User entity
      */
     public function delete(User $user): void
     {
@@ -69,7 +68,7 @@ class UserService implements UserServiceInterface
             $adminCount = $this->userRepository->countAdmins();
 
             if ($adminCount <= 1) {
-                throw new RuntimeException($this->translator->trans('message.cannot_delete_last_admin'));
+                throw new \RuntimeException($this->translator->trans('message.cannot_delete_last_admin'));
             }
         }
 
@@ -77,9 +76,9 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * Save.
+     * Save user.
      *
-     * @param User $user
+     * @param User $user User entity
      */
     public function save(User $user): void
     {
@@ -89,10 +88,10 @@ class UserService implements UserServiceInterface
     /**
      * Is email unique?
      *
-     * @param string   $email
-     * @param int|null $excludeUserId
+     * @param string   $email         String email
+     * @param int|null $excludeUserId Excluded ids
      *
-     * @return bool
+     * @return bool False or true
      */
     public function isEmailUnique(string $email, ?int $excludeUserId = null): bool
     {
@@ -100,11 +99,11 @@ class UserService implements UserServiceInterface
             ->where('u.email = :email')
             ->setParameter('email', $email);
 
-        if ($excludeUserId !== null) {
+        if (null !== $excludeUserId) {
             $qb->andWhere('u.id != :id')->setParameter('id', $excludeUserId);
         }
 
-        return count($qb->getQuery()->getResult()) === 0;
+        return 0 === count($qb->getQuery()->getResult());
     }
 
     /**
@@ -120,9 +119,9 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * toggle to block users
+     * Toggle to block users.
      *
-     * @param User $user
+     * @param User $user User entity
      */
     public function toggleBlock(User $user): void
     {

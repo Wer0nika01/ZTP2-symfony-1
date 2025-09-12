@@ -21,10 +21,10 @@ class AvatarVoter extends Voter
     /**
      * Supports.
      *
-     * @param string $attribute
-     * @param mixed  $subject
+     * @param string $attribute String attribute
+     * @param mixed  $subject   Subject
      *
-     * @return bool
+     * @return bool True or false
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -34,11 +34,11 @@ class AvatarVoter extends Voter
     /**
      * Vote one attribute.
      *
-     * @param string         $attribute
-     * @param mixed          $subject
-     * @param TokenInterface $token
+     * @param string         $attribute String attribute
+     * @param mixed          $subject   Subject
+     * @param TokenInterface $token     Token
      *
-     * @return bool
+     * @return bool True or false
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {

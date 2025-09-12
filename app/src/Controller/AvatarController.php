@@ -33,6 +33,7 @@ class AvatarController extends AbstractController
     public function __construct(private readonly AvatarServiceInterface $avatarService, private readonly TranslatorInterface $translator)
     {
     }
+
     /**
      * Create action.
      *
@@ -86,6 +87,7 @@ class AvatarController extends AbstractController
             ['form' => $form->createView()]
         );
     }
+
     /**
      * Edit action.
      *
@@ -143,13 +145,14 @@ class AvatarController extends AbstractController
             ]
         );
     }
+
     /**
      * Delete action.
      *
-     * @param Request $request
-     * @param Avatar  $avatar
+     * @param Request $request HTTP Request
+     * @param Avatar  $avatar  Avatar entity
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[IsGranted('DELETE', subject: 'avatar')]
     #[Route('/avatar/{id}/delete', name: 'avatar_delete', requirements: ['id' => '\d+'], methods: ['POST', 'DELETE'])]

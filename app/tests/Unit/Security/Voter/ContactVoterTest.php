@@ -10,11 +10,8 @@ use App\Entity\Contact;
 use App\Entity\User;
 use App\Security\Voter\ContactVoter;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
-use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ReflectionClass;
 
 /**
  * Class Contact voter Test.
@@ -34,7 +31,7 @@ class ContactVoterTest extends TestCase
 
     /**
      * Data provider for the supports method test.
-     * [attribute, subject, expectedResult]
+     * [attribute, subject, expectedResult].
      *
      * @return array[]
      */
@@ -42,7 +39,7 @@ class ContactVoterTest extends TestCase
     {
         $contact = new Contact();
         $user = new User();
-        $stdClass = new stdClass();
+        $stdClass = new \stdClass();
 
         return [
             'supports_view_contact' => [ContactVoter::VIEW, $contact, true],
@@ -64,15 +61,11 @@ class ContactVoterTest extends TestCase
      *
      * @dataProvider provideSupportsData
      *
-     * @param string $attribute
-     * @param mixed  $subject
-     * @param bool   $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
-        $reflection = new ReflectionClass(ContactVoter::class);
+        $reflection = new \ReflectionClass(ContactVoter::class);
         $method = $reflection->getMethod('supports');
 
         $this->assertEquals(
@@ -84,7 +77,7 @@ class ContactVoterTest extends TestCase
 
     /**
      * Data provider for the voteOnAttribute method test.
-     * [loggedInUserRoles, isOwner, attribute, expectedVoteResult]
+     * [loggedInUserRoles, isOwner, attribute, expectedVoteResult].
      *
      * @return array[]
      */
@@ -130,24 +123,19 @@ class ContactVoterTest extends TestCase
      *
      * @dataProvider provideVoteOnAttributeData
      *
-     * @param array|null $loggedInUserRoles
-     * @param bool       $isOwner
-     * @param string     $attribute
-     * @param bool       $expectedVoteResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testVoteOnAttribute(?array $loggedInUserRoles, bool $isOwner, string $attribute, bool $expectedVoteResult): void
     {
         $contact = $this->createMock(Contact::class);
 
         $loggedInUser = null;
-        if ($loggedInUserRoles !== null) {
+        if (null !== $loggedInUserRoles) {
             $loggedInUser = $this->createMock(User::class);
             $loggedInUser->method('getRoles')->willReturn($loggedInUserRoles);
             $loggedInUser->method('getId')->willReturn(100);
-        } elseif ($attribute === ContactVoter::VIEW && !$isOwner) {
-            if ($expectedVoteResult === false) {
+        } elseif (ContactVoter::VIEW === $attribute && !$isOwner) {
+            if (false === $expectedVoteResult) {
                 $loggedInUser = $this->createMock(UserInterface::class);
             }
         }
@@ -163,7 +151,7 @@ class ContactVoterTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($loggedInUser);
 
-        $reflection = new ReflectionClass(ContactVoter::class);
+        $reflection = new \ReflectionClass(ContactVoter::class);
         $method = $reflection->getMethod('voteOnAttribute');
 
         $this->assertEquals(

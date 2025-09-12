@@ -1,7 +1,7 @@
 <?php
 
 /**
- * User controller Test
+ * User controller Test.
  */
 
 namespace App\Tests\Unit\Controller\Admin;
@@ -40,8 +40,8 @@ class UserControllerTest extends TestCase
     private UrlGeneratorInterface&MockObject $urlGenerator;
     private TokenStorageInterface&MockObject $tokenStorage;
     private EntityManagerInterface&MockObject $entityManager;
-    protected SessionInterface|null $session = null;
-    protected FlashBagInterface|null $flashBag = null;
+    protected ?SessionInterface $session = null;
+    protected ?FlashBagInterface $flashBag = null;
 
     /**
      * Test method index.
@@ -204,7 +204,6 @@ class UserControllerTest extends TestCase
         $this->assertEquals('/admin/users', $response->getTargetUrl());
     }
 
-
     /**
      * Test blocking users.
      */
@@ -361,8 +360,6 @@ class UserControllerTest extends TestCase
 
         $controller->setContainer($containerMock);
 
-        $this->urlGenerator->method('generate')->willReturnCallback(function ($route, $params) {
-            return '/'.$route.'/'.implode('/', $params);
-        });
+        $this->urlGenerator->method('generate')->willReturnCallback(fn($route, $params) => '/'.$route.'/'.implode('/', $params));
     }
 }

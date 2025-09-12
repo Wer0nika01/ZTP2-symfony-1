@@ -7,7 +7,6 @@
 namespace App\Tests\Unit\Entity;
 
 use App\Entity\Category;
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -55,7 +54,7 @@ class CategoryTest extends TestCase
      */
     public function testCreatedAtGetAndSet(): void
     {
-        $dateTime = new DateTimeImmutable('2023-01-15 10:00:00');
+        $dateTime = new \DateTimeImmutable('2023-01-15 10:00:00');
         $this->category->setCreatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->category->getCreatedAt());
@@ -69,7 +68,7 @@ class CategoryTest extends TestCase
      */
     public function testUpdatedAtGetAndSet(): void
     {
-        $dateTime = new DateTimeImmutable('2023-01-15 11:30:00');
+        $dateTime = new \DateTimeImmutable('2023-01-15 11:30:00');
         $this->category->setUpdatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->category->getUpdatedAt());

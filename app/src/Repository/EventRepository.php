@@ -16,7 +16,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
-use DateTimeImmutable;
 
 /**
  * Class Event repository.
@@ -26,7 +25,7 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Constructor.
      *
-     * @param ManagerRegistry $registry
+     * @param ManagerRegistry $registry Registry manager
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -68,7 +67,7 @@ class EventRepository extends ServiceEntityRepository
      */
     public function findActiveEvents(User $author, int $limit = 5): array
     {
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
 
         return $this->createBaseQueryBuilder($author)
             ->andWhere('event.startTime <= :now')
@@ -91,7 +90,7 @@ class EventRepository extends ServiceEntityRepository
      */
     public function findUpcomingEvents(User $author, int $limit = 5): array
     {
-        $now = new DateTimeImmutable();
+        $now = new \DateTimeImmutable();
 
         return $this->createBaseQueryBuilder($author)
             ->andWhere('event.startTime > :now')
@@ -105,9 +104,9 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Counts the number of events associated with a given category.
      *
-     * @param Category $category The category entity to count events for.
+     * @param Category $category the category entity to count events for
      *
-     * @return int The number of events.
+     * @return int the number of events
      *
      * @throws NoResultException
      * @throws NonUniqueResultException
@@ -125,9 +124,9 @@ class EventRepository extends ServiceEntityRepository
     /**
      * Create base query builder.
      *
-     * @param User $author
+     * @param User $author User entity
      *
-     * @return QueryBuilder
+     * @return QueryBuilder Query builder
      */
     private function createBaseQueryBuilder(User $author): QueryBuilder
     {

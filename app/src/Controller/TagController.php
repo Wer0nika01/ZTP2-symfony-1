@@ -24,14 +24,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TagController extends AbstractController
 {
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param TagServiceInterface $tagService
-     * @param TranslatorInterface $translator
+     * @param TagServiceInterface $tagService Tag service
+     * @param TranslatorInterface $translator Translator
      */
     public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator)
     {
     }
+
     /**
      * Index action.
      *
@@ -44,8 +45,9 @@ class TagController extends AbstractController
     {
         $pagination = $this->tagService->getPaginatedList($page);
 
-        return $this->render('tag/index.html.twig', ['pagination' => $pagination, ]);
+        return $this->render('tag/index.html.twig', ['pagination' => $pagination]);
     }
+
     /**
      * View action.
      *
@@ -60,12 +62,13 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
+
     /**
      * Create action.
      *
-     * @param Request $request
+     * @param Request $request HTTP request
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/tag/create', name: 'tag_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -90,6 +93,7 @@ class TagController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Edit action.
      *
@@ -118,13 +122,14 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
+
     /**
      * Delete action.
      *
-     * @param Request $request
-     * @param Tag     $tag
+     * @param Request $request HTTP request
+     * @param Tag     $tag     Tag entity
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/tag/{id}/delete', name: 'tag_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]

@@ -21,7 +21,7 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Constructor.
      *
-     * @param ManagerRegistry $registry
+     * @param ManagerRegistry $registry Registry manager
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -31,8 +31,8 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Saves a Contact entity.
      *
-     * @param Contact $entity The Contact entity to save.
-     * @param bool    $flush  Whether to flush the changes immediately.
+     * @param Contact $entity the Contact entity to save
+     * @param bool    $flush  whether to flush the changes immediately
      */
     public function save(Contact $entity, bool $flush = false): void
     {
@@ -46,8 +46,8 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Removes a Contact entity.
      *
-     * @param Contact $entity The Contact entity to remove.
-     * @param bool    $flush  Whether to flush the changes immediately.
+     * @param Contact $entity the Contact entity to remove
+     * @param bool    $flush  whether to flush the changes immediately
      */
     public function remove(Contact $entity, bool $flush = false): void
     {

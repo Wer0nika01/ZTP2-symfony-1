@@ -34,6 +34,7 @@ class CategoryController extends AbstractController
     public function __construct(private readonly CategoryServiceInterface $categoryService, private readonly TranslatorInterface $translator)
     {
     }
+
     /**
      * Index action.
      *
@@ -48,6 +49,7 @@ class CategoryController extends AbstractController
 
         return $this->render('category/index.html.twig', ['pagination' => $pagination]);
     }
+
     /**
      * View action.
      *
@@ -63,6 +65,7 @@ class CategoryController extends AbstractController
             ['category' => $category]
         );
     }
+
     /**
      * Create action.
      *
@@ -94,6 +97,7 @@ class CategoryController extends AbstractController
             ['form' => $form->createView()]
         );
     }
+
     /**
      * Edit action.
      *
@@ -135,6 +139,7 @@ class CategoryController extends AbstractController
             ]
         );
     }
+
     /**
      * Delete action.
      *

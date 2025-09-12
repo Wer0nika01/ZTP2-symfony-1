@@ -80,7 +80,7 @@ class RegistrationTypeTest extends TypeTestCase
 
         $foundPasswordMismatchError = false;
         foreach ($errors as $error) {
-            if ($error->getMessageTemplate() === 'message.passwords_must_match') {
+            if ('message.passwords_must_match' === $error->getMessageTemplate()) {
                 $foundPasswordMismatchError = true;
                 break;
             }

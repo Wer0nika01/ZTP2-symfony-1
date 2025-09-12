@@ -8,7 +8,6 @@ namespace App\Entity;
 
 use App\Entity\Enum\EventStatus;
 use App\Repository\EventRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -52,13 +51,13 @@ class Event
      * Start time of the event.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $startTime = null;
+    private ?\DateTimeImmutable $startTime = null;
 
     /**
      * End time of the event.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $endTime = null;
+    private ?\DateTimeImmutable $endTime = null;
 
     /**
      * Location of the event.
@@ -117,7 +116,7 @@ class Event
     /**
      * Getter for id.
      *
-     * @return int|null
+     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -127,7 +126,7 @@ class Event
     /**
      * Getter for title.
      *
-     * @return string|null
+     * @return string|null String title
      */
     public function getTitle(): ?string
     {
@@ -139,7 +138,7 @@ class Event
      *
      * @param string|null $title Title
      *
-     * @return static
+     * @return $this
      */
     public function setTitle(?string $title): static
     {
@@ -151,7 +150,7 @@ class Event
     /**
      * Getter for description.
      *
-     * @return string|null
+     * @return string|null String description of the event
      */
     public function getDescription(): ?string
     {
@@ -163,7 +162,7 @@ class Event
      *
      * @param string|null $description Description of the event
      *
-     * @return static
+     * @return $this
      */
     public function setDescription(?string $description): static
     {
@@ -175,9 +174,9 @@ class Event
     /**
      * Getter for start time.
      *
-     * @return DateTimeImmutable|null
+     * @return \DateTimeImmutable|null Date time start time of the event
      */
-    public function getStartTime(): ?DateTimeImmutable
+    public function getStartTime(): ?\DateTimeImmutable
     {
         return $this->startTime;
     }
@@ -185,11 +184,11 @@ class Event
     /**
      * Setter for start time.
      *
-     * @param DateTimeImmutable|null $startTime Start time of the event
+     * @param \DateTimeImmutable|null $startTime Start time of the event
      *
-     * @return static
+     * @return $this
      */
-    public function setStartTime(?DateTimeImmutable $startTime): static
+    public function setStartTime(?\DateTimeImmutable $startTime): static
     {
         $this->startTime = $startTime;
 
@@ -199,9 +198,9 @@ class Event
     /**
      * Getter for end time.
      *
-     * @return DateTimeImmutable|null
+     * @return \DateTimeImmutable|null Date time end time of the event
      */
-    public function getEndTime(): ?DateTimeImmutable
+    public function getEndTime(): ?\DateTimeImmutable
     {
         return $this->endTime;
     }
@@ -209,11 +208,11 @@ class Event
     /**
      * Setter for end time.
      *
-     * @param DateTimeImmutable|null $endTime End time of the event
+     * @param \DateTimeImmutable|null $endTime End time of the event
      *
-     * @return static
+     * @return $this
      */
-    public function setEndTime(?DateTimeImmutable $endTime): static
+    public function setEndTime(?\DateTimeImmutable $endTime): static
     {
         $this->endTime = $endTime;
 
@@ -235,7 +234,7 @@ class Event
      *
      * @param string|null $location Location
      *
-     * @return static
+     * @return $this
      */
     public function setLocation(?string $location): static
     {
@@ -259,7 +258,7 @@ class Event
      *
      * @param bool $isAllDay Is all day
      *
-     * @return static
+     * @return $this
      */
     public function setIsAllDay(bool $isAllDay): static
     {
@@ -271,7 +270,7 @@ class Event
     /**
      * Getter for category.
      *
-     * @return Category|null
+     * @return Category|null Category entity
      */
     public function getCategory(): ?Category
     {
@@ -283,7 +282,7 @@ class Event
      *
      * @param Category|null $category Category
      *
-     * @return static
+     * @return $this
      */
     public function setCategory(?Category $category): static
     {
@@ -307,7 +306,7 @@ class Event
      *
      * @param Tag $tag Tag to add
      *
-     * @return static
+     * @return $this
      */
     public function addTag(Tag $tag): static
     {
@@ -323,7 +322,7 @@ class Event
      *
      * @param Tag $tag Tag to remove
      *
-     * @return static
+     * @return $this
      */
     public function removeTag(Tag $tag): static
     {
@@ -335,7 +334,7 @@ class Event
     /**
      * Getter for author.
      *
-     * @return User|null
+     * @return User|null User entity
      */
     public function getAuthor(): ?User
     {
@@ -347,7 +346,7 @@ class Event
      *
      * @param User|null $author Author
      *
-     * @return static
+     * @return $this
      */
     public function setAuthor(?User $author): static
     {
@@ -359,7 +358,7 @@ class Event
     /**
      * Getter for status.
      *
-     * @return EventStatus
+     * @return EventStatus Event staus
      */
     public function getStatus(): EventStatus
     {
@@ -369,9 +368,9 @@ class Event
     /**
      * Setter for status.
      *
-     * @param EventStatus $status Status
+     * @param EventStatus $status Event status
      *
-     * @return static
+     * @return $this
      */
     public function setStatus(EventStatus $status): static
     {

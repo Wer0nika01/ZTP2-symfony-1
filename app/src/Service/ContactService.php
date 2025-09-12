@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contact service
+ * Contact service.
  */
 
 namespace App\Service;
@@ -23,8 +23,8 @@ class ContactService implements ContactServiceInterface
     /**
      * Construct.
      *
-     * @param ContactRepository  $contactRepository
-     * @param PaginatorInterface $paginator
+     * @param ContactRepository  $contactRepository Contact repository
+     * @param PaginatorInterface $paginator         Paginator
      */
     public function __construct(private readonly ContactRepository $contactRepository, private readonly PaginatorInterface $paginator)
     {

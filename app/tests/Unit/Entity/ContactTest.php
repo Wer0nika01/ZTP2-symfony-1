@@ -9,7 +9,6 @@ namespace App\Tests\Unit\Entity;
 use App\Entity\Contact;
 use App\Entity\User;
 use App\Entity\Tag;
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -170,7 +169,7 @@ class ContactTest extends TestCase
      */
     public function testCreatedAtGetAndSet(): void
     {
-        $dateTime = new DateTimeImmutable();
+        $dateTime = new \DateTimeImmutable();
         $this->contact->setCreatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->contact->getCreatedAt());
@@ -184,7 +183,7 @@ class ContactTest extends TestCase
      */
     public function testUpdatedAtGetAndSet(): void
     {
-        $dateTime = new DateTimeImmutable();
+        $dateTime = new \DateTimeImmutable();
         $this->contact->setUpdatedAt($dateTime);
 
         $this->assertEquals($dateTime, $this->contact->getUpdatedAt());

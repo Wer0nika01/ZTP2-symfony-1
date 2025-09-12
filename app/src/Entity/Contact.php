@@ -7,7 +7,6 @@
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -93,14 +92,14 @@ class Contact
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * Updated at.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * Author.
@@ -130,7 +129,7 @@ class Contact
     /**
      * Getter for id.
      *
-     * @return int|null
+     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -140,7 +139,7 @@ class Contact
     /**
      * Getter for first name.
      *
-     * @return string|null
+     * @return string|null String first name
      */
     public function getFirstName(): ?string
     {
@@ -152,7 +151,7 @@ class Contact
      *
      * @param string|null $firstName First name
      *
-     * @return static
+     * @return $this
      */
     public function setFirstName(?string $firstName): static
     {
@@ -164,7 +163,7 @@ class Contact
     /**
      * Getter for last name.
      *
-     * @return string|null
+     * @return string|null String last name
      */
     public function getLastName(): ?string
     {
@@ -176,7 +175,7 @@ class Contact
      *
      * @param string|null $lastName Last name
      *
-     * @return static
+     * @return $this
      */
     public function setLastName(?string $lastName): static
     {
@@ -188,7 +187,7 @@ class Contact
     /**
      * Getter for email.
      *
-     * @return string|null
+     * @return string|null String mail
      */
     public function getEmail(): ?string
     {
@@ -200,7 +199,7 @@ class Contact
      *
      * @param string|null $email Email address
      *
-     * @return static
+     * @return $this
      */
     public function setEmail(?string $email): static
     {
@@ -212,7 +211,7 @@ class Contact
     /**
      * Getter for phone number.
      *
-     * @return string|null
+     * @return string|null String Phone number
      */
     public function getPhone(): ?string
     {
@@ -224,7 +223,7 @@ class Contact
      *
      * @param string|null $phoneNumber Phone number
      *
-     * @return static
+     * @return $this
      */
     public function setPhone(?string $phoneNumber): static
     {
@@ -236,7 +235,7 @@ class Contact
     /**
      * Getter for address.
      *
-     * @return string|null
+     * @return string|null String address
      */
     public function getAddress(): ?string
     {
@@ -248,7 +247,7 @@ class Contact
      *
      * @param string|null $address Address
      *
-     * @return static
+     * @return $this
      */
     public function setAddress(?string $address): static
     {
@@ -260,7 +259,7 @@ class Contact
     /**
      * Getter for company.
      *
-     * @return string|null
+     * @return string|null String company
      */
     public function getCompany(): ?string
     {
@@ -272,7 +271,7 @@ class Contact
      *
      * @param string|null $company Company
      *
-     * @return static
+     * @return $this
      */
     public function setCompany(?string $company): static
     {
@@ -284,7 +283,7 @@ class Contact
     /**
      * Getter for job title.
      *
-     * @return string|null
+     * @return string|null String job title
      */
     public function getJobTitle(): ?string
     {
@@ -296,7 +295,7 @@ class Contact
      *
      * @param string|null $jobTitle Job title
      *
-     * @return static
+     * @return $this
      */
     public function setJobTitle(?string $jobTitle): static
     {
@@ -308,7 +307,7 @@ class Contact
     /**
      * Getter for notes.
      *
-     * @return string|null
+     * @return string|null String notes
      */
     public function getNotes(): ?string
     {
@@ -320,7 +319,7 @@ class Contact
      *
      * @param string|null $notes Notes
      *
-     * @return static
+     * @return $this
      */
     public function setNotes(?string $notes): static
     {
@@ -332,9 +331,9 @@ class Contact
     /**
      * Getter for created at.
      *
-     * @return DateTimeImmutable|null
+     * @return \DateTimeImmutable|null Date Time created at
      */
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -342,9 +341,9 @@ class Contact
     /**
      * Setter for created at.
      *
-     * @param DateTimeImmutable|null $createdAt Created at
+     * @param \DateTimeImmutable|null $createdAt Created at
      */
-    public function setCreatedAt(?DateTimeImmutable $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -352,9 +351,9 @@ class Contact
     /**
      * Getter for updated at.
      *
-     * @return DateTimeImmutable|null
+     * @return \DateTimeImmutable|null Date Time updated at
      */
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -362,9 +361,9 @@ class Contact
     /**
      * Setter for updated at.
      *
-     * @param DateTimeImmutable|null $updatedAt Updated at
+     * @param \DateTimeImmutable|null $updatedAt Updated at
      */
-    public function setUpdatedAt(?DateTimeImmutable $updatedAt): void
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
@@ -372,7 +371,7 @@ class Contact
     /**
      * Getter for author.
      *
-     * @return User|null
+     * @return User|null User entity
      */
     public function getAuthor(): ?User
     {
@@ -384,7 +383,7 @@ class Contact
      *
      * @param User|null $author Author
      *
-     * @return static
+     * @return $this
      */
     public function setAuthor(?User $author): static
     {
@@ -406,9 +405,9 @@ class Contact
     /**
      * Add tag.
      *
-     * @param Tag $tag Tag
+     * @param Tag $tag Tag entity
      *
-     * @return static
+     * @return $this
      */
     public function addTag(Tag $tag): static
     {
@@ -422,9 +421,9 @@ class Contact
     /**
      * Remove tag.
      *
-     * @param Tag $tag Tag
+     * @param Tag $tag Tag entity
      *
-     * @return static
+     * @return $this
      */
     public function removeTag(Tag $tag): static
     {

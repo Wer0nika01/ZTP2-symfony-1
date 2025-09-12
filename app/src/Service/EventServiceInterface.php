@@ -17,27 +17,27 @@ use App\Dto\EventListFiltersDto;
 interface EventServiceInterface
 {
     /**
-     * Get paginated list
+     * Get paginated list.
      *
-     * @param int                 $page
-     * @param User                $author
-     * @param EventListFiltersDto $filters
+     * @param int                 $page    Page number
+     * @param User                $author  Current user
+     * @param EventListFiltersDto $filters Create new scratch file from selection
      *
-     * @return PaginationInterface
+     * @return PaginationInterface PaginationInterface
      */
     public function getPaginatedList(int $page, User $author, EventListFiltersDto $filters): PaginationInterface;
 
     /**
-     * Save.
+     * Save event.
      *
-     * @param Event $event
+     * @param Event $event Event entity
      */
     public function save(Event $event): void;
 
     /**
-     * Delete.
+     * Delete event.
      *
-     * @param Event $event
+     * @param Event $event Event entity
      */
     public function delete(Event $event): void;
 }

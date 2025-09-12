@@ -76,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for id.
      *
-     * @return int|null
+     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for email.
      *
-     * @return string|null
+     * @return string|null String email
      */
     public function getEmail(): ?string
     {
@@ -143,9 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for password.
      *
-     * @see PasswordAuthenticatedUserInterface
-     *
-     * @return string|null
+     * @return string|null String user password
      */
     public function getPassword(): ?string
     {
@@ -172,9 +170,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Getter for avatar
+     * Getter for avatar.
      *
-     * @return Avatar|null
+     * @return Avatar|null Avatar entity
      */
     public function getAvatar(): ?Avatar
     {
@@ -184,7 +182,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Setter for avatar.
      *
-     * @param Avatar $avatar
+     * @param Avatar $avatar Avatar entity
      *
      * @return $this
      */
@@ -202,7 +200,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for firstName.
      *
-     * @return string|null
+     * @return string|null String first name
      */
     public function getFirstName(): ?string
     {
@@ -222,7 +220,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for lastName.
      *
-     * @return string|null
+     * @return string|null String last name
      */
     public function getLastName(): ?string
     {
@@ -242,7 +240,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for is blocked?
      *
-     * @return bool
+     * @return bool Bool is blocked
      */
     public function getIsBlocked(): bool
     {
@@ -252,7 +250,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Setter for Is blocked?
      *
-     * @param bool $isBlocked
+     * @param bool $isBlocked Is blocked
      *
      * @return $this
      */

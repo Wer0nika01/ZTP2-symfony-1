@@ -154,7 +154,7 @@ class UserServiceTest extends TestCase
             ->with('message.cannot_delete_last_admin')
             ->willReturn('Cannot delete the last admin.');
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Cannot delete the last admin.');
 
         $this->userRepositoryMock->expects($this->never())
@@ -243,14 +243,20 @@ class UserServiceTest extends TestCase
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
         $queryBuilderMock->expects($this->once())->method('where')->with('u.email = :email')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('andWhere')->with('u.id != :id')->willReturn($queryBuilderMock);
+        $matcher = $this->exactly(2);
 
-        $queryBuilderMock->expects($this->exactly(2))
-        ->method('setParameter')
-            ->withConsecutive(
-                ['email', $email],
-                ['id', $excludeId]
-            )
-            ->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($matcher)
+        ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $email, $excludeId, $queryBuilderMock) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('email', $parameters[0]);
+                $this->assertSame($email, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('id', $parameters[0]);
+                $this->assertSame($excludeId, $parameters[1]);
+            }
+            return $queryBuilderMock;
+        });
 
 
         $queryMock = $this->createMock(Query::class);

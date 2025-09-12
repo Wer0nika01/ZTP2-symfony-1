@@ -16,24 +16,21 @@ use Doctrine\Common\Collections\Collection;
  */
 class EventListFiltersDto
 {
-    private Collection $tags;
-
     /**
      * Constructor.
      *
-     * @param Collection       $tags
-     * @param Category|null    $category
-     * @param EventStatus|null $status
+     * @param Collection       $tags     Tags collection
+     * @param Category|null    $category Category entity
+     * @param EventStatus|null $status   Status entity
      */
-    public function __construct(Collection $tags, private ?Category $category = null, private ?EventStatus $status = null)
+    public function __construct(private Collection $tags, private ?Category $category = null, private ?EventStatus $status = null)
     {
-        $this->tags = $tags;
     }
 
     /**
-     *Setter for Category.
+     * Setter for Category.
      *
-     * @param Category|null $category
+     * @param Category|null $category Category entity
      *
      * @return $this
      */
@@ -47,7 +44,7 @@ class EventListFiltersDto
     /**
      * Getter for Category.
      *
-     * @return Category|null
+     * @return Category|null Category entity
      */
     public function getCategory(): ?Category
     {
@@ -57,7 +54,7 @@ class EventListFiltersDto
     /**
      * Setter for status.
      *
-     * @param EventStatus|null $status
+     * @param EventStatus|null $status status entity
      *
      * @return $this
      */
@@ -71,7 +68,7 @@ class EventListFiltersDto
     /**
      * Getter for Event Status.
      *
-     * @return EventStatus|null
+     * @return EventStatus|null Event status
      */
     public function getStatus(): ?EventStatus
     {
@@ -105,7 +102,7 @@ class EventListFiltersDto
     /**
      * Add tag to collection.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      *
      * @return $this
      */
@@ -121,7 +118,7 @@ class EventListFiltersDto
     /**
      * Remove tag from collection.
      *
-     * @param Tag $tag
+     * @param Tag $tag Tag entity
      *
      * @return $this
      */

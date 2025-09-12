@@ -25,9 +25,9 @@ use App\Form\Type\ContactListFilterType;
 class ContactController extends AbstractController
 {
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param ContactService $contactService
+     * @param ContactService $contactService Contact service
      */
     public function __construct(private readonly ContactService $contactService)
     {

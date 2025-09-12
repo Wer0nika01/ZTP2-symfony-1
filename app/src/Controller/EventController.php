@@ -31,8 +31,8 @@ class EventController extends AbstractController
     /**
      * Constructor.
      *
-     * @param EventServiceInterface $eventService
-     * @param TranslatorInterface   $translator
+     * @param EventServiceInterface $eventService Event service
+     * @param TranslatorInterface   $translator   Translator
      */
     public function __construct(private readonly EventServiceInterface $eventService, private readonly TranslatorInterface $translator)
     {
@@ -41,10 +41,10 @@ class EventController extends AbstractController
     /**
      * Index.
      *
-     * @param Request $request
-     * @param int     $page
+     * @param Request $request HTTP Request
+     * @param int     $page    Page number
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/event', name: 'event_index', methods: 'GET')]
     public function index(Request $request, #[MapQueryParameter] int $page = 1): Response
@@ -68,6 +68,7 @@ class EventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * View action.
      *
@@ -84,6 +85,7 @@ class EventController extends AbstractController
             ['event' => $event]
         );
     }
+
     /**
      * Create action.
      *
@@ -118,6 +120,7 @@ class EventController extends AbstractController
             ['form' => $form->createView()]
         );
     }
+
     /**
      * Edit action.
      *
@@ -151,18 +154,19 @@ class EventController extends AbstractController
         return $this->render(
             'event/edit.html.twig',
             [
-            'form' => $form->createView(),
-            'event' => $event,
+                'form' => $form->createView(),
+                'event' => $event,
             ]
         );
     }
+
     /**
      * Delete action.
      *
-     * @param Request $request
-     * @param Event   $event
+     * @param Request $request HTTP Request
+     * @param Event   $event   Event entity
      *
-     * @return Response
+     * @return Response HTTP response
      */
     #[Route('/event/{id}/delete', name: 'event_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted(EventVoter::DELETE, subject: 'event')]

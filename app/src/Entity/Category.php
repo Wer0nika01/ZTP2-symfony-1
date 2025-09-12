@@ -7,7 +7,6 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -44,17 +43,17 @@ class Category
      * Created at.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Assert\Type(DateTimeImmutable::class)]
+    #[Assert\Type(\DateTimeImmutable::class)]
     #[Gedmo\Timestampable(on: 'create')]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * Updated at.
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    #[Assert\Type(DateTimeImmutable::class)]
+    #[Assert\Type(\DateTimeImmutable::class)]
     #[Gedmo\Timestampable(on: 'update')]
-    private ?DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     /**
      * Slug.
@@ -66,7 +65,7 @@ class Category
     /**
      * Getter for id.
      *
-     * @return int|null
+     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -76,7 +75,7 @@ class Category
     /**
      * Getter for title.
      *
-     * @return string|null
+     * @return string|null String title
      */
     public function getTitle(): ?string
     {
@@ -86,7 +85,7 @@ class Category
     /**
      * Setter for title.
      *
-     * @param string|null $title
+     * @param string|null $title Title
      */
     public function setTitle(?string $title): void
     {
@@ -96,9 +95,9 @@ class Category
     /**
      * Getter for created at.
      *
-     * @return DateTimeImmutable|null
+     * @return \DateTimeImmutable|null Date Time create at
      */
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -106,9 +105,9 @@ class Category
     /**
      * Setter for created at.
      *
-     * @param DateTimeImmutable|null $createdAt
+     * @param \DateTimeImmutable|null $createdAt Create at
      */
-    public function setCreatedAt(?DateTimeImmutable $createdAt): void
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -116,9 +115,9 @@ class Category
     /**
      * Getter for updated at.
      *
-     * @return DateTimeImmutable|null
+     * @return \DateTimeImmutable|null Date Time updated at
      */
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -126,9 +125,9 @@ class Category
     /**
      * Setter for updated at.
      *
-     * @param DateTimeImmutable|null $updatedAt
+     * @param \DateTimeImmutable|null $updatedAt Updated at
      */
-    public function setUpdatedAt(?DateTimeImmutable $updatedAt): void
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
@@ -136,7 +135,7 @@ class Category
     /**
      * Getter for slug.
      *
-     * @return string|null
+     * @return string|null String slug
      */
     public function getSlug(): ?string
     {
@@ -146,7 +145,7 @@ class Category
     /**
      * Setter for slug.
      *
-     * @param string $slug
+     * @param string $slug slug
      */
     public function setSlug(string $slug): void
     {

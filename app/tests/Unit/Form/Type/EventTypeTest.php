@@ -43,131 +43,134 @@ class EventTypeTest extends TestCase
     public function testBuildForm(): void
     {
         $builder = $this->createMock(FormBuilderInterface::class);
+        $matcher = $this->exactly(9);
 
-        $builder->expects($this->exactly(9))
-            ->method('add')
-            ->withConsecutive(
-                [
-                    'title',
-                    TextType::class,
-                    [
-                        'label' => 'label.title',
-                        'required' => true,
-                        'attr' => ['max_length' => 255],
-                    ],
-                ],
-                [
-                    'description',
-                    TextareaType::class,
-                    [
-                        'required' => false,
-                        'label' => 'label.description',
-                        'attr' => ['rows' => 7],
-                    ],
-                ],
-                [
-                    'startTime',
-                    DateTimeType::class,
-                    [
-                        'label' => 'label.startTime',
-                        'widget' => 'single_text',
-                        'input' => 'datetime_immutable',
-                        'required' => true,
-                    ],
-                ],
-                [
-                    'endTime',
-                    DateTimeType::class,
-                    [
-                        'label' => 'label.endTime',
-                        'widget' => 'single_text',
-                        'input' => 'datetime_immutable',
-                        'required' => false,
-                    ],
-                ],
-                [
-                    'location',
-                    TextType::class,
-                    [
-                        'label' => 'label.location',
-                        'required' => false,
-                        'attr' => ['max_length' => 255],
-                    ],
-                ],
-                [
-                    'isAllDay',
-                    CheckboxType::class,
-                    [
-                        'label' => 'label.isAllDay',
-                        'required' => false,
-                    ],
-                ],
-                [
-                    'category',
-                    EntityType::class,
-                    $this->callback(function (array $options) {
-                        $this->assertArrayHasKey('class', $options);
-                        $this->assertEquals(Category::class, $options['class']);
-                        $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertIsCallable($options['choice_label']);
-                        $this->assertArrayHasKey('label', $options);
-                        $this->assertEquals('label.category', $options['label']);
-                        $this->assertArrayHasKey('placeholder', $options);
-                        $this->assertEquals('label.none', $options['placeholder']);
-                        $this->assertArrayHasKey('required', $options);
-                        $this->assertTrue($options['required']);
+        $builder->expects($matcher)
+            ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('title', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
+                    'label' => 'label.title',
+                    'required' => true,
+                    'attr' => ['max_length' => 255],
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('description', $parameters[0]);
+                $this->assertSame(TextareaType::class, $parameters[1]);
+                $this->assertSame([
+                    'required' => false,
+                    'label' => 'label.description',
+                    'attr' => ['rows' => 7],
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('startTime', $parameters[0]);
+                $this->assertSame(DateTimeType::class, $parameters[1]);
+                $this->assertSame([
+                    'label' => 'label.startTime',
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                    'required' => true,
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('endTime', $parameters[0]);
+                $this->assertSame(DateTimeType::class, $parameters[1]);
+                $this->assertSame([
+                    'label' => 'label.endTime',
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                    'required' => false,
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('location', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
+                    'label' => 'label.location',
+                    'required' => false,
+                    'attr' => ['max_length' => 255],
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('isAllDay', $parameters[0]);
+                $this->assertSame(CheckboxType::class, $parameters[1]);
+                $this->assertSame([
+                    'label' => 'label.isAllDay',
+                    'required' => false,
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 7) {
+                $this->assertSame('category', $parameters[0]);
+                $this->assertSame(EntityType::class, $parameters[1]);
+                $callback = function (array $options) {
+                    $this->assertArrayHasKey('class', $options);
+                    $this->assertEquals(Category::class, $options['class']);
+                    $this->assertArrayHasKey('choice_label', $options);
+                    $this->assertIsCallable($options['choice_label']);
+                    $this->assertArrayHasKey('label', $options);
+                    $this->assertEquals('label.category', $options['label']);
+                    $this->assertArrayHasKey('placeholder', $options);
+                    $this->assertEquals('label.none', $options['placeholder']);
+                    $this->assertArrayHasKey('required', $options);
+                    $this->assertTrue($options['required']);
 
-                        $mockCategory = $this->createMock(Category::class);
-                        $mockCategory->method('getTitle')->willReturn('Test Category Title');
-                        $this->assertEquals('Test Category Title', call_user_func($options['choice_label'], $mockCategory));
+                    $mockCategory = $this->createMock(Category::class);
+                    $mockCategory->method('getTitle');
+                    $this->assertEquals('Test Category Title', call_user_func($options['choice_label'], $mockCategory));
 
-                        return true;
-                    }),
-                ],
-                [
-                    'tags',
-                    EntityType::class,
-                    $this->callback(function (array $options) {
-                        $this->assertArrayHasKey('class', $options);
-                        $this->assertEquals(Tag::class, $options['class']);
-                        $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertEquals('name', $options['choice_label']);
-                        $this->assertArrayHasKey('multiple', $options);
-                        $this->assertTrue($options['multiple']);
-                        $this->assertArrayHasKey('expanded', $options);
-                        $this->assertTrue($options['expanded']);
-                        $this->assertArrayHasKey('label', $options);
-                        $this->assertEquals('label.tags', $options['label']);
-                        $this->assertArrayHasKey('required', $options);
-                        $this->assertFalse($options['required']);
-                        $this->assertArrayHasKey('by_reference', $options);
-                        $this->assertFalse($options['by_reference']);
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[2]));
+            }
+            if ($matcher->getInvocationCount() === 8) {
+                $this->assertSame('tags', $parameters[0]);
+                $this->assertSame(EntityType::class, $parameters[1]);
+                $callback = function (array $options) {
+                    $this->assertArrayHasKey('class', $options);
+                    $this->assertEquals(Tag::class, $options['class']);
+                    $this->assertArrayHasKey('choice_label', $options);
+                    $this->assertEquals('name', $options['choice_label']);
+                    $this->assertArrayHasKey('multiple', $options);
+                    $this->assertTrue($options['multiple']);
+                    $this->assertArrayHasKey('expanded', $options);
+                    $this->assertTrue($options['expanded']);
+                    $this->assertArrayHasKey('label', $options);
+                    $this->assertEquals('label.tags', $options['label']);
+                    $this->assertArrayHasKey('required', $options);
+                    $this->assertFalse($options['required']);
+                    $this->assertArrayHasKey('by_reference', $options);
+                    $this->assertFalse($options['by_reference']);
 
-                        return true;
-                    }),
-                ],
-                [
-                    'status',
-                    EnumType::class,
-                    $this->callback(function (array $options) {
-                        $this->assertArrayHasKey('class', $options);
-                        $this->assertEquals(EventStatus::class, $options['class']);
-                        $this->assertArrayHasKey('choice_label', $options);
-                        $this->assertIsCallable($options['choice_label']); // It's a callable function
-                        $this->assertArrayHasKey('label', $options);
-                        $this->assertEquals('label.status', $options['label']);
-                        $this->assertArrayHasKey('required', $options);
-                        $this->assertTrue($options['required']);
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[2]));
+            }
+            if ($matcher->getInvocationCount() === 9) {
+                $this->assertSame('status', $parameters[0]);
+                $this->assertSame(EnumType::class, $parameters[1]);
+                $callback = function (array $options) {
+                    $this->assertArrayHasKey('class', $options);
+                    $this->assertEquals(EventStatus::class, $options['class']);
+                    $this->assertArrayHasKey('choice_label', $options);
+                    $this->assertIsCallable($options['choice_label']); // It's a callable function
+                    $this->assertArrayHasKey('label', $options);
+                    $this->assertEquals('label.status', $options['label']);
+                    $this->assertArrayHasKey('required', $options);
+                    $this->assertTrue($options['required']);
 
-                        $this->assertEquals('label.personal', call_user_func($options['choice_label'], EventStatus::PERSONAL));
-                        $this->assertEquals('label.important', call_user_func($options['choice_label'], EventStatus::IMPORTANT));
-                        $this->assertEquals('label.work', call_user_func($options['choice_label'], EventStatus::WORK));
+                    $this->assertEquals('label.personal', call_user_func($options['choice_label'], EventStatus::PERSONAL));
+                    $this->assertEquals('label.important', call_user_func($options['choice_label'], EventStatus::IMPORTANT));
+                    $this->assertEquals('label.work', call_user_func($options['choice_label'], EventStatus::WORK));
 
-                        return true;
-                    }),
-                ]
-            )
-            ->willReturnSelf();
+                    return true;
+                };
+                $this->assertTrue($callback($parameters[2]));
+            }
+            return $builder;
+        });
 
         $this->formType->buildForm($builder, []);
     }

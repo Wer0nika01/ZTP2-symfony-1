@@ -48,7 +48,7 @@ class Avatar
     /**
      * Getter for Id.
      *
-     * @return int|null
+     * @return int|null Int
      */
     public function getId(): ?int
     {
@@ -58,7 +58,7 @@ class Avatar
     /**
      * Getter for user.
      *
-     * @return User|null
+     * @return User|null User entity
      */
     public function getUser(): ?User
     {
@@ -68,7 +68,7 @@ class Avatar
     /**
      * Setter for user.
      *
-     * @param User|null $user
+     * @param User|null $user User entity
      */
     public function setUser(?User $user): void
     {
@@ -78,7 +78,7 @@ class Avatar
     /**
      * Getter for filename.
      *
-     * @return string|null
+     * @return string|null String
      */
     public function getFilename(): ?string
     {
@@ -88,7 +88,7 @@ class Avatar
     /**
      * Setter for filename.
      *
-     * @param string|null $filename
+     * @param string|null $filename File name
      */
     public function setFilename(?string $filename): void
     {

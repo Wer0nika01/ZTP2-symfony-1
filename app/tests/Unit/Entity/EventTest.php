@@ -11,7 +11,6 @@ use App\Entity\Enum\EventStatus;
 use App\Entity\Event;
 use App\Entity\Tag;
 use App\Entity\User;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
@@ -78,7 +77,7 @@ class EventTest extends TestCase
      */
     public function testStartTimeGetAndSet(): void
     {
-        $startTime = new DateTimeImmutable('2024-07-01 09:00:00');
+        $startTime = new \DateTimeImmutable('2024-07-01 09:00:00');
         $result = $this->event->setStartTime($startTime);
 
         $this->assertSame($this->event, $result);
@@ -93,7 +92,7 @@ class EventTest extends TestCase
      */
     public function testEndTimeGetAndSet(): void
     {
-        $endTime = new DateTimeImmutable('2024-07-01 17:00:00');
+        $endTime = new \DateTimeImmutable('2024-07-01 17:00:00');
         $result = $this->event->setEndTime($endTime);
 
         $this->assertSame($this->event, $result);

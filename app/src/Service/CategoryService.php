@@ -58,6 +58,7 @@ class CategoryService implements CategoryServiceInterface
             self::PAGINATOR_ITEMS_PER_PAGE
         );
     }
+
     /**
      * Save entity.
      *
@@ -67,6 +68,7 @@ class CategoryService implements CategoryServiceInterface
     {
         $this->categoryRepository->save($category);
     }
+
     /**
      * Delete entity.
      *

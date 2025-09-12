@@ -10,7 +10,6 @@ use App\Entity\User;
 use App\Form\Type\UserType;
 use App\Security\Voter\UserVoter;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionClass;
 use Symfony\Component\Form\PreloadedExtension;
 use Symfony\Component\Form\Test\TypeTestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -58,9 +57,7 @@ class UserTypeTest extends TypeTestCase
         $editedUser->setEmail('user@example.com');
         $this->setUserId($editedUser, 2);
 
-        $this->securityMock->method('isGranted')->willReturnCallback(function () use ($admin) {
-            return true;
-        });
+        $this->securityMock->method('isGranted')->willReturnCallback(fn() => true);
 
         $tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $tokenMock = $this->createMock(TokenInterface::class);
@@ -102,14 +99,10 @@ class UserTypeTest extends TypeTestCase
         $this->setUserId($adminSelf, 1);
 
         $this->securityMock->method('isGranted')->willReturnCallback(function ($attribute, $subject = null) use ($adminSelf) {
-            if ($attribute === 'ROLE_ADMIN') {
+            if ('ROLE_ADMIN' === $attribute) {
                 return true;
             }
-            if ($attribute === UserVoter::CAN_CHANGE_ROLES && $subject === $adminSelf) {
-                return false;
-            }
-
-            return true;
+            return !(UserVoter::CAN_CHANGE_ROLES === $attribute && $subject === $adminSelf);
         });
 
         $this->securityMock->method('getUser')->willReturn($adminSelf);
@@ -166,13 +159,10 @@ class UserTypeTest extends TypeTestCase
 
     /**
      * Set user Id.
-     *
-     * @param User $user
-     * @param int  $id
      */
     private function setUserId(User $user, int $id): void
     {
-        $ref = new ReflectionClass($user);
+        $ref = new \ReflectionClass($user);
         $prop = $ref->getProperty('id');
         $prop->setValue($user, $id);
     }
