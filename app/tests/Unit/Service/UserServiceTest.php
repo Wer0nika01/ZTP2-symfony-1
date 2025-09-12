@@ -247,14 +247,15 @@ class UserServiceTest extends TestCase
 
         $queryBuilderMock->expects($matcher)
         ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $email, $excludeId, $queryBuilderMock) {
-            if ($matcher->getInvocationCount() === 1) {
+            if (1 === $matcher->getInvocationCount()) {
                 $this->assertSame('email', $parameters[0]);
                 $this->assertSame($email, $parameters[1]);
             }
-            if ($matcher->getInvocationCount() === 2) {
+            if (2 === $matcher->getInvocationCount()) {
                 $this->assertSame('id', $parameters[0]);
                 $this->assertSame($excludeId, $parameters[1]);
             }
+
             return $queryBuilderMock;
         });
 

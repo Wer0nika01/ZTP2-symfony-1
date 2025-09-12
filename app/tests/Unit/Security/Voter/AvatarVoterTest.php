@@ -60,8 +60,6 @@ class AvatarVoterTest extends TestCase
      * @param mixed  $subject        Subject
      * @param bool   $expectedResult Expected result
      *
-     * @dataProvider provideSupportsData
-     *
      * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
@@ -108,8 +106,6 @@ class AvatarVoterTest extends TestCase
      * @param UserInterface|null $loggedInUser Logged-in user
      * @param User               $avatarOwner  Avatar owner
      * @param bool               $expectedVote Expected vote
-     *
-     * @dataProvider provideVoteOnAttributeData
      *
      * @throws \ReflectionException
      */

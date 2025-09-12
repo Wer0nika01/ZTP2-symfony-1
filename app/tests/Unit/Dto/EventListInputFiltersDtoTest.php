@@ -17,7 +17,9 @@ class EventListInputFiltersDtoTest extends TestCase
     /**
      * Test the constructor and ensure properties are correctly assigned.
      *
-     * @dataProvider provideConstructorData
+     * @param int|null $categoryId Category id
+     * @param int|null $tagId      Tag id
+     * @param int|null $statusId   Status id
      */
     public function testConstructor(?int $categoryId, ?int $tagId, ?int $statusId): void
     {
@@ -30,7 +32,8 @@ class EventListInputFiltersDtoTest extends TestCase
 
     /**
      * Data provider for testConstructor.
-     * [categoryId, tagId, statusId].
+     *
+     * @return array [categoryId, tagId, statusId]
      */
     public function provideConstructorData(): array
     {

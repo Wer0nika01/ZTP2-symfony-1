@@ -107,7 +107,7 @@ class TagsDataTransformerTest extends TestCase
 
         $this->tagService->expects($this->exactly(2))
             ->method('save')
-            ->will($this->returnCallback(fn(Tag $tag) => $tag));
+            ->will($this->returnCallback(fn (Tag $tag) => $tag));
 
         $result = $this->transformer->reverseTransform('newTag1, newTag2');
 
@@ -135,7 +135,7 @@ class TagsDataTransformerTest extends TestCase
 
         $this->tagService->expects($this->once())
             ->method('save')
-            ->will($this->returnCallback(fn(Tag $tag) => $tag));
+            ->will($this->returnCallback(fn (Tag $tag) => $tag));
 
         $result = $this->transformer->reverseTransform('existingTag, newTag');
 

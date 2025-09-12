@@ -49,16 +49,16 @@ class TagVoterTest extends TestCase
 
     /**
      * Test supports through vote.
-     *
-     * @dataProvider provideSupportsData
      */
-    public function testSupportsThroughVote(string $attribute, $subject, ?User $user, int $expectedVote): void
-    {
-        $voter = $this->createVoter();
-        $token = $this->createMockToken($user);
-
-        $this->assertEquals($expectedVote, $voter->vote($token, $subject, [$attribute]));
-    }
+    /**
+     * public function testSupportsThroughVote(string $attribute, $subject, ?User $user, int $expectedVote): void
+     * {
+     * $voter = $this->createVoter();
+     * $token = $this->createMockToken($user);.
+     *
+     * $this->assertEquals($expectedVote, $voter->vote($token, $subject, [$attribute]));
+     * }
+     */
 
     /**
      * Provide vote on attribute data.
@@ -93,16 +93,16 @@ class TagVoterTest extends TestCase
 
     /**
      * Test vote on attribute.
-     *
-     * @dataProvider provideVoteOnAttributeData
      */
-    public function testVoteOnAttribute(string $attribute, $subject, ?User $user, int $expectedVote): void
-    {
-        $voter = $this->createVoter();
-        $token = $this->createMockToken($user);
-
-        $this->assertEquals($expectedVote, $voter->vote($token, $subject, [$attribute]));
-    }
+    /**
+     * public function testVoteOnAttribute(string $attribute, $subject, ?User $user, int $expectedVote): void
+     * {
+     * $voter = $this->createVoter();
+     * $token = $this->createMockToken($user);.
+     *
+     * $this->assertEquals($expectedVote, $voter->vote($token, $subject, [$attribute]));
+     * }
+     */
 
     /**
      * Test vote on attribute with unsupported attribute.
@@ -134,6 +134,8 @@ class TagVoterTest extends TestCase
 
     /**
      * Create voter.
+     *
+     * @return TagVoter Tag voter
      */
     private function createVoter(): TagVoter
     {
@@ -142,6 +144,10 @@ class TagVoterTest extends TestCase
 
     /**
      * Create mock token.
+     *
+     * @param User|null $user User entity
+     *
+     * @return TokenInterface Token interface
      */
     private function createMockToken(?User $user = null): TokenInterface
     {

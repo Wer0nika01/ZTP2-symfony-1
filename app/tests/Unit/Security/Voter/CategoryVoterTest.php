@@ -63,8 +63,6 @@ class CategoryVoterTest extends TestCase
      * @param mixed  $subject        Subject
      * @param bool   $expectedResult Expected result
      *
-     * @dataProvider provideSupportsData
-     *
      * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
@@ -116,8 +114,6 @@ class CategoryVoterTest extends TestCase
      * @param string             $attribute      Attribute
      * @param bool               $expectedResult Expected result
      *
-     * @dataProvider provideVoteOnAttributeData
-     *
      * @throws \ReflectionException
      */
     public function testVoteOnAttribute(?UserInterface $loggedInUser, string $attribute, bool $expectedResult): void
@@ -135,7 +131,7 @@ class CategoryVoterTest extends TestCase
             $method->invoke($this->categoryVoter, $attribute, $subject, $token),
             sprintf(
                 'Expected vote for attribute "%s" with user type %s (admin status: %s) to be %s',
-                get_debug_type($loggedInUser),
+                $attribute,
                 get_debug_type($loggedInUser),
                 $loggedInUser instanceof User && in_array('ROLE_ADMIN', $loggedInUser->getRoles()) ? 'true' : 'false',
                 $expectedResult ? 'true' : 'false'

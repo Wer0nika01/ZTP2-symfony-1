@@ -53,6 +53,7 @@ class UserVoter extends Voter
         if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::CAN_CHANGE_ROLES, self::BLOCK])) { // Dodano BLOCK
             return false;
         }
+
         return $subject instanceof User;
     }
 
@@ -144,6 +145,7 @@ class UserVoter extends Voter
         }
 
         $currentAdminCount = $this->userRepository->countAdmins();
+
         return 1 !== $currentAdminCount;
     }
 
@@ -161,6 +163,7 @@ class UserVoter extends Voter
         if (!$this->security->isGranted('ROLE_ADMIN')) {
             return false;
         }
+
         // An admin cannot block/unblock themselves.
         return $userToOperateOn->getId() !== $loggedInUser->getId();
     }
