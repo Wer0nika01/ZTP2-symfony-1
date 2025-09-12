@@ -22,12 +22,7 @@ class ContactVoter extends Voter
     public const DELETE = 'CONTACT_DELETE';
 
     /**
-     * Determines if the attribute and subject are supported by this voter.
-     *
-     * @param string $attribute String attribute
-     * @param mixed  $subject   Subject
-     *
-     * @return bool True or false
+     * Supports.
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -36,14 +31,7 @@ class ContactVoter extends Voter
     }
 
     /**
-     * Perform a single access check operation on a given attribute, subject and token.
-     * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
-     *
-     * @param string         $attribute String attribute
-     * @param mixed          $subject   Subject
-     * @param TokenInterface $token     Token
-     *
-     * @return bool True or false
+     * Vote one attribute.
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {

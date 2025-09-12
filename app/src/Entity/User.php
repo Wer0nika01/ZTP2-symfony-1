@@ -75,8 +75,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for id.
-     *
-     * @return int|null Int id
      */
     public function getId(): ?int
     {
@@ -85,8 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for email.
-     *
-     * @return string|null String email
      */
     public function getEmail(): ?string
     {
@@ -95,8 +91,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for email.
-     *
-     * @param string $email Email
      */
     public function setEmail(string $email): void
     {
@@ -107,8 +101,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * A visual identifier that represents this user.
      *
      * @see UserInterface
-     *
-     * @return string User identifier
      */
     public function getUserIdentifier(): string
     {
@@ -133,7 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Setter for roles.
      *
-     * @param list<int, string> $roles Roles
+     * @param list<int, string> $roles
      */
     public function setRoles(array $roles): void
     {
@@ -143,7 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Getter for password.
      *
-     * @return string|null String user password
+     * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): ?string
     {
@@ -152,8 +144,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for password.
-     *
-     * @param string $password User password
      */
     public function setPassword(string $password): void
     {
@@ -171,8 +161,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for avatar.
-     *
-     * @return Avatar|null Avatar entity
      */
     public function getAvatar(): ?Avatar
     {
@@ -181,8 +169,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for avatar.
-     *
-     * @param Avatar $avatar Avatar entity
      *
      * @return $this
      */
@@ -199,8 +185,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for firstName.
-     *
-     * @return string|null String first name
      */
     public function getFirstName(): ?string
     {
@@ -209,8 +193,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for firstName.
-     *
-     * @param string|null $firstName First name
      */
     public function setFirstName(?string $firstName): void
     {
@@ -219,8 +201,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for lastName.
-     *
-     * @return string|null String last name
      */
     public function getLastName(): ?string
     {
@@ -239,8 +219,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for is blocked?
-     *
-     * @return bool Bool is blocked
      */
     public function getIsBlocked(): bool
     {
@@ -249,8 +227,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for Is blocked?
-     *
-     * @param bool $isBlocked Is blocked
      *
      * @return $this
      */

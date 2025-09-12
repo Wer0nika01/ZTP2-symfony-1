@@ -59,13 +59,9 @@ class ContactVoterTest extends TestCase
     /**
      * Test the protected supports' method.
      *
-     * @param string $attribute      Attribute
-     * @param mixed  $subject        Subject
-     * @param bool   $expectedResult Expected result
+     * @dataProvider provideSupportsData
      *
      * @throws \ReflectionException
-     *
-     * @dataProvider provideSupportsData
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
@@ -125,14 +121,9 @@ class ContactVoterTest extends TestCase
     /**
      * Test the voteOnAttribute method.
      *
-     * @param array|null $loggedInUserRoles  Array of logged-in user roles
-     * @param bool       $isOwner            Is owner
-     * @param string     $attribute          Atrribute
-     * @param bool       $expectedVoteResult Expected result
+     * @dataProvider provideVoteOnAttributeData
      *
      * @throws \ReflectionException
-     *
-     * @dataProvider provideVoteOnAttributeData
      */
     public function testVoteOnAttribute(?array $loggedInUserRoles, bool $isOwner, string $attribute, bool $expectedVoteResult): void
     {

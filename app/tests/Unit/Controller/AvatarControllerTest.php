@@ -102,7 +102,7 @@ class AvatarControllerTest extends TestCase
             ->with('avatar/create.html.twig', ['form' => $this->mockFormView])
             ->willReturn(new Response());
 
-        $request = Request::create('/avatar/create', Request::METHOD_POST);
+        $request = Request::create('/avatar/create', \Symfony\Component\HttpFoundation\Request::METHOD_POST);
         $this->controller->create($request);
     }
 
@@ -151,7 +151,7 @@ class AvatarControllerTest extends TestCase
             ->method('render')
             ->with(
                 'avatar/edit.html.twig',
-                $this->callback(fn ($args) => $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar)
+                $this->callback(fn($args) => $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar)
             )
             ->willReturn(new Response());
 
@@ -183,11 +183,11 @@ class AvatarControllerTest extends TestCase
             ->method('render')
             ->with(
                 'avatar/edit.html.twig',
-                $this->callback(fn ($args) => $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar)
+                $this->callback(fn($args) => $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar)
             )
             ->willReturn(new Response());
 
-        $request = Request::create('/avatar/1/edit', Request::METHOD_PUT);
+        $request = Request::create('/avatar/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_PUT);
         $this->controller->edit($request, $mockAvatar);
     }
 
@@ -223,11 +223,11 @@ class AvatarControllerTest extends TestCase
             ->method('render')
             ->with(
                 'avatar/delete.html.twig',
-                $this->callback(fn ($args) => $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar)
+                $this->callback(fn($args) => $args['form'] === $this->mockFormView && $args['avatar'] === $mockAvatar)
             )
             ->willReturn(new Response());
 
-        $request = Request::create('/avatar/1/delete', Request::METHOD_DELETE);
+        $request = Request::create('/avatar/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_DELETE);
         $this->controller->delete($request, $mockAvatar);
     }
 
@@ -263,7 +263,7 @@ class AvatarControllerTest extends TestCase
             ->with('app_profile');
         $this->controller->expects($this->never())->method('render');
 
-        $request = Request::create('/avatar/1/delete', Request::METHOD_DELETE);
+        $request = Request::create('/avatar/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_DELETE);
         $response = $this->controller->delete($request, $mockAvatar);
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -316,15 +316,13 @@ class AvatarControllerTest extends TestCase
             return new RedirectResponse($url, $status);
         });
 
-        $this->controller->method('generateUrl')->willReturnCallback(fn ($route, $params = []) => $this->mockUrlGenerator->generate($route, $params));
+        $this->controller->method('generateUrl')->willReturnCallback(fn($route, $params = []) => $this->mockUrlGenerator->generate($route, $params));
 
         $this->controller->method('render')->willReturn(new Response());
     }
 
     /**
      * Helper to mock a user with a specific avatar.
-     *
-     * @param Avatar|null $avatar Avatar entity
      */
     private function mockUserWithAvatar(?Avatar $avatar = null): void
     {
@@ -345,11 +343,6 @@ class AvatarControllerTest extends TestCase
 
     /**
      * Helper to create a mocked form with necessary behaviors.
-     *
-     * @param bool $isSubmitted Is submitted
-     * @param bool $isValid     Is valid
-     *
-     * @return MockObject|FormInterface Form interface mock
      */
     private function createMockForm(bool $isSubmitted, bool $isValid): MockObject|FormInterface
     {

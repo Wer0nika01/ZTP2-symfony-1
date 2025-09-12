@@ -36,7 +36,7 @@ class ContactControllerTest extends TestCase
     private $capturedContact;
 
     /**
-     * Test index action get request.
+     * test index action get request.
      */
     public function testIndexActionGetRequest(): void
     {
@@ -162,7 +162,7 @@ class ContactControllerTest extends TestCase
      */
     public function testCreateActionPostRequestInvalidForm(): void
     {
-        $request = Request::create('/contact/create', Request::METHOD_POST);
+        $request = Request::create('/contact/create', \Symfony\Component\HttpFoundation\Request::METHOD_POST);
         $this->mockLoggedInUser();
 
         $form = $this->createMock(FormInterface::class);
@@ -235,7 +235,7 @@ class ContactControllerTest extends TestCase
      */
     public function testEditActionPostRequestInvalidForm(): void
     {
-        $request = Request::create('/contact/1/edit', Request::METHOD_POST);
+        $request = Request::create('/contact/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_POST);
         $contact = $this->createMock(Contact::class);
 
         $form = $this->createMock(FormInterface::class);
@@ -267,7 +267,7 @@ class ContactControllerTest extends TestCase
      */
     public function testEditActionPostRequestValidForm(): void
     {
-        $request = Request::create('/contact/1/edit', Request::METHOD_POST);
+        $request = Request::create('/contact/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_POST);
         $contact = $this->createMock(Contact::class);
 
         $form = $this->createMock(FormInterface::class);
@@ -339,7 +339,7 @@ class ContactControllerTest extends TestCase
      */
     public function testDeleteActionPostRequestInvalidForm(): void
     {
-        $request = Request::create('/contact/1/delete', Request::METHOD_POST);
+        $request = Request::create('/contact/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_POST);
         $contact = $this->createMock(Contact::class);
 
         $formBuilder = $this->createMock(FormBuilderInterface::class);
@@ -375,7 +375,7 @@ class ContactControllerTest extends TestCase
      */
     public function testDeleteActionPostRequestValidForm(): void
     {
-        $request = Request::create('/contact/1/delete', Request::METHOD_POST);
+        $request = Request::create('/contact/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_POST);
         $contact = $this->createMock(Contact::class);
 
         $formBuilder = $this->createMock(FormBuilderInterface::class);
@@ -427,7 +427,7 @@ class ContactControllerTest extends TestCase
 
         $this->controller->method('addFlash');
         $this->controller->method('render')->willReturn(new Response());
-        $this->controller->method('redirectToRoute')->willReturnCallback(fn ($route) => new RedirectResponse('/'.$route));
+        $this->controller->method('redirectToRoute')->willReturnCallback(fn($route) => new RedirectResponse('/'.$route));
 
         $mockUser = $this->createMock(User::class);
         $mockUser->method('getId')->willReturn(1);
@@ -441,8 +441,6 @@ class ContactControllerTest extends TestCase
 
     /**
      * Helper to mock a logged-in user.
-     *
-     * @return MockObject|User Mocked user
      */
     private function mockLoggedInUser(): MockObject|User
     {

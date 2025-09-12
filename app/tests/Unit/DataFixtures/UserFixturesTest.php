@@ -72,7 +72,7 @@ class UserFixturesTest extends TestCase
 
         $this->passwordHasher->expects($this->exactly($totalExpectedUsers))
             ->method('hashPassword')
-            ->willReturnCallback(fn (User $user, string $plainPassword) => sprintf('hashed_%s_%s', $user->getEmail(), $plainPassword));
+            ->willReturnCallback(fn(User $user, string $plainPassword) => sprintf('hashed_%s_%s', $user->getEmail(), $plainPassword));
 
         $this->referenceRepository->expects($this->never())
             ->method('setReference')

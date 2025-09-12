@@ -21,7 +21,7 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Constructor.
      *
-     * @param ManagerRegistry $registry Registry manager
+     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -31,8 +31,8 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Saves a Contact entity.
      *
-     * @param Contact $entity the Contact entity to save
-     * @param bool    $flush  whether to flush the changes immediately
+     * @param Contact $entity
+     * @param bool $flush
      */
     public function save(Contact $entity, bool $flush = false): void
     {
@@ -46,8 +46,8 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Removes a Contact entity.
      *
-     * @param Contact $entity the Contact entity to remove
-     * @param bool    $flush  whether to flush the changes immediately
+     * @param Contact $entity
+     * @param bool $flush
      */
     public function remove(Contact $entity, bool $flush = false): void
     {
@@ -61,10 +61,10 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Query all contacts.
      *
-     * @param User                  $author  Contacts author
-     * @param ContactListFiltersDto $filters Filters
+     * @param User                  $author
+     * @param ContactListFiltersDto $filters
      *
-     * @return QueryBuilder Query builder
+     * @return QueryBuilder
      */
     public function queryAll(User $author, ContactListFiltersDto $filters): QueryBuilder
     {
@@ -85,10 +85,8 @@ class ContactRepository extends ServiceEntityRepository
     /**
      * Applies filters to the query builder for the list.
      *
-     * @param QueryBuilder          $queryBuilder Query builder
-     * @param ContactListFiltersDto $filters      Filters DTO
-     *
-     * @return void Query builder
+     * @param QueryBuilder $queryBuilder
+     * @param ContactListFiltersDto $filters
      */
     private function applyFiltersToList(QueryBuilder $queryBuilder, ContactListFiltersDto $filters): void
     {

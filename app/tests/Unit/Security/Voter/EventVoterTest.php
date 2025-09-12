@@ -59,13 +59,9 @@ class EventVoterTest extends TestCase
     /**
      * Test the protected supports' method.
      *
-     * @param string $attribute      Attribute
-     * @param mixed  $subject        Subject
-     * @param bool   $expectedResult Expected result
+     * @dataProvider provideSupportsData
      *
      * @throws \ReflectionException
-     *
-     * @dataProvider provideSupportsData
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
@@ -116,16 +112,11 @@ class EventVoterTest extends TestCase
     }
 
     /**
-     * Test the voteOnAttribute method.
-     *
-     * @param UserInterface|null $loggedInUser   Logged-in user
-     * @param int|null           $eventAuthorId  Event author id
-     * @param string             $attribute      Attribute
-     * @param bool               $expectedResult Expected result
-     *
-     * @throws \ReflectionException
+     * Test the protected voteOnAttribute method.
      *
      * @dataProvider provideVoteOnAttributeData
+     *
+     * @throws \ReflectionException
      */
     public function testVoteOnAttribute(?UserInterface $loggedInUser, ?int $eventAuthorId, string $attribute, bool $expectedResult): void
     {
