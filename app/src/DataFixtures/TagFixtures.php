@@ -3,10 +3,10 @@
 /**
  * Tag fixtures.
  */
+
 namespace App\DataFixtures;
 
 use App\Entity\Tag;
-use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -18,8 +18,6 @@ class TagFixtures extends AbstractBaseFixtures
 {
     /**
      * Constructor.
-     *
-     * @param SluggerInterface $slugger
      */
     public function __construct(private readonly SluggerInterface $slugger)
     {
@@ -39,12 +37,12 @@ class TagFixtures extends AbstractBaseFixtures
             $tag->setName($this->faker->unique()->word);
             $tag->setSlug($this->slugger->slug($tag->getName())->lower());
             $tag->setCreatedAt(
-                DateTimeImmutable::createFromMutable(
+                \DateTimeImmutable::createFromMutable(
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );
             $tag->setUpdatedAt(
-                DateTimeImmutable::createFromMutable(
+                \DateTimeImmutable::createFromMutable(
                     $this->faker->dateTimeBetween('-100 days', '-1 days')
                 )
             );

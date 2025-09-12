@@ -23,11 +23,6 @@ class CategoryVoter extends Voter
 
     /**
      * Determines if the attribute and subject are supported by this voter.
-     *
-     * @param string $attribute
-     * @param mixed  $subject
-     *
-     * @return bool
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -38,12 +33,6 @@ class CategoryVoter extends Voter
     /**
      * Perform a single access check operation on a given attribute, subject and token.
      * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
-     *
-     * @param string         $attribute
-     * @param mixed          $subject
-     * @param TokenInterface $token
-     *
-     * @return bool
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {

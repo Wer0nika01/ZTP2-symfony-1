@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -24,7 +23,6 @@ class UserRepositoryTest extends TestCase
     private UserRepository $userRepository;
     private $entityManagerMock;
 
-
     /**
      * Tests the upgradePassword() method for handling an unsupported user type.
      */
@@ -34,7 +32,7 @@ class UserRepositoryTest extends TestCase
         $newHashedPassword = 'new_hashed_password';
 
         $this->expectException(UnsupportedUserException::class);
-        $this->expectExceptionMessage(sprintf('Instances of "%s" are not supported.', get_class($unsupportedUser)));
+        $this->expectExceptionMessage(sprintf('Instances of "%s" are not supported.', $unsupportedUser::class));
 
         $this->entityManagerMock->expects($this->never())->method('persist');
         $this->entityManagerMock->expects($this->never())->method('flush');
@@ -121,7 +119,7 @@ class UserRepositoryTest extends TestCase
     protected function setUp(): void
     {
         $classMetadataMock = $this->createMock(ClassMetadata::class);
-        $reflectionProperty = new ReflectionProperty(ClassMetadata::class, 'name');
+        $reflectionProperty = new \ReflectionProperty(ClassMetadata::class, 'name');
         $reflectionProperty->setValue($classMetadataMock, User::class);
 
         $this->entityManagerMock = $this->createMock(EntityManagerInterface::class);

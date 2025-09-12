@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contact service
+ * Contact service.
  */
 
 namespace App\Service;

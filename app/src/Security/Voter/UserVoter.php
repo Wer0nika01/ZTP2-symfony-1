@@ -53,12 +53,7 @@ class UserVoter extends Voter
         if (!in_array($attribute, [self::VIEW, self::EDIT, self::DELETE, self::CAN_CHANGE_ROLES, self::BLOCK])) { // Dodano BLOCK
             return false;
         }
-
-        if (!$subject instanceof User) {
-            return false;
-        }
-
-        return true;
+        return $subject instanceof User;
     }
 
     /**
@@ -81,7 +76,7 @@ class UserVoter extends Voter
         /** @var User $userToOperateOn */
         $userToOperateOn = $subject;
 
-        if ($this->security->isGranted('ROLE_ADMIN') && $attribute === self::CAN_CHANGE_ROLES) {
+        if ($this->security->isGranted('ROLE_ADMIN') && self::CAN_CHANGE_ROLES === $attribute) {
             try {
                 return $this->canAdminChangeRoles($userToOperateOn, $loggedInUser);
             } catch (NoResultException|NonUniqueResultException) {
@@ -103,8 +98,6 @@ class UserVoter extends Voter
      *
      * @param User          $userToOperateOn The user being viewed
      * @param UserInterface $loggedInUser    The currently logged-in user
-     *
-     * @return bool
      */
     private function canView(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
@@ -116,8 +109,6 @@ class UserVoter extends Voter
      *
      * @param User          $userToOperateOn The user being edited
      * @param UserInterface $loggedInUser    The currently logged-in user
-     *
-     * @return bool
      */
     private function canEdit(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
@@ -126,9 +117,6 @@ class UserVoter extends Voter
 
     /**
      * Checks if the logged-in user can delete the given user.
-     *
-     *
-     * @return bool
      */
     private function canDelete(): bool
     {
@@ -141,8 +129,6 @@ class UserVoter extends Voter
      * @param User          $userToOperateOn The user whose roles are being changed
      * @param UserInterface $loggedInUser    The currently logged-in administrator
      *
-     * @return bool
-     *
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
@@ -153,12 +139,7 @@ class UserVoter extends Voter
         }
 
         $currentAdminCount = $this->userRepository->countAdmins();
-
-        if ($currentAdminCount === 1) {
-            return false;
-        }
-
-        return true;
+        return 1 !== $currentAdminCount;
     }
 
     /**
@@ -166,8 +147,6 @@ class UserVoter extends Voter
      *
      * @param User          $userToOperateOn The user to block/unblock
      * @param UserInterface $loggedInUser    The currently logged-in user
-     *
-     * @return bool
      */
     private function canBlock(User $userToOperateOn, UserInterface $loggedInUser): bool
     {
@@ -175,12 +154,7 @@ class UserVoter extends Voter
         if (!$this->security->isGranted('ROLE_ADMIN')) {
             return false;
         }
-
         // An admin cannot block/unblock themselves.
-        if ($userToOperateOn->getId() === $loggedInUser->getId()) {
-            return false;
-        }
-
-        return true;
+        return $userToOperateOn->getId() !== $loggedInUser->getId();
     }
 }

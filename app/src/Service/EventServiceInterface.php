@@ -17,25 +17,23 @@ use App\Dto\EventListFiltersDto;
 interface EventServiceInterface
 {
     /**
-     * Get paginated list
+     * Get paginated list.
      *
      * @param int                 $page
      * @param User                $author
      * @param EventListFiltersDto $filters
-     *
-     * @return PaginationInterface
      */
     public function getPaginatedList(int $page, User $author, EventListFiltersDto $filters): PaginationInterface;
 
     /**
-     * Save.
+     * Save events.
      *
      * @param Event $event
      */
     public function save(Event $event): void;
 
     /**
-     * Delete.
+     * Delete events.
      *
      * @param Event $event
      */

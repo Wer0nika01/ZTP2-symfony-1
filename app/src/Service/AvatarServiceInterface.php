@@ -25,7 +25,7 @@ interface AvatarServiceInterface
     public function create(UploadedFile $uploadedFile, Avatar $avatar, User $user): void;
 
     /**
-     * Update.
+     * Update avatars.
      *
      * @param UploadedFile $uploadedFile
      * @param Avatar       $avatar
@@ -34,7 +34,7 @@ interface AvatarServiceInterface
     public function update(UploadedFile $uploadedFile, Avatar $avatar, User $user): void;
 
     /**
-     * Delete.
+     * Delete avatars.
      *
      * @param Avatar $avatar
      */

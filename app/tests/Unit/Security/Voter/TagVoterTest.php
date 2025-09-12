@@ -10,7 +10,6 @@ use App\Entity\Tag;
 use App\Entity\User;
 use App\Security\Voter\TagVoter;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
@@ -27,7 +26,7 @@ class TagVoterTest extends TestCase
     public function provideSupportsData(): array
     {
         $tag = $this->createMock(Tag::class);
-        $otherObject = new stdClass();
+        $otherObject = new \stdClass();
 
         $adminUserForSupports = new User();
         $adminUserForSupports->setRoles(['ROLE_ADMIN']);
@@ -52,11 +51,6 @@ class TagVoterTest extends TestCase
      * Test supports through vote.
      *
      * @dataProvider provideSupportsData
-     *
-     * @param string    $attribute
-     * @param $subject
-     * @param User|null $user
-     * @param int       $expectedVote
      */
     public function testSupportsThroughVote(string $attribute, $subject, ?User $user, int $expectedVote): void
     {
@@ -67,7 +61,7 @@ class TagVoterTest extends TestCase
     }
 
     /**
-     * Provide vote on attribute data
+     * Provide vote on attribute data.
      *
      * @return array[]
      */
@@ -101,11 +95,6 @@ class TagVoterTest extends TestCase
      * Test vote on attribute.
      *
      * @dataProvider provideVoteOnAttributeData
-     *
-     * @param string    $attribute
-     * @param $subject
-     * @param User|null $user
-     * @param int       $expectedVote
      */
     public function testVoteOnAttribute(string $attribute, $subject, ?User $user, int $expectedVote): void
     {
@@ -138,15 +127,13 @@ class TagVoterTest extends TestCase
         $user = new User();
         $user->setRoles(['ROLE_ADMIN']);
         $token = $this->createMockToken($user);
-        $otherObject = new stdClass();
+        $otherObject = new \stdClass();
 
         $this->assertEquals(VoterInterface::ACCESS_ABSTAIN, $voter->vote($token, $otherObject, [TagVoter::VIEW]));
     }
 
     /**
      * Create voter.
-     *
-     * @return TagVoter
      */
     private function createVoter(): TagVoter
     {
@@ -155,10 +142,6 @@ class TagVoterTest extends TestCase
 
     /**
      * Create mock token.
-     *
-     * @param User|null $user
-     *
-     * @return TokenInterface
      */
     private function createMockToken(?User $user = null): TokenInterface
     {

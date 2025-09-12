@@ -18,9 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserChecker implements UserCheckerInterface
 {
     /**
-     * Constructor
-     *
-     * @param TranslatorInterface $translator
+     * Constructor.
      */
     public function __construct(private readonly TranslatorInterface $translator)
     {
@@ -28,8 +26,6 @@ class UserChecker implements UserCheckerInterface
 
     /**
      * Check Preauth.
-     *
-     * @param UserInterface $user
      */
     public function checkPreAuth(UserInterface $user): void
     {
@@ -44,8 +40,6 @@ class UserChecker implements UserCheckerInterface
 
     /**
      * Check PostAuth.
-     *
-     * @param UserInterface $user
      */
     public function checkPostAuth(UserInterface $user): void
     {

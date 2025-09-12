@@ -3,6 +3,7 @@
 /**
  * Contact fixtures.
  */
+
 namespace App\DataFixtures;
 
 use App\Entity\Contact;

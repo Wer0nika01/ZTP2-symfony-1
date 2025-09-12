@@ -22,13 +22,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class RegistrationController extends AbstractController
 {
     /**
-     * Register
-     *
-     * @param Request                      $request
-     * @param RegistrationServiceInterface $registrationService
-     * @param AuthenticationUtils          $authenticationUtils
-     *
-     * @return Response
+     * Register.
      */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, RegistrationServiceInterface $registrationService, AuthenticationUtils $authenticationUtils): Response

@@ -10,11 +10,8 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Security\Voter\EventVoter;
 use PHPUnit\Framework\TestCase;
-use ReflectionException;
-use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use ReflectionClass;
 
 /**
  * Class Event voter Test.
@@ -34,7 +31,7 @@ class EventVoterTest extends TestCase
 
     /**
      * Data provider for the supports method test.
-     * [attribute, subject, expectedResult]
+     * [attribute, subject, expectedResult].
      *
      * @return array[]
      */
@@ -42,7 +39,7 @@ class EventVoterTest extends TestCase
     {
         $event = new Event();
         $user = new User();
-        $stdClass = new stdClass();
+        $stdClass = new \stdClass();
 
         return [
             'supports_delete_event' => [EventVoter::DELETE, $event, true],
@@ -64,15 +61,11 @@ class EventVoterTest extends TestCase
      *
      * @dataProvider provideSupportsData
      *
-     * @param string $attribute
-     * @param mixed  $subject
-     * @param bool   $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
-        $reflection = new ReflectionClass(EventVoter::class);
+        $reflection = new \ReflectionClass(EventVoter::class);
         $method = $reflection->getMethod('supports');
 
         $this->assertEquals(
@@ -84,7 +77,7 @@ class EventVoterTest extends TestCase
 
     /**
      * Data provider for the voteOnAttribute method test.
-     * [loggedInUser, eventAuthorId, attribute, expectedVoteResult]
+     * [loggedInUser, eventAuthorId, attribute, expectedVoteResult].
      *
      * @return array[]
      */
@@ -123,19 +116,14 @@ class EventVoterTest extends TestCase
      *
      * @dataProvider provideVoteOnAttributeData
      *
-     * @param UserInterface|null $loggedInUser
-     * @param int|null           $eventAuthorId
-     * @param string             $attribute
-     * @param bool               $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testVoteOnAttribute(?UserInterface $loggedInUser, ?int $eventAuthorId, string $attribute, bool $expectedResult): void
     {
         $event = $this->createMock(Event::class);
 
         $eventAuthor = null;
-        if ($eventAuthorId !== null) {
+        if (null !== $eventAuthorId) {
             $eventAuthor = $this->createMock(User::class);
             $eventAuthor->method('getId')->willReturn($eventAuthorId);
         }
@@ -144,7 +132,7 @@ class EventVoterTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($loggedInUser);
 
-        $reflection = new ReflectionClass(EventVoter::class);
+        $reflection = new \ReflectionClass(EventVoter::class);
         $method = $reflection->getMethod('voteOnAttribute');
 
         $this->assertEquals(
@@ -154,7 +142,7 @@ class EventVoterTest extends TestCase
                 'Expected vote for attribute "%s" with logged-in user ID %s and event author ID %s to be %s',
                 $attribute,
                 $loggedInUser instanceof User ? $loggedInUser->getId() : (
-                $loggedInUser instanceof UserInterface && method_exists($loggedInUser, 'getId') ? $loggedInUser->getId() : 'N/A'
+                    $loggedInUser instanceof UserInterface && method_exists($loggedInUser, 'getId') ? $loggedInUser->getId() : 'N/A'
                 ),
                 $eventAuthorId ?? 'N/A',
                 $expectedResult ? 'GRANTED' : 'DENIED'

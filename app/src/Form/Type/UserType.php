@@ -22,8 +22,6 @@ class UserType extends AbstractType
 {
     /**
      * Constructor.
-     *
-     * @param Security $security
      */
     public function __construct(private readonly Security $security)
     {
@@ -31,9 +29,6 @@ class UserType extends AbstractType
 
     /**
      * Builds the form.
-     *
-     * @param FormBuilderInterface $builder
-     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -69,8 +64,6 @@ class UserType extends AbstractType
 
     /**
      * Configures the options for this type.
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver): void
     {

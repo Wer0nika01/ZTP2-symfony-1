@@ -21,8 +21,6 @@ class TagsDataTransformer implements DataTransformerInterface
 {
     /**
      * Constructor.
-     *
-     * @param TagServiceInterface $tagService
      */
     public function __construct(private readonly TagServiceInterface $tagService)
     {

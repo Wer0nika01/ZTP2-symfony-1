@@ -3,6 +3,7 @@
 /**
  * Event service.
  */
+
 namespace App\Service;
 
 use App\Dto\EventListFiltersDto;
@@ -18,27 +19,21 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class EventService implements EventServiceInterface
 {
-    /**
-     * Items per page.
-     * Use constants to define configuration values that rarely change.
-     *
-     * @constant int
-     */
     private const PAGINATOR_ITEMS_PER_PAGE = 10;
 
     /**
      * Constructor.
      *
-     * @param EventRepository        $eventRepository Event repository
-     * @param PaginatorInterface     $paginator       Paginator
-     * @param EntityManagerInterface $entityManager   Entity Manager
+     * @param EventRepository        $eventRepository
+     * @param PaginatorInterface     $paginator
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(private readonly EventRepository $eventRepository, private readonly PaginatorInterface $paginator, private readonly EntityManagerInterface $entityManager)
     {
     }
 
     /**
-     * Get paginated list
+     * Get paginated list.
      *
      * @param int                 $page
      * @param User                $author
@@ -53,7 +48,7 @@ class EventService implements EventServiceInterface
             $page,
             self::PAGINATOR_ITEMS_PER_PAGE,
             [
-                'sortFieldAllowList' => [ 'event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'],
+                'sortFieldAllowList' => ['event.id', 'event.startTime', 'event.endTime', 'event.location', 'event.isAllDay', 'event.title', 'category.title', 'event.status', 'tags.name'],
                 'defaultSortFieldName' => 'event.startTime',
                 'defaultSortDirection' => 'asc',
             ]
@@ -61,9 +56,9 @@ class EventService implements EventServiceInterface
     }
 
     /**
-     * Save event.
+     * Save entity.
      *
-     * @param Event $event Event entity
+     * @param Event $event
      */
     public function save(Event $event): void
     {
@@ -74,9 +69,9 @@ class EventService implements EventServiceInterface
     }
 
     /**
-     * Delete event.
+     * Delete entity.
      *
-     * @param Event $event Event entity
+     * @param Event $event
      */
     public function delete(Event $event): void
     {

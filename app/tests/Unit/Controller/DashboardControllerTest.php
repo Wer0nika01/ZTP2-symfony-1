@@ -57,10 +57,9 @@ class DashboardControllerTest extends TestCase
 
         $response = $controller->index();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(\Symfony\Component\HttpFoundation\Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString('dashboard content', $response->getContent());
     }
-
 
     /**
      * Set up.
@@ -81,8 +80,6 @@ class DashboardControllerTest extends TestCase
 
     /**
      * Helper method to create a DashboardController instance with mocked dependencies.
-     *
-     * @return DashboardController
      */
     private function createController(): DashboardController
     {

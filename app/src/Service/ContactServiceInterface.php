@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contact Service Interface
+ * Contact Service Interface.
  */
 
 namespace App\Service;
@@ -28,14 +28,14 @@ interface ContactServiceInterface
     public function getPaginatedList(int $page, User $author, ContactListFiltersDto $filters): PaginationInterface;
 
     /**
-     * Save.
+     * Save contacts.
      *
      * @param Contact $contact
      */
     public function save(Contact $contact): void;
 
     /**
-     * Remove.
+     * Delete contacts.
      *
      * @param Contact $contact
      */

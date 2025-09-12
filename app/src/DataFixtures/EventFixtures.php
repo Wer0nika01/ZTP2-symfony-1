@@ -11,8 +11,6 @@ use App\Entity\Enum\EventStatus;
 use App\Entity\Tag;
 use App\Entity\Event;
 use App\Entity\User;
-use DateTime;
-use DateTimeImmutable;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
@@ -44,12 +42,12 @@ class EventFixtures extends AbstractBaseFixtures implements DependentFixtureInte
             $event->setDescription($this->faker->realText(mt_rand(200, 1000)));
 
             $startDateTimeString = $this->faker->dateTimeBetween('now', '+90 days')->format('Y-m-d H:i:s');
-            $event->setStartTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $startDateTimeString));
+            $event->setStartTime(\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $startDateTimeString));
 
             if ($this->faker->boolean(70)) {
-                $tempStart = DateTime::createFromFormat('Y-m-d H:i:s', $startDateTimeString);
+                $tempStart = \DateTime::createFromFormat('Y-m-d H:i:s', $startDateTimeString);
                 $endDateTimeString = $this->faker->dateTimeBetween($tempStart, $tempStart->modify('+1 day'))->format('Y-m-d H:i:s');
-                $event->setEndTime(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $endDateTimeString));
+                $event->setEndTime(\DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $endDateTimeString));
             }
 
             if ($this->faker->boolean(60)) {

@@ -24,14 +24,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TagController extends AbstractController
 {
     /**
-     * Constructor
-     *
-     * @param TagServiceInterface $tagService
-     * @param TranslatorInterface $translator
+     * Constructor.
      */
     public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator)
     {
     }
+
     /**
      * Index action.
      *
@@ -44,8 +42,9 @@ class TagController extends AbstractController
     {
         $pagination = $this->tagService->getPaginatedList($page);
 
-        return $this->render('tag/index.html.twig', ['pagination' => $pagination, ]);
+        return $this->render('tag/index.html.twig', ['pagination' => $pagination]);
     }
+
     /**
      * View action.
      *
@@ -60,12 +59,9 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
+
     /**
      * Create action.
-     *
-     * @param Request $request
-     *
-     * @return Response
      */
     #[Route('/tag/create', name: 'tag_create', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -90,6 +86,7 @@ class TagController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     /**
      * Edit action.
      *
@@ -118,13 +115,9 @@ class TagController extends AbstractController
             'tag' => $tag,
         ]);
     }
+
     /**
      * Delete action.
-     *
-     * @param Request $request
-     * @param Tag     $tag
-     *
-     * @return Response
      */
     #[Route('/tag/{id}/delete', name: 'tag_delete', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'DELETE'])]
     #[IsGranted('ROLE_ADMIN')]

@@ -10,9 +10,6 @@ use App\Entity\Category;
 use App\Entity\User;
 use App\Security\Voter\CategoryVoter;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use ReflectionException;
-use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -34,7 +31,7 @@ class CategoryVoterTest extends TestCase
 
     /**
      * Data provider for the supports method test.
-     * [attribute, subject, expectedResult]
+     * [attribute, subject, expectedResult].
      *
      * @return array[]
      */
@@ -42,7 +39,7 @@ class CategoryVoterTest extends TestCase
     {
         $category = new Category();
         $user = new User();
-        $stdClass = new stdClass();
+        $stdClass = new \stdClass();
 
         return [
             'supports_view_category' => [CategoryVoter::VIEW, $category, true],
@@ -64,15 +61,11 @@ class CategoryVoterTest extends TestCase
      *
      * @dataProvider provideSupportsData
      *
-     * @param string $attribute
-     * @param mixed  $subject
-     * @param bool   $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
-        $reflection = new ReflectionClass(CategoryVoter::class);
+        $reflection = new \ReflectionClass(CategoryVoter::class);
         $method = $reflection->getMethod('supports');
 
         $this->assertEquals(
@@ -84,7 +77,7 @@ class CategoryVoterTest extends TestCase
 
     /**
      * Data provider for the voteOnAttribute method test.
-     * [loggedInUser, expectedVoteResult]
+     * [loggedInUser, expectedVoteResult].
      *
      * @return array[]
      */
@@ -117,11 +110,7 @@ class CategoryVoterTest extends TestCase
      *
      * @dataProvider provideVoteOnAttributeData
      *
-     * @param UserInterface|null $loggedInUser
-     * @param string             $attribute
-     * @param bool               $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testVoteOnAttribute(?UserInterface $loggedInUser, string $attribute, bool $expectedResult): void
     {
@@ -130,7 +119,7 @@ class CategoryVoterTest extends TestCase
         $token = $this->createMock(TokenInterface::class);
         $token->method('getUser')->willReturn($loggedInUser);
 
-        $reflection = new ReflectionClass(CategoryVoter::class);
+        $reflection = new \ReflectionClass(CategoryVoter::class);
         $method = $reflection->getMethod('voteOnAttribute');
 
         $this->assertEquals(

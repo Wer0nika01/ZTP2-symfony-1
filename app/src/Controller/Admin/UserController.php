@@ -13,7 +13,6 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormError;
@@ -32,10 +31,6 @@ class UserController extends AbstractController
 {
     /**
      * Construct.
-     *
-     * @param UserServiceInterface $userService
-     * @param TranslatorInterface  $translator
-     * @param SecurityBundle       $security
      */
     public function __construct(private readonly UserServiceInterface $userService, TranslatorInterface $translator, private readonly SecurityBundle $security)
     {
@@ -43,10 +38,6 @@ class UserController extends AbstractController
 
     /**
      * Index.
-     *
-     * @param int $page
-     *
-     * @return Response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/', name: 'admin_user_index', methods: 'GET')]
     #[IsGranted('ROLE_ADMIN')]
@@ -61,10 +52,6 @@ class UserController extends AbstractController
 
     /**
      * Show.
-     *
-     * @param User $user
-     *
-     * @return Response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}', name: 'admin_user_view')]
     #[IsGranted('ROLE_ADMIN')]
@@ -77,12 +64,6 @@ class UserController extends AbstractController
 
     /**
      * Edit.
-     *
-     * @param Request             $request
-     * @param User                $user
-     * @param TranslatorInterface $translator
-     *
-     * @return Response
      */
     #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/edit', name: 'admin_user_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
@@ -111,11 +92,6 @@ class UserController extends AbstractController
 
     /**
      * Delete.
-     *
-     * @param Request $request
-     * @param User    $user
-     *
-     * @return Response
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -153,12 +129,12 @@ class UserController extends AbstractController
                 }
 
                 return $this->redirectToRoute('admin_user_index');
-            } catch (NoResultException | NonUniqueResultException $e) {
+            } catch (NoResultException|NonUniqueResultException $e) {
                 $this->addFlash('danger', 'message.error_counting_admins');
                 error_log($e->getMessage());
 
                 return $this->redirectToRoute('admin_user_index');
-            } catch (RuntimeException $e) {
+            } catch (\RuntimeException $e) {
                 $this->addFlash(
                     'danger',
                     $e->getMessage()
@@ -177,13 +153,8 @@ class UserController extends AbstractController
 
     /**
      * Toggle block.
-     *
-     * @param User                $user
-     * @param TranslatorInterface $translator
-     *
-     * @return Response
      */
-    #[Route('/admin/user/{id}/toggle-block', name: 'admin_user_toggle_block', requirements: ['id' => '[1-9]\d*'], methods: ['POST'])]
+    #[\Symfony\Component\Routing\Attribute\Route('/admin/user/{id}/toggle-block', name: 'admin_user_toggle_block', requirements: ['id' => '[1-9]\d*'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function toggleBlock(User $user, TranslatorInterface $translator): Response
     {

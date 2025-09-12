@@ -1,7 +1,7 @@
 <?php
 
 /**
- * User Service
+ * User Service.
  */
 
 namespace App\Service;
@@ -10,7 +10,6 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use RuntimeException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -69,7 +68,7 @@ class UserService implements UserServiceInterface
             $adminCount = $this->userRepository->countAdmins();
 
             if ($adminCount <= 1) {
-                throw new RuntimeException($this->translator->trans('message.cannot_delete_last_admin'));
+                throw new \RuntimeException($this->translator->trans('message.cannot_delete_last_admin'));
             }
         }
 
@@ -100,11 +99,11 @@ class UserService implements UserServiceInterface
             ->where('u.email = :email')
             ->setParameter('email', $email);
 
-        if ($excludeUserId !== null) {
+        if (null !== $excludeUserId) {
             $qb->andWhere('u.id != :id')->setParameter('id', $excludeUserId);
         }
 
-        return count($qb->getQuery()->getResult()) === 0;
+        return 0 === count($qb->getQuery()->getResult());
     }
 
     /**
@@ -120,7 +119,7 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * toggle to block users
+     * Toggle to block users.
      *
      * @param User $user
      */

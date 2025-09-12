@@ -19,8 +19,6 @@ enum EventStatus: int
 
     /**
      * Get the human-readable label for the enum case.
-     *
-     * @return string
      */
     public function getLabel(): string
     {
@@ -33,8 +31,6 @@ enum EventStatus: int
 
     /**
      * Get the Bootstrap badge/button class for the enum case.
-     *
-     * @return string
      */
     public function getButtonClass(): string
     {

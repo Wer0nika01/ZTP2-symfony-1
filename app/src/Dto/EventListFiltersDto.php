@@ -16,24 +16,12 @@ use Doctrine\Common\Collections\Collection;
  */
 class EventListFiltersDto
 {
-    private Collection $tags;
-
-    /**
-     * Constructor.
-     *
-     * @param Collection       $tags
-     * @param Category|null    $category
-     * @param EventStatus|null $status
-     */
-    public function __construct(Collection $tags, private ?Category $category = null, private ?EventStatus $status = null)
+    public function __construct(private Collection $tags, private ?Category $category = null, private ?EventStatus $status = null)
     {
-        $this->tags = $tags;
     }
 
     /**
-     *Setter for Category.
-     *
-     * @param Category|null $category
+     * Setter for Category.
      *
      * @return $this
      */
@@ -44,20 +32,13 @@ class EventListFiltersDto
         return $this;
     }
 
-    /**
-     * Getter for Category.
-     *
-     * @return Category|null
-     */
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
     /**
-     * Setter for status.
-     *
-     * @param EventStatus|null $status
+     * Setter for Status.
      *
      * @return $this
      */
@@ -68,18 +49,13 @@ class EventListFiltersDto
         return $this;
     }
 
-    /**
-     * Getter for Event Status.
-     *
-     * @return EventStatus|null
-     */
     public function getStatus(): ?EventStatus
     {
         return $this->status;
     }
 
     /**
-     * Getter for tags.
+     * Getter for Tags.
      *
      * @return Collection<int, Tag>
      */
@@ -89,7 +65,7 @@ class EventListFiltersDto
     }
 
     /**
-     * Setter for tags.
+     * Setter for Tags.
      *
      * @param Collection<int, Tag> $tags
      *
@@ -103,9 +79,7 @@ class EventListFiltersDto
     }
 
     /**
-     * Add tag to collection.
-     *
-     * @param Tag $tag
+     * Add tags.
      *
      * @return $this
      */
@@ -119,9 +93,7 @@ class EventListFiltersDto
     }
 
     /**
-     * Remove tag from collection.
-     *
-     * @param Tag $tag
+     * Delete tags.
      *
      * @return $this
      */

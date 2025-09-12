@@ -11,8 +11,6 @@ use App\Entity\Tag;
 use App\Form\Type\TagType;
 use App\Service\TagServiceInterface;
 use PHPUnit\Framework\MockObject\MockObject;
-use ReflectionException;
-use ReflectionProperty;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
@@ -62,7 +60,7 @@ class TagControllerTest extends WebTestCase
 
         $this->tagController->expects($this->once())
             ->method('render')
-            ->with('tag/index.html.twig', ['pagination' => $pagination, ])
+            ->with('tag/index.html.twig', ['pagination' => $pagination])
             ->willReturn(new Response());
 
         $this->tagController->index();
@@ -320,8 +318,8 @@ class TagControllerTest extends WebTestCase
         $tag = new Tag();
         $tag->setName('Tag to Delete');
         try {
-            $reflection = new ReflectionProperty($tag, 'id');
-        } catch (ReflectionException) {
+            $reflection = new \ReflectionProperty($tag, 'id');
+        } catch (\ReflectionException) {
         }
         $reflection->setValue($tag, 1);
 
@@ -397,8 +395,8 @@ class TagControllerTest extends WebTestCase
         $tag = new Tag();
         $tag->setName('Tag to Delete');
         try {
-            $reflection = new ReflectionProperty($tag, 'id');
-        } catch (ReflectionException) {
+            $reflection = new \ReflectionProperty($tag, 'id');
+        } catch (\ReflectionException) {
         }
         $reflection->setValue($tag, 1);
 

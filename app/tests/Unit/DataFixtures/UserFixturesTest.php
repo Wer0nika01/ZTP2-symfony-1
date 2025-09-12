@@ -13,8 +13,6 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Common\DataFixtures\ReferenceRepository;
 
@@ -42,7 +40,7 @@ class UserFixturesTest extends TestCase
         $this->referenceRepository = $this->createMock(ReferenceRepository::class);
         $this->userFixtures->setReferenceRepository($this->referenceRepository);
 
-        $reflection = new ReflectionClass($this->userFixtures);
+        $reflection = new \ReflectionClass($this->userFixtures);
 
         $managerProperty = $reflection->getProperty('manager');
         $managerProperty->setValue($this->userFixtures, $this->objectManager);
@@ -74,9 +72,7 @@ class UserFixturesTest extends TestCase
 
         $this->passwordHasher->expects($this->exactly($totalExpectedUsers))
             ->method('hashPassword')
-            ->willReturnCallback(function (User $user, string $plainPassword) {
-                return sprintf('hashed_%s_%s', $user->getEmail(), $plainPassword);
-            });
+            ->willReturnCallback(fn(User $user, string $plainPassword) => sprintf('hashed_%s_%s', $user->getEmail(), $plainPassword));
 
         $this->referenceRepository->expects($this->never())
             ->method('setReference')
@@ -87,16 +83,16 @@ class UserFixturesTest extends TestCase
             ->with($this->matchesRegularExpression('/^admin_\d+$/'), $this->isInstanceOf(User::class));
 
 
-        $reflection = new ReflectionClass($this->userFixtures);
+        $reflection = new \ReflectionClass($this->userFixtures);
         $loadDataMethod = $reflection->getMethod('loadData');
         try {
             $loadDataMethod->invoke($this->userFixtures);
-        } catch (ReflectionException) {
+        } catch (\ReflectionException) {
         }
 
         $this->assertCount($totalExpectedUsers, $persistedUsers);
 
-        for ($i = 0; $i < $expectedUserCount; $i++) {
+        for ($i = 0; $i < $expectedUserCount; ++$i) {
             $user = $persistedUsers[$i];
             $expectedEmail = sprintf('user%d@example.com', $i);
             $expectedHashedPassword = sprintf('hashed_%s_%s', $expectedEmail, 'user1234');
@@ -106,7 +102,7 @@ class UserFixturesTest extends TestCase
             $this->assertEquals($expectedHashedPassword, $user->getPassword());
         }
 
-        for ($i = 0; $i < $expectedAdminCount; $i++) {
+        for ($i = 0; $i < $expectedAdminCount; ++$i) {
             $admin = $persistedUsers[$expectedUserCount + $i];
             $expectedEmail = sprintf('admin%d@example.com', $i);
             $expectedHashedPassword = sprintf('hashed_%s_%s', $expectedEmail, 'admin1234');

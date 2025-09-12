@@ -22,7 +22,6 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use DateTimeImmutable;
 
 /**
  * Class Event repository Test.
@@ -100,22 +99,32 @@ class EventRepositoryTest extends TestCase
         $queryBuilder->method('select')->willReturnSelf();
         $queryBuilder->method('join')->willReturnSelf();
         $queryBuilder->method('leftJoin')->willReturnSelf();
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('andWhere')
-            ->withConsecutive(
-                ['event.author = :author'],
-                ['category.id = :categoryId']
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('andWhere')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('event.author = :author', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('category.id = :categoryId', $parameters[0]);
+            }
+            return $queryBuilder;
+        });
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('setParameter')
-            ->withConsecutive(
-                ['author', $author],
-                ['categoryId', $category->getId()]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $category, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('author', $parameters[0]);
+                $this->assertSame($author, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('categoryId', $parameters[0]);
+                $this->assertSame($category->getId(), $parameters[1]);
+            }
+            return $queryBuilder;
+        });
 
         $result = $this->eventRepository->queryAll($author, $filters);
         $this->assertSame($queryBuilder, $result);
@@ -140,22 +149,32 @@ class EventRepositoryTest extends TestCase
         $queryBuilder->method('select')->willReturnSelf();
         $queryBuilder->method('join')->willReturnSelf();
         $queryBuilder->method('leftJoin')->willReturnSelf();
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('andWhere')
-            ->withConsecutive(
-                ['event.author = :author'],
-                ['event.status = :status']
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('andWhere')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('event.author = :author', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('event.status = :status', $parameters[0]);
+            }
+            return $queryBuilder;
+        });
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('setParameter')
-            ->withConsecutive(
-                ['author', $author],
-                ['status', $status]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $status, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('author', $parameters[0]);
+                $this->assertSame($author, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('status', $parameters[0]);
+                $this->assertSame($status, $parameters[1]);
+            }
+            return $queryBuilder;
+        });
 
         $result = $this->eventRepository->queryAll($author, $filters);
         $this->assertSame($queryBuilder, $result);
@@ -184,29 +203,45 @@ class EventRepositoryTest extends TestCase
 
         $queryBuilder->method('select')->willReturnSelf();
         $queryBuilder->method('join')->willReturnSelf();
-        $queryBuilder->expects($this->exactly(2))
-        ->method('leftJoin')
-            ->withConsecutive(
-                ['event.tags', 'tags'],
-                ['event.tags', 'filterTags']
-            )
-            ->willReturnSelf();
+        $matcher = $this->exactly(2);
+        $queryBuilder->expects($matcher)
+        ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('event.tags', $parameters[0]);
+                $this->assertSame('tags', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('event.tags', $parameters[0]);
+                $this->assertSame('filterTags', $parameters[1]);
+            }
+            return $queryBuilder;
+        });
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('andWhere')
-            ->withConsecutive(
-                ['event.author = :author'],
-                [$exprFuncMock]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('andWhere')->willReturnCallback(function (...$parameters) use ($matcher, $exprFuncMock, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('event.author = :author', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame($exprFuncMock, $parameters[0]);
+            }
+            return $queryBuilder;
+        });
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('setParameter')
-            ->withConsecutive(
-                ['author', $author],
-                ['tag_ids', [1, 2]]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('author', $parameters[0]);
+                $this->assertSame($author, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('tag_ids', $parameters[0]);
+                $this->assertSame([1, 2], $parameters[1]);
+            }
+            return $queryBuilder;
+        });
 
         $queryBuilder->expects($this->once())
         ->method('expr')
@@ -248,23 +283,35 @@ class EventRepositoryTest extends TestCase
             ->willReturnSelf();
         $queryBuilder->expects($this->once())->method('join')->willReturnSelf();
         $queryBuilder->expects($this->once())->method('leftJoin')->willReturnSelf();
+        $matcher = $this->exactly(3);
 
-        $queryBuilder->expects($this->exactly(3))
-            ->method('andWhere')
-            ->withConsecutive(
-                ['event.author = :author'],
-                ['event.startTime <= :now'],
-                ['event.endTime IS NULL OR event.endTime >= :now']
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('andWhere')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('event.author = :author', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('event.startTime <= :now', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('event.endTime IS NULL OR event.endTime >= :now', $parameters[0]);
+            }
+            return $queryBuilder;
+        });
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('setParameter')
-            ->withConsecutive(
-                ['author', $author],
-                ['now', $this->isInstanceOf(DateTimeImmutable::class)]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('author', $parameters[0]);
+                $this->assertSame($author, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('now', $parameters[0]);
+                $this->assertSame($this->isInstanceOf(\DateTimeImmutable::class), $parameters[1]);
+            }
+            return $queryBuilder;
+        });
         $queryBuilder->expects($this->once())
             ->method('orderBy')
             ->with('event.startTime', 'ASC')
@@ -313,22 +360,32 @@ class EventRepositoryTest extends TestCase
             ->willReturnSelf();
         $queryBuilder->expects($this->once())->method('join')->willReturnSelf();
         $queryBuilder->expects($this->once())->method('leftJoin')->willReturnSelf();
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('andWhere')
-            ->withConsecutive(
-                ['event.author = :author'],
-                ['event.startTime > :now']
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('andWhere')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('event.author = :author', $parameters[0]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('event.startTime > :now', $parameters[0]);
+            }
+            return $queryBuilder;
+        });
+        $matcher = $this->exactly(2);
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('setParameter')
-            ->withConsecutive(
-                ['author', $author],
-                ['now', $this->isInstanceOf(DateTimeImmutable::class)]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('author', $parameters[0]);
+                $this->assertSame($author, $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('now', $parameters[0]);
+                $this->assertSame($this->isInstanceOf(\DateTimeImmutable::class), $parameters[1]);
+            }
+            return $queryBuilder;
+        });
         $queryBuilder->expects($this->once())
             ->method('orderBy')
             ->with('event.startTime', 'ASC')

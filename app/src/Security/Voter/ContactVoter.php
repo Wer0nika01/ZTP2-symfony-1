@@ -3,6 +3,7 @@
 /**
  * Contact Voter.
  */
+
 namespace App\Security\Voter;
 
 use App\Entity\Contact;
@@ -14,7 +15,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * Class Contact voter.
  */
-
 class ContactVoter extends Voter
 {
     public const VIEW = 'CONTACT_VIEW';
@@ -23,11 +23,6 @@ class ContactVoter extends Voter
 
     /**
      * Supports.
-     *
-     * @param string $attribute
-     * @param mixed  $subject
-     *
-     * @return bool
      */
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -37,12 +32,6 @@ class ContactVoter extends Voter
 
     /**
      * Vote one attribute.
-     *
-     * @param string         $attribute
-     * @param mixed          $subject
-     * @param TokenInterface $token
-     *
-     * @return bool
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {

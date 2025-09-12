@@ -12,9 +12,6 @@ use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use ReflectionException;
-use stdClass;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Security;
@@ -42,7 +39,7 @@ class UserVoterTest extends TestCase
 
     /**
      * Provides data for supports method tests.
-     * [attribute, subject, expectedResult]
+     * [attribute, subject, expectedResult].
      *
      * @return array[]
      */
@@ -60,7 +57,7 @@ class UserVoterTest extends TestCase
 
             ['unsupported_attribute', $user, false],
 
-            [UserVoter::VIEW, new stdClass(), false],
+            [UserVoter::VIEW, new \stdClass(), false],
             [UserVoter::VIEW, null, false],
         ];
     }
@@ -70,15 +67,11 @@ class UserVoterTest extends TestCase
      *
      * @dataProvider provideSupportsData
      *
-     * @param string $attribute
-     * @param mixed  $subject
-     * @param bool   $expectedResult
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testSupports(string $attribute, mixed $subject, bool $expectedResult): void
     {
-        $reflection = new ReflectionClass(UserVoter::class);
+        $reflection = new \ReflectionClass(UserVoter::class);
         $method = $reflection->getMethod('supports');
 
         $this->assertEquals($expectedResult, $method->invoke($this->userVoter, $attribute, $subject));
@@ -86,7 +79,7 @@ class UserVoterTest extends TestCase
 
     /**
      * Provides data for voteOnAttribute method tests.
-     * [loggedInUserRole, targetUserIsLoggedInUser, attribute, expectedVote, initialAdminCountForCanChangeRoles]
+     * [loggedInUserRole, targetUserIsLoggedInUser, attribute, expectedVote, initialAdminCountForCanChangeRoles].
      *
      * @return array[]
      */
@@ -127,15 +120,9 @@ class UserVoterTest extends TestCase
     }
 
     /**
-     * Test vote on attribute
+     * Test vote on attribute.
      *
      * @dataProvider provideVoteOnAttributeData
-     *
-     * @param string|null $loggedInUserRole
-     * @param bool        $targetUserIsLoggedInUser
-     * @param string      $attribute
-     * @param int         $expectedVote
-     * @param int|null    $initialAdminCountForCanChangeRoles
      */
     public function testVoteOnAttribute(?string $loggedInUserRole, bool $targetUserIsLoggedInUser, string $attribute, int $expectedVote, ?int $initialAdminCountForCanChangeRoles): void
     {
@@ -148,16 +135,16 @@ class UserVoterTest extends TestCase
         $userToOperateOn->method('getRoles')->willReturn([UserRole::ROLE_USER->value]);
 
         $token = $this->createMock(TokenInterface::class);
-        $token->method('getUser')->willReturn($loggedInUserRole === null ? null : $loggedInUser);
+        $token->method('getUser')->willReturn(null === $loggedInUserRole ? null : $loggedInUser);
 
         $this->security->expects($this->any())
             ->method('isGranted')
-            ->willReturnCallback(function (string $role, $subject = null) use ($loggedInUserRole, $loggedInUser, $userToOperateOn) {
+            ->willReturnCallback(function (string $role, $subject = null) use ($loggedInUserRole, $loggedInUser) {
                 if ($role === UserRole::ROLE_ADMIN->value) {
                     return $loggedInUserRole === UserRole::ROLE_ADMIN->value;
                 }
 
-                if ($loggedInUserRole !== null && in_array($role, $loggedInUser->getRoles())) {
+                if (null !== $loggedInUserRole && in_array($role, $loggedInUser->getRoles())) {
                     if ($subject instanceof UserInterface && $subject->getId() !== $loggedInUser->getId()) {
                         return false;
                     }
@@ -168,7 +155,7 @@ class UserVoterTest extends TestCase
                 return false;
             });
 
-        if ($initialAdminCountForCanChangeRoles !== null) {
+        if (null !== $initialAdminCountForCanChangeRoles) {
             $this->userRepository->expects($this->once())
                 ->method('countAdmins')
                 ->willReturn($initialAdminCountForCanChangeRoles);

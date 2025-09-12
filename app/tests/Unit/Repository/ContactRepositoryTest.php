@@ -122,7 +122,7 @@ class ContactRepositoryTest extends TestCase
         $this->contactRepository->remove($contact, true);
     }
 
-  /**
+    /**
      * Test queryAll method with tags filter.
      */
     public function testQueryAllWithTagsFilter(): void
@@ -154,14 +154,23 @@ class ContactRepositoryTest extends TestCase
             ->method('select')
             ->with('contact', 't', 'a')
             ->willReturnSelf();
-        $queryBuilder->expects($this->exactly(3))
-        ->method('leftJoin')
-            ->withConsecutive(
-                ['contact.tags', 't'],
-                ['contact.author', 'a'],
-                ['contact.tags', 'filterTags']
-            )
-            ->willReturnSelf();
+        $matcher = $this->exactly(3);
+        $queryBuilder->expects($matcher)
+        ->method('leftJoin')->willReturnCallback(function (...$parameters) use ($matcher, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('contact.tags', $parameters[0]);
+                $this->assertSame('t', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('contact.author', $parameters[0]);
+                $this->assertSame('a', $parameters[1]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('contact.tags', $parameters[0]);
+                $this->assertSame('filterTags', $parameters[1]);
+            }
+            return $queryBuilder;
+        });
         $queryBuilder->expects($this->once())
             ->method('where')
             ->with('contact.author = :author')
@@ -171,15 +180,23 @@ class ContactRepositoryTest extends TestCase
             ->method('andWhere')
             ->with($this->isInstanceOf(Expr\Func::class))
             ->willReturnSelf();
+        $matcher = $this->exactly(2);
 
 
-        $queryBuilder->expects($this->exactly(2))
-            ->method('setParameter')
-            ->withConsecutive(
-                ['author', $author, null],
-                ['tag_ids', [1, 2], null]
-            )
-            ->willReturnSelf();
+        $queryBuilder->expects($matcher)
+            ->method('setParameter')->willReturnCallback(function (...$parameters) use ($matcher, $author, $queryBuilder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('author', $parameters[0]);
+                $this->assertSame($author, $parameters[1]);
+                $this->assertSame(null, $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('tag_ids', $parameters[0]);
+                $this->assertSame([1, 2], $parameters[1]);
+                $this->assertSame(null, $parameters[2]);
+            }
+            return $queryBuilder;
+        });
 
 
         $result = $this->contactRepository->queryAll($author, $filters);

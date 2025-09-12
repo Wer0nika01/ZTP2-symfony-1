@@ -186,7 +186,7 @@ class CategoryControllerTest extends TestCase
             ->with('category/create.html.twig', ['form' => $this->mockFormView])
             ->willReturn(new Response());
 
-        $request = Request::create('/category/create', 'POST', ['title' => '']);
+        $request = Request::create('/category/create', \Symfony\Component\HttpFoundation\Request::METHOD_POST, ['title' => '']);
         $this->controller->create($request);
     }
 
@@ -203,9 +203,7 @@ class CategoryControllerTest extends TestCase
         $form->method('createView')->willReturn($this->mockFormView);
         $this->controller->expects($this->once())
         ->method('createForm')
-            ->with(CategoryType::class, $category, $this->callback(function ($options) use ($categoryId) {
-                return $options['method'] === 'PUT' && $options['action'] === '/mocked/url/category/edit?id='.$categoryId;
-            }))
+            ->with(CategoryType::class, $category, $this->callback(fn($options) => 'PUT' === $options['method'] && $options['action'] === '/mocked/url/category/edit?id='.$categoryId))
             ->willReturn($form);
 
         $this->controller->expects($this->once())
@@ -239,9 +237,7 @@ class CategoryControllerTest extends TestCase
             ->with(
                 CategoryType::class,
                 $category,
-                $this->callback(function ($options) use ($categoryId) {
-                    return $options['method'] === 'PUT' && $options['action'] === '/mocked/url/category/edit?id='.$categoryId;
-                })
+                $this->callback(fn($options) => 'PUT' === $options['method'] && $options['action'] === '/mocked/url/category/edit?id='.$categoryId)
             )
             ->willReturn($form);
 
@@ -257,7 +253,7 @@ class CategoryControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/category/1/edit', 'PUT', ['title' => '']);
+        $request = Request::create('/category/1/edit', \Symfony\Component\HttpFoundation\Request::METHOD_PUT, ['title' => '']);
         $this->controller->edit($request, $category);
     }
 
@@ -279,9 +275,7 @@ class CategoryControllerTest extends TestCase
         $form->method('createView')->willReturn($this->mockFormView);
         $this->controller->expects($this->once())
         ->method('createForm')
-            ->with(FormType::class, $category, $this->callback(function ($options) use ($categoryId) {
-                return $options['method'] === 'DELETE' && $options['action'] === '/mocked/url/category/delete?id='.$categoryId;
-            }))
+            ->with(FormType::class, $category, $this->callback(fn($options) => 'DELETE' === $options['method'] && $options['action'] === '/mocked/url/category/delete?id='.$categoryId))
             ->willReturn($form);
 
         $this->controller->expects($this->once())
@@ -353,9 +347,7 @@ class CategoryControllerTest extends TestCase
             ->with(
                 FormType::class,
                 $category,
-                $this->callback(function ($options) use ($categoryId) {
-                    return $options['method'] === 'DELETE' && $options['action'] === '/mocked/url/category/delete?id='.$categoryId;
-                })
+                $this->callback(fn($options) => 'DELETE' === $options['method'] && $options['action'] === '/mocked/url/category/delete?id='.$categoryId)
             )
             ->willReturn($form);
 
@@ -371,7 +363,7 @@ class CategoryControllerTest extends TestCase
             ])
             ->willReturn(new Response());
 
-        $request = Request::create('/category/1/delete', 'DELETE');
+        $request = Request::create('/category/1/delete', \Symfony\Component\HttpFoundation\Request::METHOD_DELETE);
         $this->controller->delete($request, $category);
     }
 }

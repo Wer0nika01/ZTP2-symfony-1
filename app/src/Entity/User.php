@@ -75,8 +75,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for id.
-     *
-     * @return int|null
      */
     public function getId(): ?int
     {
@@ -85,8 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for email.
-     *
-     * @return string|null
      */
     public function getEmail(): ?string
     {
@@ -95,8 +91,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for email.
-     *
-     * @param string $email Email
      */
     public function setEmail(string $email): void
     {
@@ -107,8 +101,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * A visual identifier that represents this user.
      *
      * @see UserInterface
-     *
-     * @return string User identifier
      */
     public function getUserIdentifier(): string
     {
@@ -133,7 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Setter for roles.
      *
-     * @param list<int, string> $roles Roles
+     * @param list<int, string> $roles
      */
     public function setRoles(array $roles): void
     {
@@ -144,8 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Getter for password.
      *
      * @see PasswordAuthenticatedUserInterface
-     *
-     * @return string|null
      */
     public function getPassword(): ?string
     {
@@ -154,8 +144,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for password.
-     *
-     * @param string $password User password
      */
     public function setPassword(string $password): void
     {
@@ -172,9 +160,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Getter for avatar
-     *
-     * @return Avatar|null
+     * Getter for avatar.
      */
     public function getAvatar(): ?Avatar
     {
@@ -183,8 +169,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for avatar.
-     *
-     * @param Avatar $avatar
      *
      * @return $this
      */
@@ -201,8 +185,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for firstName.
-     *
-     * @return string|null
      */
     public function getFirstName(): ?string
     {
@@ -211,8 +193,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for firstName.
-     *
-     * @param string|null $firstName First name
      */
     public function setFirstName(?string $firstName): void
     {
@@ -221,8 +201,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for lastName.
-     *
-     * @return string|null
      */
     public function getLastName(): ?string
     {
@@ -241,8 +219,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Getter for is blocked?
-     *
-     * @return bool
      */
     public function getIsBlocked(): bool
     {
@@ -251,8 +227,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Setter for Is blocked?
-     *
-     * @param bool $isBlocked
      *
      * @return $this
      */

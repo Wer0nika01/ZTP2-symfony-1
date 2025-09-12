@@ -20,8 +20,6 @@ class DashboardController extends AbstractController
 {
     /**
      * Constructor.
-     *
-     * @param EventRepository $eventRepository
      */
     public function __construct(private readonly EventRepository $eventRepository)
     {

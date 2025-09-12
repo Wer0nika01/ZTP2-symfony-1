@@ -47,56 +47,92 @@ class ContactTypeTest extends TestCase
         $tagsFieldBuilder->expects($this->once())
             ->method('addModelTransformer')
             ->with($this->tagsDataTransformer);
+        $matcher = $this->exactly(9);
 
-        $builder->expects($this->exactly(9))
-        ->method('add')
-            ->withConsecutive(
-                ['firstName', TextType::class, [
+        $builder->expects($matcher)
+        ->method('add')->willReturnCallback(function (...$parameters) use ($matcher, $builder) {
+            if ($matcher->getInvocationCount() === 1) {
+                $this->assertSame('firstName', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.firstName',
                     'required' => true,
                     'attr' => ['maxlength' => 255],
-                ], ],
-                ['lastName', TextType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 2) {
+                $this->assertSame('lastName', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.lastName',
                     'required' => true,
                     'attr' => ['maxlength' => 255],
-                ], ],
-                ['email', EmailType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 3) {
+                $this->assertSame('email', $parameters[0]);
+                $this->assertSame(EmailType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.email',
                     'required' => false,
                     'attr' => ['maxlength' => 255],
-                ], ],
-                ['phone', TelType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 4) {
+                $this->assertSame('phone', $parameters[0]);
+                $this->assertSame(TelType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.phone',
                     'required' => false,
                     'attr' => ['maxlength' => 50],
-                ], ],
-                ['address', TextareaType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 5) {
+                $this->assertSame('address', $parameters[0]);
+                $this->assertSame(TextareaType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.address',
                     'required' => false,
                     'attr' => ['maxlength' => 1000],
-                ], ],
-                ['company', TextType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 6) {
+                $this->assertSame('company', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.company',
                     'required' => false,
                     'attr' => ['maxlength' => 255],
-                ], ],
-                ['jobTitle', TextType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 7) {
+                $this->assertSame('jobTitle', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.jobTitle',
                     'required' => false,
                     'attr' => ['maxlength' => 255],
-                ], ],
-                ['notes', TextareaType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 8) {
+                $this->assertSame('notes', $parameters[0]);
+                $this->assertSame(TextareaType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.notes',
                     'required' => false,
                     'attr' => ['maxlength' => 2000],
-                ], ],
-                ['tags', TextType::class, [
+                ], $parameters[2]);
+            }
+            if ($matcher->getInvocationCount() === 9) {
+                $this->assertSame('tags', $parameters[0]);
+                $this->assertSame(TextType::class, $parameters[1]);
+                $this->assertSame([
                     'label' => 'label.tags',
                     'required' => false,
-                ], ]
-            )
-            ->willReturnSelf();
+                ], $parameters[2]);
+            }
+            return $builder;
+        });
 
         $builder->expects($this->once())
             ->method('get')
